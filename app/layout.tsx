@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "CarbonCue - Sustainability Platform",
+  title: "CarbonCue",
   description: "Track, reduce, and take action on your carbon footprint",
   icons: {
     icon: "/favicon.ico",
