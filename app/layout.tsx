@@ -11,6 +11,10 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "CarbonCue - Sustainability Platform",
   description: "Track, reduce, and take action on your carbon footprint",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({
