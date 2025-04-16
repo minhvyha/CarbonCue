@@ -1,5 +1,8 @@
 "use client"
 
+import Logo from '../public/logo.png'
+import Image from 'next/image' 
+
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -29,7 +32,7 @@ export function SiteHeader() {
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">CarbonCue</span>
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-carbon-red to-carbon-magenta"></div>
+              <Image src={Logo} alt="CarbonCue Logo"  className="h-14 w-14" />
               <span className="text-xl font-bold">CarbonCue</span>
             </div>
           </Link>
