@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
 import { cn } from "@/lib/utils"
 
+import { LoadingBar } from './loading-bar'
+
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Website Calculator", href: "/website-calculator" },
@@ -47,13 +49,13 @@ export function SiteHeader() {
             <Menu className="h-6 w-6" aria-hidden="true" />
           </Button>
         </div>
-        <div className="hidden lg:flex lg:gap-x-8">
+        <div className="hidden lg:flex lg:gap-x-6">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "text-sm font-semibold leading-6 transition-colors hover:text-primary",
+                "text-md font-semibold leading-6 transition-colors hover:text-primary",
                 pathname === item.href ? "text-primary" : "text-foreground",
               )}
             >
@@ -115,6 +117,7 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
+      <LoadingBar />
     </header>
   )
 }
