@@ -2,6 +2,8 @@ import type React from "react"
 import Link from "next/link"
 import { ArrowRight, BarChart3, Calendar, Globe, Leaf, Users } from "lucide-react"
 
+import {features} from "@/constants/home" 
+
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -45,36 +47,15 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={<Globe className="h-10 w-10 text-carbon-red" />}
-              title="Website Carbon Calculator"
-              description="Calculate and understand the carbon footprint of your websites based on file size, server location, and more."
-              href="/website-calculator"
-            />
-            <FeatureCard
-              icon={<BarChart3 className="h-10 w-10 text-carbon-purple" />}
-              title="AI Carbon Calculator"
-              description="Estimate emissions from AI workloads like model training and inference with detailed breakdowns."
-              href="/ai-calculator"
-            />
-            <FeatureCard
-              icon={<Leaf className="h-10 w-10 text-carbon-bright-red" />}
-              title="Carbon Footprint Tracker"
-              description="Monitor your daily carbon footprint with a personalized dashboard and actionable sustainability tips."
-              href="/carbon-tracker"
-            />
-            <FeatureCard
-              icon={<Users className="h-10 w-10 text-carbon-magenta" />}
-              title="Volunteer & Resource Hub"
-              description="Connect with local and global climate events, track your volunteer hours, and join community forums."
-              href="/volunteer-hub"
-            />
-            <FeatureCard
-              icon={<Calendar className="h-10 w-10 text-carbon-deep-red" />}
-              title="Sustainability Challenges"
-              description="Participate in carbon-saving challenges and compete on community leaderboards to drive engagement."
-              href="/challenges"
-            />
+            {features.map((feature) => (
+              <FeatureCard
+                key={feature.title}
+                icon={<feature.icon className="h-10 w-10 text-carbon-red" />}
+                title={feature.title}
+                description={feature.description}
+                href={feature.href}
+              />
+            ))}
             <Card className="bg-gradient-to-br from-carbon-red to-carbon-magenta text-white">
               <CardHeader>
                 <CardTitle className="text-xl">Ready to make an impact?</CardTitle>
