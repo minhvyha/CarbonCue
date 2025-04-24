@@ -1,11 +1,13 @@
 // src/contexts/loading-context.tsx
 'use client';
-import {
+
+import React, {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
+  Suspense,
 } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -17,28 +19,30 @@ export function useLoading() {
   return useContext(LoadingContext);
 }
 
-export function LoadingProvider({ children }: { children: ReactNode }) {
+// Inner provider that uses navigation hooks
+function LoadingProviderInner({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
-  const pathname   = usePathname();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    // turn on
     setLoading(true);
-
-    // simulate “done” after 300ms (or whatever)
-    const tid = window.setTimeout(() => {
-      setLoading(false);
-    }, 300);
-
-    return () => {
-      window.clearTimeout(tid);
-    };
+    const tid = window.setTimeout(() => setLoading(false), 300);
+    return () => window.clearTimeout(tid);
   }, [pathname, searchParams]);
 
   return (
     <LoadingContext.Provider value={{ loading }}>
       {children}
     </LoadingContext.Provider>
+  );
+}
+
+// Public provider wrapped in Suspense for CSR bailout
+export function LoadingProvider({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={null}>
+      <LoadingProviderInner>{children}</LoadingProviderInner>
+    </Suspense>
   );
 }
