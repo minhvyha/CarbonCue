@@ -47,6 +47,7 @@ export function LoginForm() {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
+                className="border-gray-300"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -71,6 +72,7 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="border-gray-300"
               />
               <Button
                 type="button"
@@ -111,13 +113,13 @@ export function LoginForm() {
       </form>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
+          <span className="w-full border-t border-gray-500" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-        <Button variant="outline" type="button" className="border border-gray-500" disabled={isLoading}>
+        <Button variant="outline" type="button" className="border border-gray-300 hover:bg-carbon-charcoal" disabled={isLoading}>
           Google
         </Button>
       <div className="text-center">
