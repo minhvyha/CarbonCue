@@ -1,4 +1,6 @@
+'use client'
 import type React from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { BookOpen, FileText, Lightbulb, Video } from "lucide-react"
 
@@ -7,6 +9,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function ResourcesPage() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log(process.env.MONGODB_URI)
+  fetch("/api/resources")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      setUsers(data.total);
+      setLoading(false);
+    })
+}, [])
+
   return (
     <div className="container py-10">
       <div className="mx-auto max-w-5xl">
