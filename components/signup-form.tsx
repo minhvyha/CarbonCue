@@ -81,8 +81,29 @@ export function SignupForm() {
     setIsLoading(true)
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
+    fetch("/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.firstName + " " + formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok")
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log("User created:", data)
+      })
+      .catch((error) => {
+        console.error("Error creating user:", error)
+      })
     setIsLoading(false)
 
     // Navigate to dashboard after successful signup
