@@ -42,6 +42,10 @@
     --deep-red: 355 54% 30%;
     --bright-red: 350 100% 42%;
     --magenta: 320 100% 39%;
+
+    /* Layout variables */
+    --header-height: 104.7px;
+    --footer-height: 152px;
   }
 
   .dark {
