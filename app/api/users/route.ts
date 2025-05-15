@@ -5,18 +5,18 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongoose';
-import Guides from '@/model/Guides';
+import Users from '@/model/Users';
 export async function GET() {
   // 1) connect
   const conn = await connectToDatabase();
   console.log('Mongo readyState:', conn.connection.readyState); // 1 = connected
 
   // 2) try an unfiltered find
-  const all = await Guides.find({});
-  console.log(`Found ${all.length} total guides`);
+  const all = await Users.find({});
+  console.log(`Found ${all.length} total users`);
 
   // 3) then your filter
-  const filtered = await Guides.find({ email: 'minhyv.ha@outlook.com' }).lean();
+  const filtered = await Users.find({ email: 'minhyv.ha@outlook.com' }).lean();
   console.log(`Found ${filtered.length} users matching your email`);
 
   // 4) return both sets so you can inspect in the browser
@@ -31,10 +31,10 @@ export async function POST(request: Request) {
   const conn = await connectToDatabase();
   console.log('Mongo readyState:', conn.connection.readyState); // 1 = connected
 
-  // 2) create a new guide
-  const newGuide = new Guides(body);
-  await newGuide.save();
+  // 2) create a new user
+  const newUser = new Users(body);
+  await newUser.save();
 
-  // 3) return the new guide
-  return NextResponse.json(newGuide);
+  // 3) return the new user
+  return NextResponse.json(newUser);
 }
