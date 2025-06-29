@@ -14,7 +14,7 @@ export default function ResourcesPage() {
 
   useEffect(() => {
     console.log(process.env.MONGODB_URI)
-  fetch("/api/resources")
+  fetch("/api/users")
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
