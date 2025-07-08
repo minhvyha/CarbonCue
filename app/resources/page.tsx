@@ -8,17 +8,33 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+type Resource = {
+  title: string
+  description: string
+  type: "guide" | "course" | "video" | "research"
+  level?: string
+  duration?: string
+  numberOfLesson?: number
+  slug?: string
+}  
+
+
 export default function ResourcesPage() {
-  const [users, setUsers] = useState([]);
+  const [resources, setResources] = useState({ guides: [], courses: [], videos: [], research: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(process.env.MONGODB_URI)
-  fetch("/api/users")
+  fetch("/api/resources")
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
-      setUsers(data.total);
+      const groupedResources = {
+        guides: data.filter((item : Resource) => item.type === "guide"),
+        courses: data.filter((item : Resource) => item.type === "course"),
+        videos: data.filter((item : Resource) => item.type === "video"),
+        research: data.filter((item : Resource) => item.type === "research"),
+      };
+      setResources(groupedResources);
+      console.log("Resources fetched successfully:", data);
       setLoading(false);
     })
 }, [])
@@ -43,6 +59,17 @@ export default function ResourcesPage() {
 
           <TabsContent value="guides">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {resources.guides.map((guide: Resource) => (
+                <ResourceGuideCard
+                  key={guide.title}
+                  title={guide.title}
+                  description={guide.description}
+                  icon={<FileText className="h-8 w-8 text-carbon-blue" />}
+                  level={guide.level || "Beginner"}
+                  readTime={guide.duration || "10 min"}
+                />
+              ))  
+              }
               <ResourceGuideCard
                 title="Understanding Carbon Footprints"
                 description="A comprehensive guide to understanding what carbon footprints are and how they're calculated."
@@ -90,34 +117,19 @@ export default function ResourcesPage() {
 
           <TabsContent value="courses">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CourseCard
-                title="Climate Change Fundamentals"
-                description="A comprehensive introduction to climate science, impacts, and solutions."
-                lessons={12}
-                duration="4 weeks"
-                level="Beginner"
-              />
-              <CourseCard
-                title="Sustainable Living Masterclass"
-                description="Practical strategies for reducing your environmental impact in everyday life."
-                lessons={8}
-                duration="3 weeks"
-                level="Intermediate"
-              />
-              <CourseCard
-                title="Carbon Accounting for Professionals"
-                description="Learn how to measure, report, and reduce carbon emissions in organizational contexts."
-                lessons={10}
-                duration="5 weeks"
-                level="Advanced"
-              />
-              <CourseCard
-                title="Climate Communication Strategies"
-                description="Effective techniques for communicating climate science and motivating action."
-                lessons={6}
-                duration="2 weeks"
-                level="Intermediate"
-              />
+              {resources.courses.map((course: Resource) => (
+                <CourseCard
+                  key={course.title}
+                  title={course.title}
+                  description={course.description}
+                  lessons={course.numberOfLesson || 0}
+                  duration={course.duration || "N/A"}
+                  level={course.level || "Beginner"}
+                  slug={course.slug || course.title.toLowerCase().replace(/\s+/g, "-")}
+                />
+              ))
+                }
+              
             </div>
           </TabsContent>
 
@@ -276,12 +288,14 @@ function CourseCard({
   lessons,
   duration,
   level,
+  slug
 }: {
   title: string
   description: string
   lessons: number
   duration: string
   level: string
+  slug: string
 }) {
   return (
     <Card>
@@ -307,7 +321,7 @@ function CourseCard({
       </CardContent>
       <CardFooter>
         <Button asChild className="w-full bg-carbon-purple hover:bg-carbon-purple/90">
-          <Link href={`/resources/courses/${encodeURIComponent(title)}`}>Enroll Now</Link>
+          <Link href={`/resources/${(slug)}`}>Enroll Now</Link>
         </Button>
       </CardFooter>
     </Card>
