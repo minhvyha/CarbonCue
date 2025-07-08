@@ -11,7 +11,17 @@ import { WebsiteCalculatorForm } from "@/components/website-calculator-form"
 import { WebsiteCalculatorResults } from "@/components/website-calculator-results"
 
 export default function WebsiteCalculatorPage() {
-  
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    // This effect can be used to fetch initial data if needed
+    // For example, you could fetch some default values or settings
+    // setData(initialData);
+    console.log("Website Calculator initialized with data:", data);
+
+    
+  }, [data]);
+
   return (
     <div className="container py-10">
       <div className="mx-auto max-w-4xl">
@@ -35,7 +45,7 @@ export default function WebsiteCalculatorPage() {
                 <CardDescription>Enter your website URL and we'll analyze its carbon footprint</CardDescription>
               </CardHeader>
               <CardContent>
-                <WebsiteCalculatorForm />
+                <WebsiteCalculatorForm setData={setData}/>
               </CardContent>
             </Card>
           </TabsContent>

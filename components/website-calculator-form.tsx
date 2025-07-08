@@ -2,14 +2,14 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function WebsiteCalculatorForm() {
+export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void }) {
   const [url, setUrl] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
@@ -20,10 +20,26 @@ export function WebsiteCalculatorForm() {
     setIsLoading(true)
 
     // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      // In a real app, you would dispatch an action or call a function to update results
-    }, 1500)
+    const baseUrl = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000";
+    
+       fetch(`${baseUrl}/api/websitecarbon/${encodeURIComponent(url)}`, {
+        cache: "no-store",
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch data")
+        }
+        return res.json()
+      }).then((data) => {
+        setData(data)
+      }).catch((error) => {
+        console.error("Error fetching data:", error)
+        setData(null)
+      }).finally(() => {
+        setIsLoading(false)
+        setUrl("") // Clear input after submission
+      })
   }
 
   return (
