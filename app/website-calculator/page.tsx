@@ -1,4 +1,6 @@
+'use client'
 import { Cloud, FileText, Globe, Server } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,6 +11,7 @@ import { WebsiteCalculatorForm } from "@/components/website-calculator-form"
 import { WebsiteCalculatorResults } from "@/components/website-calculator-results"
 
 export default function WebsiteCalculatorPage() {
+  
   return (
     <div className="container py-10">
       <div className="mx-auto max-w-4xl">
