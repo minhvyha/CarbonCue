@@ -1,0 +1,1085 @@
+{
+    "providers": {
+        "gcp": {
+            "__min": {
+                "region": "europe-west6",
+                "impact": 16
+            },
+            "asia-east1": {
+                "regionName": "asia-east1",
+                "country": "Taiwan",
+                "state": "",
+                "city": "Changhua County",
+                "source": "measured on  July 2, 2019 between 8 and 9 PM, EST on www.electricitymap.org",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 557
+            },
+            "asia-east2": {
+                "regionName": "asia-east2",
+                "country": "China",
+                "state": "",
+                "city": "Hong Kong",
+                "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 702
+            },
+            "asia-northeast1": {
+                "regionName": "asia-northeast1",
+                "country": "Japan",
+                "state": "",
+                "city": "Tokyo",
+                "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 516
+            },
+            "asia-northeast2": {
+                "regionName": "asia-northeast2",
+                "country": "Japan",
+                "state": "",
+                "city": "Osaka",
+                "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 516
+            },
+            "asia-south1": {
+                "regionName": "asia-south1",
+                "country": "India",
+                "state": "",
+                "city": "Mumbai",
+                "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 920
+            },
+            "asia-southeast1": {
+                "regionName": "asia-southeast1",
+                "country": "Singapore",
+                "state": "",
+                "city": "Jurong West",
+                "source": "https://www.ema.gov.sg/cmsmedia/Publications_and_Statistics/Publications/SES18/Publication_Singapore_Energy_Statistics_2018.pdf",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 419
+            },
+            "australia-southeast1": {
+                "regionName": "australia-southeast1",
+                "country": "Australia",
+                "state": "",
+                "city": "Sydney",
+                "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 802
+            },
+            "europe-north1": {
+                "regionName": "europe-north1",
+                "country": "Finland",
+                "state": "",
+                "city": "Hamina",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 211
+            },
+            "europe-west1": {
+                "regionName": "europe-west1",
+                "country": "Belgium",
+                "state": "",
+                "city": "St. Ghislain",
+                "source": "https://blog.google/around-the-globe/google-europe/time-shine-new-solar-facility-and-additional-data-center-belgium/",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 267
+            },
+            "europe-west2": {
+                "regionName": "europe-west2",
+                "country": "United Kingdom",
+                "state": "England",
+                "city": "London",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 623
+            },
+            "europe-west3": {
+                "regionName": "europe-west3",
+                "country": "Germany",
+                "state": "",
+                "city": "Frankfurt",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 615
+            },
+            "europe-west4": {
+                "regionName": "europe-west4",
+                "country": "Netherlands",
+                "state": "",
+                "city": "Eemshaven",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 569
+            },
+            "europe-west6": {
+                "regionName": "europe-west6",
+                "country": "Switzerland",
+                "state": "",
+                "city": "Zürich",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 16
+            },
+            "northamerica-northeast1": {
+                "regionName": "northamerica-northeast1",
+                "country": "Canada",
+                "state": "Québec",
+                "city": "Montréal",
+                "source": "Hydro-Québec (https://www.sciencedirect.com/science/article/pii/S1364032120307206)",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 34
+            },
+            "southamerica-east1": {
+                "regionName": "southamerica-east1",
+                "country": "Brazil",
+                "state": "",
+                "city": "São Paulo",
+                "source": "https://pdfs.semanticscholar.org/bd2a/69da81529a0f8dd16573dfd38e9d7468637e.pdf",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 205
+            },
+            "us-central1": {
+                "regionName": "us-central1",
+                "country": "USA",
+                "state": "Iowa",
+                "city": "Council Bluffs",
+                "source": "eGRID",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 566
+            },
+            "us-east1": {
+                "regionName": "us-east1",
+                "country": "USA",
+                "state": "South Carolina",
+                "city": "Berkeley County,",
+                "source": "eGRID",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 367
+            },
+            "us-east4": {
+                "regionName": "us-east4",
+                "country": "USA",
+                "state": "Northern Virginia",
+                "city": "Loudoun County,",
+                "source": "eGRID",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 367
+            },
+            "us-west1": {
+                "regionName": "us-west1",
+                "country": "USA",
+                "state": "Oregon",
+                "city": "The Dalles",
+                "source": "eGRID",
+                "comment": "Datacenter-specific",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 297
+            },
+            "us-west2": {
+                "regionName": "us-west2",
+                "country": "USA",
+                "state": "California",
+                "city": "Los Angeles",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 240
+            },
+            "us-west3": {
+                "regionName": "us-west3",
+                "country": "USA",
+                "state": "Utah",
+                "city": "Salt Lake City",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Google Cloud Platform",
+                "offsetRatio": "100",
+                "impact": 272
+            }
+        },
+        "aws": {
+            "__min": {
+                "region": "ca-central-1",
+                "impact": 20
+            },
+            "us-east-2": {
+                "regionName": "US East (Ohio)",
+                "country": "USA",
+                "state": "",
+                "city": "Columbus",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 568
+            },
+            "us-east-1": {
+                "regionName": "US East (N. Virginia)",
+                "country": "USA",
+                "state": "",
+                "city": "Ashburn",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 367
+            },
+            "us-west-1": {
+                "regionName": "US West (N. California)",
+                "country": "USA",
+                "state": "",
+                "city": "San Francisco",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 240
+            },
+            "us-west-2": {
+                "regionName": "US West (Oregon)",
+                "country": "USA",
+                "state": "",
+                "city": "Portland",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "100",
+                "impact": 297
+            },
+            "ap-east-1": {
+                "regionName": "Asia Pacific (Hong Kong)",
+                "country": "China",
+                "state": "",
+                "city": "Hong Kong",
+                "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 702
+            },
+            "ap-south-1": {
+                "regionName": "Asia Pacific (Mumbai)",
+                "country": "India",
+                "state": "",
+                "city": "Mumbai",
+                "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 920
+            },
+            "ap-northeast-3": {
+                "regionName": "Asia Pacific (Osaka-Local)",
+                "country": "Japan",
+                "state": "",
+                "city": "Osaka",
+                "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 516
+            },
+            "ap-northeast-2": {
+                "regionName": "Asia Pacific (Seoul)",
+                "country": "South Korea",
+                "state": "",
+                "city": "Seoul",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 517
+            },
+            "ap-southeast-1": {
+                "regionName": "Asia Pacific (Singapore)",
+                "country": "Singapore",
+                "state": "",
+                "city": "Singapore",
+                "source": "https://www.ema.gov.sg/cmsmedia/Publications_and_Statistics/Publications/SES18/Publication_Singapore_Energy_Statistics_2018.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 419
+            },
+            "ap-southeast-2": {
+                "regionName": "Asia Pacific (Sydney)",
+                "country": "Australia",
+                "state": "",
+                "city": "Sydney",
+                "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 802
+            },
+            "ap-northeast-1": {
+                "regionName": "Asia Pacific (Tokyo)",
+                "country": "Japan",
+                "state": "",
+                "city": "Tokyo",
+                "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 516
+            },
+            "ca-central-1": {
+                "regionName": "Canada (Central)",
+                "country": "Canada",
+                "state": "",
+                "city": "Montreal",
+                "source": "Hydro-Québec",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "100",
+                "impact": 20
+            },
+            "cn-north-1": {
+                "regionName": "China (Beijing)",
+                "country": "China",
+                "state": "",
+                "city": "Beijing",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 680
+            },
+            "cn-northwest-1": {
+                "regionName": "China (Ningxia)",
+                "country": "China",
+                "state": "",
+                "city": "Zhongwei",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 680
+            },
+            "eu-central-1": {
+                "regionName": "EU (Frankfurt)",
+                "country": "Germany",
+                "state": "",
+                "city": "Frankfurt am Main",
+                "source": "measured on  July 2, 2019 between 8 and 9 PM, EST on www.electricitymap.org",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "100",
+                "impact": 615
+            },
+            "eu-west-1": {
+                "regionName": "EU (Ireland)",
+                "country": "Ireland",
+                "state": "",
+                "city": "Dublin",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "100",
+                "impact": 617
+            },
+            "eu-west-2": {
+                "regionName": "EU (London)",
+                "country": "United Kingdom",
+                "state": "",
+                "city": "London",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 623
+            },
+            "eu-west-3": {
+                "regionName": "EU (Paris)",
+                "country": "France",
+                "state": "",
+                "city": "Paris",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 105
+            },
+            "eu-north-1": {
+                "regionName": "EU (Stockholm)",
+                "country": "Sweden",
+                "state": "",
+                "city": "Stockholm",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 47
+            },
+            "sa-east-1": {
+                "regionName": "South America (São Paulo)",
+                "country": "Brazil",
+                "state": "",
+                "city": "Sao Paulo",
+                "source": "https://pdfs.semanticscholar.org/bd2a/69da81529a0f8dd16573dfd38e9d7468637e.pdf",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 205
+            },
+            "us-gov-east-1": {
+                "regionName": "AWS GovCloud (US-East)",
+                "country": "USA",
+                "state": "",
+                "city": "Dublin",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "0",
+                "impact": 568
+            },
+            "us-gov-west-1": {
+                "regionName": "AWS GovCloud (US)",
+                "country": "USA",
+                "state": "",
+                "city": "Seattle",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Amazon Web Services",
+                "offsetRatio": "100",
+                "impact": 297
+            }
+        },
+        "azure": {
+            "__min": {
+                "region": "canadaeast",
+                "impact": 20
+            },
+            "eastasia": {
+                "regionName": "East Asia",
+                "country": "Hong Kong",
+                "state": "Wanchai",
+                "city": "Wan Chai",
+                "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 702
+            },
+            "southeastasia": {
+                "regionName": "Southeast Asia",
+                "country": "Singapore",
+                "state": "",
+                "city": "Singapore",
+                "source": "https://www.ema.gov.sg/cmsmedia/Publications_and_Statistics/Publications/SES18/Publication_Singapore_Energy_Statistics_2018.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 419
+            },
+            "centralus": {
+                "regionName": "Central US",
+                "country": "USA",
+                "state": "Iowa",
+                "city": "Des Moines",
+                "source": "eGRID (seem to be in the SRMW grid)",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 736
+            },
+            "eastus": {
+                "regionName": "East US",
+                "country": "USA",
+                "state": "Virginia",
+                "city": "Blue Ridge",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 367
+            },
+            "eastus2": {
+                "regionName": "East US 2",
+                "country": "USA",
+                "state": "Virginia",
+                "city": "Boydton",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 367
+            },
+            "westus": {
+                "regionName": "West US",
+                "country": "USA",
+                "state": "California",
+                "city": "San Francisco",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 240
+            },
+            "northcentralus": {
+                "regionName": "North Central US",
+                "country": "USA",
+                "state": "Illinois",
+                "city": "Chicago",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 568
+            },
+            "southcentralus": {
+                "regionName": "South Central US",
+                "country": "USA",
+                "state": "Texas",
+                "city": "San Antonio",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 460
+            },
+            "northeurope": {
+                "regionName": "North Europe",
+                "country": "Ireland",
+                "state": "Leinster",
+                "city": "Dublin",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 617
+            },
+            "westeurope": {
+                "regionName": "West Europe",
+                "country": "Netherlands",
+                "state": "North Holland",
+                "city": "Amsterdam",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 569
+            },
+            "japanwest": {
+                "regionName": "Japan West",
+                "country": "Japan",
+                "state": "Osaka",
+                "city": "Osaka-shi",
+                "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 516
+            },
+            "japaneast": {
+                "regionName": "Japan East",
+                "country": "Japan",
+                "state": "Tokyo",
+                "city": "Tokyo",
+                "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 516
+            },
+            "brazilsouth": {
+                "regionName": "Brazil South",
+                "country": "Brazil",
+                "state": "Sao Paulo",
+                "city": "Sao Paulo",
+                "source": "https://pdfs.semanticscholar.org/bd2a/69da81529a0f8dd16573dfd38e9d7468637e.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 205
+            },
+            "australiaeast": {
+                "regionName": "Australia East",
+                "country": "Australia",
+                "state": "New South Wales",
+                "city": "Sydney",
+                "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 802
+            },
+            "australiasoutheast": {
+                "regionName": "Australia Southeast",
+                "country": "Australia",
+                "state": "Victoria",
+                "city": "Melbourne",
+                "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 805
+            },
+            "southindia": {
+                "regionName": "South India",
+                "country": "India",
+                "state": "Tamil Nadu",
+                "city": "Pallavaram",
+                "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 920
+            },
+            "centralindia": {
+                "regionName": "Central India",
+                "country": "India",
+                "state": "Maharashtra",
+                "city": "Lohogaon",
+                "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 920
+            },
+            "westindia": {
+                "regionName": "West India",
+                "country": "India",
+                "state": "Maharashtra",
+                "city": "Mumbai",
+                "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 920
+            },
+            "canadacentral": {
+                "regionName": "Canada Central",
+                "country": "Canada",
+                "state": "Ontario",
+                "city": "Toronto",
+                "source": "Calculated from IESO",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 69
+            },
+            "canadaeast": {
+                "regionName": "Canada East",
+                "country": "Canada",
+                "state": "Quebec",
+                "city": "Quebec",
+                "source": "Hydro-Québec",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 20
+            },
+            "uksouth": {
+                "regionName": "UK South",
+                "country": "United Kingdom",
+                "state": "England",
+                "city": "Midhurst",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 623
+            },
+            "ukwest": {
+                "regionName": "UK West",
+                "country": "United Kingdom",
+                "state": "England",
+                "city": "Wallasey",
+                "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 623
+            },
+            "westcentralus": {
+                "regionName": "West Central US",
+                "country": "USA",
+                "state": "Wyoming",
+                "city": "Mountain View",
+                "source": "",
+                "comment": "it is not clear which grid power this zone, could be or 297.6, not sure",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 297
+            },
+            "westus2": {
+                "regionName": "West US 2",
+                "country": "USA",
+                "state": "Washington",
+                "city": "Quincy",
+                "source": "eGRID",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 297
+            },
+            "koreacentral": {
+                "regionName": "Korea Central",
+                "country": "South Korea",
+                "state": "Seoul",
+                "city": "Seoul",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 517
+            },
+            "koreasouth": {
+                "regionName": "Korea South",
+                "country": "South Korea",
+                "state": "Busan",
+                "city": "Busan",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 517
+            },
+            "francecentral": {
+                "regionName": "France Central",
+                "country": "France",
+                "state": "Auvergne",
+                "city": "Huriel",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 105
+            },
+            "francesouth": {
+                "regionName": "France South",
+                "country": "France",
+                "state": "Midi-Pyrenees",
+                "city": "Realmont",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 105
+            },
+            "australiacentral": {
+                "regionName": "Australia Central",
+                "country": "Australia",
+                "state": "Australian Capital Territory",
+                "city": "Forrest",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 900
+            },
+            "australiacentral2": {
+                "regionName": "Australia Central 2",
+                "country": "Australia",
+                "state": "Australian Capital Territory",
+                "city": "Forrest",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 900
+            },
+            "southafricanorth": {
+                "regionName": "South Africa North",
+                "country": "South Africa",
+                "state": "Gauteng",
+                "city": "Pretoria",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 1009
+            },
+            "southafricawest": {
+                "regionName": "South Africa West",
+                "country": "South Africa",
+                "state": "Western Cape",
+                "city": "Stellenbosch",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Azure",
+                "offsetRatio": "100",
+                "impact": 1009
+            }
+        },
+        "ovh": {
+            "__min": {
+                "region": "bhs",
+                "impact": 20
+            },
+            "gra": {
+                "regionName": "Gravelines",
+                "country": "France",
+                "state": "Hauts-de-France",
+                "city": "Gravelines",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "OVHCloud",
+                "offsetRatio": "0",
+                "impact": 105
+            },
+            "bhs": {
+                "regionName": "Beauharnois",
+                "country": "Canada",
+                "state": "Quebec",
+                "city": "Beauharnois",
+                "source": "Hydro-Québec",
+                "comment": "",
+                "providerName": "OVHCloud",
+                "offsetRatio": "0",
+                "impact": 20
+            }
+        },
+        "scaleway": {
+            "__min": {
+                "region": "",
+                "impact": 105
+            },
+            "": {
+                "regionName": "Paris",
+                "country": "France",
+                "state": "Ile-de-France",
+                "city": "Paris",
+                "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf",
+                "comment": "",
+                "providerName": "Scaleway",
+                "offsetRatio": "100",
+                "impact": 105
+            }
+        },
+        "coreweave": {
+            "__min": {
+                "region": "LGA1",
+                "impact": 282
+            },
+            "LGA1": {
+                "regionName": "US East",
+                "country": "USA",
+                "state": "New Jersey",
+                "city": "Weehawken",
+                "source": "electricitymap",
+                "comment": "average for oct21-oct22",
+                "providerName": "CoreWeave",
+                "offsetRatio": "0",
+                "impact": 282
+            },
+            "ORD1": {
+                "regionName": "US Central",
+                "country": "USA",
+                "state": "Illinois",
+                "city": "Chicago",
+                "source": "electricitymap",
+                "comment": "average for oct21-oct22",
+                "providerName": "CoreWeave",
+                "offsetRatio": "0",
+                "impact": 424
+            },
+            "LAS1": {
+                "regionName": "US West",
+                "country": "USA",
+                "state": "Las Vegas",
+                "city": "Nevada",
+                "source": "electricitymap",
+                "comment": "average for oct21-oct22",
+                "providerName": "CoreWeave",
+                "offsetRatio": "0",
+                "impact": 474
+            }
+        },
+        "seeweb": {
+            "__min": {
+                "region": "fro2",
+                "impact": 0
+            },
+            "fro2": {
+                "regionName": "Frosinone 2",
+                "country": "Italy",
+                "state": "",
+                "city": "Frosinone",
+                "source": "100% carbon-free energy",
+                "comment": "",
+                "providerName": "Seeweb",
+                "offsetRatio": "0",
+                "impact": 0
+            }
+        }
+    },
+    "gpus": {
+        "A100 PCIe 40/80GB": {
+            "watt": 250
+        },
+        "A100 SXM4 80 GB": {
+            "watt": 400
+        },
+        "AGX Xavier": {
+            "watt": 30
+        },
+        "AMD RX480": {
+            "watt": 150
+        },
+        "GIGABYTE GTX 1660 OC": {
+            "watt": 120
+        },
+        "GTX 1080 Ti": {
+            "watt": 250
+        },
+        "GTX 1080": {
+            "watt": 180
+        },
+        "GTX 750": {
+            "watt": 250
+        },
+        "GTX TITAN X": {
+            "watt": 250
+        },
+        "Quadro K6000": {
+            "watt": 225
+        },
+        "Quadro P6000": {
+            "watt": 250
+        },
+        "RTX 2080 Ti": {
+            "watt": 250
+        },
+        "RTX 2080": {
+            "watt": 215
+        },
+        "RTX 8000": {
+            "watt": 260
+        },
+        "T4": {
+            "watt": 70
+        },
+        "Tesla K40c": {
+            "watt": 245
+        },
+        "Tesla K80": {
+            "watt": 300
+        },
+        "Tesla M40 24GB": {
+            "watt": 250
+        },
+        "Tesla P100": {
+            "watt": 250
+        },
+        "Tesla P40": {
+            "watt": 250
+        },
+        "Tesla V100-PCIE-16GB": {
+            "watt": 300
+        },
+        "Tesla V100-SXM2-16GB": {
+            "watt": 250
+        },
+        "Tesla V100-SXM2-32GB": {
+            "watt": 300
+        },
+        "Titan RTX": {
+            "watt": 280
+        },
+        "Titan V": {
+            "watt": 250
+        },
+        "TITAN X Pascal": {
+            "watt": 250
+        },
+        "Titan Xp": {
+            "watt": 250
+        },
+        "TPUv2 Chip": {
+            "watt": 221
+        },
+        "TPUv3 Chip": {
+            "watt": 283
+        },
+        "RTX 3080": {
+            "watt": 320
+        },
+        "RTX 3080 TI": {
+            "watt": 350
+        },
+        "RTX 3090": {
+            "watt": 350
+        },
+        "RTX 4090": {
+            "watt": 300
+        },
+        "RTX A4000": {
+            "watt": 140
+        },
+        "RTX A5000": {
+            "watt": 230
+        },
+        "RTX A6000": {
+            "watt": 300
+        },
+        "Intel Xeon E5-2699": {
+            "watt": 145
+        },
+        "Intel Xeon E5-2630v4": {
+            "watt": 85
+        },
+        "Intel Xeon E5-2650": {
+            "watt": 105
+        },
+        "Intel Xeon Gold 5220": {
+            "watt": 125
+        },
+        "Intel Xeon Gold 6148": {
+            "watt": 150
+        },
+        "L4": {
+            "watt": 72
+        },
+        "AMD EPYC 7763": {
+            "watt": 280
+        },
+        "AMD EPYC 7282": {
+            "watt": 120
+        },
+        "AMD EPYC 7702": {
+            "watt": 200
+        }
+    }
+}
