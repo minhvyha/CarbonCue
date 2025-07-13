@@ -55,6 +55,9 @@ export default function WebsiteCalculatorPage() {
       timestamp: 1752400673,
     },
   });
+  const [manualData, setManualData] = useState<any>(null);
+  const [bytes, setBytes] = useState<number | undefined>();
+  const [green, setGreen] = useState<boolean | undefined>(true);
 
   useEffect(() => {
     // This effect can be used to fetch initial data if needed
@@ -62,6 +65,35 @@ export default function WebsiteCalculatorPage() {
     // setData(initialData);
     console.log("Website Calculator initialized with data:", data);
   }, [data]);
+
+  async function manualCalculation(e: React.FormEvent) {
+    e.preventDefault();
+    if(!bytes || bytes <= 0 || green === undefined) {
+      console.log("Bytes:", bytes, "Green:", green);
+      return;
+    }
+    // Simulate API call
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
+    console.log(`${baseUrl}/api/websitecarbon/${bytes}/${green}}`)
+    fetch(`${baseUrl}/api/manual/${bytes}/${green}}`, {
+      cache: "no-store",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setManualData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {});
+  }
 
   return (
     <div className="container py-10">
@@ -112,27 +144,23 @@ export default function WebsiteCalculatorPage() {
                       id="page-size"
                       type="number"
                       placeholder="e.g., 2500"
+                      value={bytes}
+                      onChange={(e) => setBytes(Number(e.target.value))}
                     />
                   </div>
-
                   <div className="grid gap-3">
-                    <Label htmlFor="server-location">Server Location</Label>
-                    <Input
-                      id="server-location"
-                      placeholder="e.g., United States"
-                    />
+                    <Label htmlFor="model-type">Sustainable Hosting</Label>
+                    <select
+                      id="model-type"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      onChange={(e) => setGreen(e.target.value === "true")}
+                      value={green ? "true" : "false"}
+                    >
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
                   </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="monthly-visits">Monthly Visits</Label>
-                    <Input
-                      id="monthly-visits"
-                      type="number"
-                      placeholder="e.g., 10000"
-                    />
-                  </div>
-
-                  <Button className="w-full bg-carbon-red hover:bg-carbon-deep-red">
+                  <Button className="w-full bg-carbon-red hover:bg-carbon-deep-red" onClick={manualCalculation} disabled={!bytes || bytes <= 0 || green === undefined}>
                     Calculate Emissions
                   </Button>
                 </div>
