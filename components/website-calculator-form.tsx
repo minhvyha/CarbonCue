@@ -32,6 +32,7 @@ export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void 
         }
         return res.json()
       }).then((data) => {
+        console.log(data)
         setData(data)
       }).catch((error) => {
         console.error("Error fetching data:", error)

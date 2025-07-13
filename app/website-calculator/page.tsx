@@ -12,27 +12,38 @@ import { WebsiteCalculatorResults } from "@/components/website-calculator-result
 
 export default function WebsiteCalculatorPage() {
   const [data, setData] = useState({
-    
-  "url": "https://music.youtube.com/",
-  "green": true,
-  "bytes": 2768583,
-  "cleanerThan": 0.41,
-  "rating": "D",
-  "statistics": {
-    "adjustedBytes": 2090280.165,
-    "energy": 0.0015768473349977287,
-    "co2": {
-      "grid": {
-        "grams": 0.6969665220689961,
-        "litres": 0.38765277957477556
-      },
-      "renewable": {
-        "grams": 0.6042478987711297,
-        "litres": 0.33608268129650226
-      }
+    "url": "https://www.websitecarbon.com/",
+    "totalBytes": 311044,
+    "breakdown": {
+        "document": 53720,
+        "script": 154550,
+        "stylesheet": 76031,
+        "image": 3977,
+        "font": 21376,
+        "other": 1390
+    },
+    "websiteCarbon": {
+        "url": "https://www.websitecarbon.com/",
+        "green": true,
+        "bytes": 174823,
+        "cleanerThan": 0.96,
+        "rating": "A+",
+        "statistics": {
+            "adjustedBytes": 131991.365,
+            "energy": 0.00009957049568183721,
+            "co2": {
+                "grid": {
+                    "grams": 0.04401015909137205,
+                    "litres": 0.024478450486621128
+                },
+                "renewable": {
+                    "grams": 0.03815541394528002,
+                    "litres": 0.021222041236364744
+                }
+            }
+        },
+        "timestamp": 1752400673
     }
-  },
-  "timestamp": 1752399563
 }
   )
 

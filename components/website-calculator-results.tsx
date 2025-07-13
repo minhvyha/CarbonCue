@@ -33,24 +33,24 @@ export function WebsiteCalculatorResults( { data }: { data: any }) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <EmissionMetric
                   label="Carbon per Page View"
-                  value={parseFloat(data.statistics.co2.grid.grams.toFixed(3))+ "g"}
+                  value={parseFloat(data.websiteCarbon.statistics.co2.grid.grams.toFixed(3))+ "g"}
                   description="CO₂ equivalent per page view"
                   rating="Average"
                   color="amber"
                 />
+                  <EmissionMetric
+                    label="Cleaner than"
+                    value={parseFloat(data.websiteCarbon.cleanerThan) * 100 + "%" }
+                    description="of websites tested"
+                    rating="Average"
+                    color="amber"
+                  />
                 <EmissionMetric
-                  label="1K Page Views Emissions"
-                  value={parseFloat(data.statistics.co2.grid.grams.toFixed(2)) * 1000 + "g"}
-                  description="CO₂ equivalent per 1000 page views"
+                  label="Website Rating"
+                  value={data.websiteCarbon.rating}
+                  description="Overall environmental impact"
                   rating="High"
                   color="red"
-                />
-                <EmissionMetric
-                  label="Cleaner than"
-                  value={parseFloat(data.cleanerThan) * 100 + "%" }
-                  description="of websites tested"
-                  rating="Average"
-                  color="amber"
                 />
               </div>
 
@@ -69,7 +69,7 @@ export function WebsiteCalculatorResults( { data }: { data: any }) {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-medium mb-2">Page Weight</h3>
-                  <p className="text-muted-foreground mb-2">Total page size: 2.4 MB</p>
+                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.websiteCarbon.bytes)}</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
@@ -77,26 +77,12 @@ export function WebsiteCalculatorResults( { data }: { data: any }) {
                       </CardHeader>
                       <CardContent>
                         <ul className="space-y-2 text-sm">
-                          <li className="flex justify-between">
-                            <span>Images</span>
-                            <span className="font-medium">1.2 MB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>JavaScript</span>
-                            <span className="font-medium">650 KB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>CSS</span>
-                            <span className="font-medium">320 KB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>HTML</span>
-                            <span className="font-medium">120 KB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Fonts</span>
-                            <span className="font-medium">110 KB</span>
-                          </li>
+                          {data.breakdown && Object.entries(data.breakdown).map(([type, size]) => (
+                            <li key={type} className="flex justify-between">
+                              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+                              <span className="font-medium">{formatBytes(typeof size === "number" ? size.toString() : String(size))}</span>
+                            </li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -264,4 +250,19 @@ function RecommendationItem({
       </CardContent>
     </Card>
   )
+}
+function formatBytes(bytesString: string) {
+  const bytes = parseInt(bytesString, 10);
+  if (isNaN(bytes)) return 'Invalid input';
+
+  const units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
