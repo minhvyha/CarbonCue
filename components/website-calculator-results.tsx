@@ -68,8 +68,8 @@ export function WebsiteCalculatorResults( { data }: { data: any }) {
             <TabsContent value="details">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-medium mb-2">Page Weight</h3>
-                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.websiteCarbon.bytes)}</p>
+                  {/* <h3 className="text-lg font-medium mb-2">Page Weight</h3>
+                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.websiteCarbon.bytes)}</p> */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
@@ -94,20 +94,24 @@ export function WebsiteCalculatorResults( { data }: { data: any }) {
                       <CardContent>
                         <ul className="space-y-2 text-sm">
                           <li className="flex justify-between">
-                            <span>Location</span>
-                            <span className="font-medium">United States</span>
+                            <span>URL</span>
+                            <span className="font-medium">{data.websiteCarbon.url}</span>
                           </li>
                           <li className="flex justify-between">
-                            <span>Energy Mix</span>
-                            <span className="font-medium">62% Non-renewable</span>
+                            <span>Page Weight</span>
+                            <span className="font-medium">{formatBytes(data.totalBytes)}</span>
                           </li>
                           <li className="flex justify-between">
-                            <span>Response Time</span>
-                            <span className="font-medium">420ms</span>
+                            <span>Server</span>
+                            <span className="font-medium">{data.serverInfo.server}</span>
                           </li>
                           <li className="flex justify-between">
-                            <span>CDN Used</span>
-                            <span className="font-medium">Yes</span>
+                            <span>IP Address</span>
+                            <span className="font-medium">{data.serverInfo.ip}</span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span>Sustainable Hosting</span>
+                            <span className="font-medium">{data.websiteCarbon.green ? "Yes" : "No"}</span>
                           </li>
                         </ul>
                       </CardContent>
