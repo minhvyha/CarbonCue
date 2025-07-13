@@ -9,11 +9,10 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // This is a placeholder component - in a real app, you would receive actual data
-export function WebsiteCalculatorResults() {
+export function WebsiteCalculatorResults( { data }: { data: any }) {
   // Placeholder state - would be populated from API response
-  const [hasResults, setHasResults] = useState(true)
 
-  if (!hasResults) return null
+  if (!data) return null
 
   return (
     <div className="mt-10">
@@ -34,21 +33,21 @@ export function WebsiteCalculatorResults() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <EmissionMetric
                   label="Carbon per Page View"
-                  value="1.27g"
+                  value={parseFloat(data.statistics.co2.grid.grams.toFixed(3))+ "g"}
                   description="CO₂ equivalent per page view"
                   rating="Average"
                   color="amber"
                 />
                 <EmissionMetric
-                  label="Monthly Emissions"
-                  value="3.81kg"
-                  description="CO₂ equivalent per month"
+                  label="1K Page Views Emissions"
+                  value={parseFloat(data.statistics.co2.grid.grams.toFixed(2)) * 1000 + "g"}
+                  description="CO₂ equivalent per 1000 page views"
                   rating="High"
                   color="red"
                 />
                 <EmissionMetric
                   label="Cleaner than"
-                  value="52%"
+                  value={parseFloat(data.cleanerThan) * 100 + "%" }
                   description="of websites tested"
                   rating="Average"
                   color="amber"
@@ -58,10 +57,10 @@ export function WebsiteCalculatorResults() {
               <div className="mt-8">
                 <h3 className="text-lg font-medium mb-4">Emissions Breakdown</h3>
                 <div className="space-y-4">
-                  <EmissionBreakdown label="Server Energy" percentage={42} color="bg-carbon-red" />
-                  <EmissionBreakdown label="Network Transfer" percentage={28} color="bg-carbon-purple" />
-                  <EmissionBreakdown label="Client Device" percentage={18} color="bg-carbon-deep-red" />
-                  <EmissionBreakdown label="Other" percentage={12} color="bg-carbon-magenta" />
+                  <EmissionBreakdown label="Server Energy" percentage={42}  />
+                  <EmissionBreakdown label="Network Transfer" percentage={28} />
+                  <EmissionBreakdown label="Client Device" percentage={18}  />
+                  <EmissionBreakdown label="Other" percentage={12} />
                 </div>
               </div>
             </TabsContent>
@@ -222,11 +221,9 @@ function EmissionMetric({
 function EmissionBreakdown({
   label,
   percentage,
-  color,
 }: {
   label: string
   percentage: number
-  color: string
 }) {
   return (
     <div>
@@ -234,7 +231,7 @@ function EmissionBreakdown({
         <span className="text-sm">{label}</span>
         <span className="text-sm font-medium">{percentage}%</span>
       </div>
-      <Progress value={percentage} className={`h-2 ${color}`} />
+      <Progress value={percentage} className={`h-2 bg-gray-400`} />
     </div>
   )
 }

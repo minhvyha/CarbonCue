@@ -11,7 +11,30 @@ import { WebsiteCalculatorForm } from "@/components/website-calculator-form"
 import { WebsiteCalculatorResults } from "@/components/website-calculator-results"
 
 export default function WebsiteCalculatorPage() {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState({
+    
+  "url": "https://music.youtube.com/",
+  "green": true,
+  "bytes": 2768583,
+  "cleanerThan": 0.41,
+  "rating": "D",
+  "statistics": {
+    "adjustedBytes": 2090280.165,
+    "energy": 0.0015768473349977287,
+    "co2": {
+      "grid": {
+        "grams": 0.6969665220689961,
+        "litres": 0.38765277957477556
+      },
+      "renewable": {
+        "grams": 0.6042478987711297,
+        "litres": 0.33608268129650226
+      }
+    }
+  },
+  "timestamp": 1752399563
+}
+  )
 
   useEffect(() => {
     // This effect can be used to fetch initial data if needed
@@ -80,8 +103,9 @@ export default function WebsiteCalculatorPage() {
           </TabsContent>
         </Tabs>
 
-        <WebsiteCalculatorResults />
-
+{        data && (
+          <WebsiteCalculatorResults data={data} />
+        )}
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">How It Works</h2>
 

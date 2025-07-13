@@ -3,8 +3,6 @@ export const dynamic = 'force-dynamic';
 // app/api/resources/[slug]/route.ts
 
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongoose';
-import Guides from '@/model/Guides';
 
 export async function GET(
   _req: Request,
@@ -12,7 +10,9 @@ export async function GET(
 ) {
 
   const { url } = await params;
-  let request = await fetch(`https://api.websitecarbon.com/site?url=${url}`);
+  console.log(`https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`)
+  let request = await fetch(`https://api.websitecarbon.com/site?url=${encodeURIComponent(url)}`);
+  
   if (!request.ok) {
     return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
   }
