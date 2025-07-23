@@ -9,11 +9,10 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // This is a placeholder component - in a real app, you would receive actual data
-export function WebsiteCalculatorResults() {
+export function WebsiteCalculatorResults( { data }: { data: any }) {
   // Placeholder state - would be populated from API response
-  const [hasResults, setHasResults] = useState(true)
 
-  if (!hasResults) return null
+  if (!data) return null
 
   return (
     <div className="mt-10">
@@ -34,34 +33,34 @@ export function WebsiteCalculatorResults() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <EmissionMetric
                   label="Carbon per Page View"
-                  value="1.27g"
+                  value={parseFloat(data.websiteCarbon.statistics.co2.grid.grams.toFixed(3))+ "g"}
                   description="CO₂ equivalent per page view"
                   rating="Average"
                   color="amber"
                 />
+                  <EmissionMetric
+                    label="Cleaner than"
+                    value={parseFloat(data.websiteCarbon.cleanerThan) * 100 + "%" }
+                    description="of websites tested"
+                    rating="Average"
+                    color="amber"
+                  />
                 <EmissionMetric
-                  label="Monthly Emissions"
-                  value="3.81kg"
-                  description="CO₂ equivalent per month"
+                  label="Website Rating"
+                  value={data.websiteCarbon.rating}
+                  description="Overall environmental impact"
                   rating="High"
                   color="red"
-                />
-                <EmissionMetric
-                  label="Cleaner than"
-                  value="52%"
-                  description="of websites tested"
-                  rating="Average"
-                  color="amber"
                 />
               </div>
 
               <div className="mt-8">
                 <h3 className="text-lg font-medium mb-4">Emissions Breakdown</h3>
                 <div className="space-y-4">
-                  <EmissionBreakdown label="Server Energy" percentage={42} color="bg-carbon-red" />
-                  <EmissionBreakdown label="Network Transfer" percentage={28} color="bg-carbon-purple" />
-                  <EmissionBreakdown label="Client Device" percentage={18} color="bg-carbon-deep-red" />
-                  <EmissionBreakdown label="Other" percentage={12} color="bg-carbon-magenta" />
+                  <EmissionBreakdown label="Server Energy" percentage={42}  />
+                  <EmissionBreakdown label="Network Transfer" percentage={28} />
+                  <EmissionBreakdown label="Client Device" percentage={18}  />
+                  <EmissionBreakdown label="Other" percentage={12} />
                 </div>
               </div>
             </TabsContent>
@@ -69,8 +68,8 @@ export function WebsiteCalculatorResults() {
             <TabsContent value="details">
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-medium mb-2">Page Weight</h3>
-                  <p className="text-muted-foreground mb-2">Total page size: 2.4 MB</p>
+                  {/* <h3 className="text-lg font-medium mb-2">Page Weight</h3>
+                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.websiteCarbon.bytes)}</p> */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
@@ -78,26 +77,12 @@ export function WebsiteCalculatorResults() {
                       </CardHeader>
                       <CardContent>
                         <ul className="space-y-2 text-sm">
-                          <li className="flex justify-between">
-                            <span>Images</span>
-                            <span className="font-medium">1.2 MB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>JavaScript</span>
-                            <span className="font-medium">650 KB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>CSS</span>
-                            <span className="font-medium">320 KB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>HTML</span>
-                            <span className="font-medium">120 KB</span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Fonts</span>
-                            <span className="font-medium">110 KB</span>
-                          </li>
+                          {data.breakdown && Object.entries(data.breakdown).map(([type, size]) => (
+                            <li key={type} className="flex justify-between">
+                              <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+                              <span className="font-medium">{formatBytes(typeof size === "number" ? size.toString() : String(size))}</span>
+                            </li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -109,20 +94,24 @@ export function WebsiteCalculatorResults() {
                       <CardContent>
                         <ul className="space-y-2 text-sm">
                           <li className="flex justify-between">
-                            <span>Location</span>
-                            <span className="font-medium">United States</span>
+                            <span>URL</span>
+                            <span className="font-medium">{data.websiteCarbon.url}</span>
                           </li>
                           <li className="flex justify-between">
-                            <span>Energy Mix</span>
-                            <span className="font-medium">62% Non-renewable</span>
+                            <span>Page Weight</span>
+                            <span className="font-medium">{formatBytes(data.totalBytes)}</span>
                           </li>
                           <li className="flex justify-between">
-                            <span>Response Time</span>
-                            <span className="font-medium">420ms</span>
+                            <span>Server</span>
+                            <span className="font-medium">{data.serverInfo.server}</span>
                           </li>
                           <li className="flex justify-between">
-                            <span>CDN Used</span>
-                            <span className="font-medium">Yes</span>
+                            <span>IP Address</span>
+                            <span className="font-medium">{data.serverInfo.ip}</span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span>Sustainable Hosting</span>
+                            <span className="font-medium">{data.websiteCarbon.green ? "Yes" : "No"}</span>
                           </li>
                         </ul>
                       </CardContent>
@@ -222,11 +211,9 @@ function EmissionMetric({
 function EmissionBreakdown({
   label,
   percentage,
-  color,
 }: {
   label: string
   percentage: number
-  color: string
 }) {
   return (
     <div>
@@ -234,7 +221,7 @@ function EmissionBreakdown({
         <span className="text-sm">{label}</span>
         <span className="text-sm font-medium">{percentage}%</span>
       </div>
-      <Progress value={percentage} className={`h-2 ${color}`} />
+      <Progress value={percentage} className={`h-2 bg-gray-400`} />
     </div>
   )
 }
@@ -267,4 +254,19 @@ function RecommendationItem({
       </CardContent>
     </Card>
   )
+}
+function formatBytes(bytesString: string) {
+  const bytes = parseInt(bytesString, 10);
+  if (isNaN(bytes)) return 'Invalid input';
+
+  const units = ['bytes', 'KB', 'MB', 'GB', 'TB'];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
 }
