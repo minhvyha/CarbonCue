@@ -64,54 +64,12 @@ export default function ResourcesPage() {
                   key={guide.title}
                   title={guide.title}
                   description={guide.description}
-                  icon={<FileText className="h-8 w-8 text-carbon-blue" />}
+                  icon={<FileText className="h-8 w-8 text-carbon-red" />}
                   level={guide.level || "Beginner"}
                   readTime={guide.duration || "10 min"}
+                  slug={guide.slug || guide.title.toLowerCase().replace(/\s+/g, "-")}
                 />
-              ))  
-              }
-              <ResourceGuideCard
-                title="Understanding Carbon Footprints"
-                description="A comprehensive guide to understanding what carbon footprints are and how they're calculated."
-                icon={<FileText className="h-8 w-8 text-carbon-red" />}
-                level="Beginner"
-                readTime="15 min"
-              />
-              <ResourceGuideCard
-                title="Reducing Digital Carbon Emissions"
-                description="Learn how to minimize the carbon footprint of your digital activities and website operations."
-                icon={<FileText className="h-8 w-8 text-carbon-purple" />}
-                level="Intermediate"
-                readTime="20 min"
-              />
-              <ResourceGuideCard
-                title="Sustainable Home Energy Guide"
-                description="Practical tips and strategies for reducing energy consumption and switching to renewable sources."
-                icon={<FileText className="h-8 w-8 text-carbon-deep-red" />}
-                level="Beginner"
-                readTime="25 min"
-              />
-              <ResourceGuideCard
-                title="Climate-Friendly Transportation"
-                description="Options and strategies for reducing transportation emissions in your daily life."
-                icon={<FileText className="h-8 w-8 text-carbon-magenta" />}
-                level="Beginner"
-                readTime="18 min"
-              />
-              <ResourceGuideCard
-                title="Corporate Sustainability Playbook"
-                description="A guide for businesses looking to implement sustainable practices and reduce their carbon footprint."
-                icon={<FileText className="h-8 w-8 text-carbon-red" />}
-                level="Advanced"
-                readTime="35 min"
-              />
-              <ResourceGuideCard
-                title="Climate Justice Primer"
-                description="Understanding the intersection of climate change, social justice, and equity."
-                icon={<FileText className="h-8 w-8 text-carbon-purple" />}
-                level="Intermediate"
-                readTime="22 min"
-              />
+              ))}
             </div>
           </TabsContent>
 
@@ -243,12 +201,14 @@ function ResourceGuideCard({
   icon,
   level,
   readTime,
+  slug
 }: {
   title: string
   description: string
   icon: React.ReactNode
   level: string
   readTime: string
+  slug: string
 }) {
   return (
     <Card>
@@ -257,7 +217,10 @@ function ResourceGuideCard({
           <div className="mt-1">{icon}</div>
           <div>
             <CardTitle className="text-lg">{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
+            {/* Limit description to 3 lines using Tailwind line-clamp */}
+            <CardDescription className="line-clamp-3">
+              {description}
+            </CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -275,12 +238,13 @@ function ResourceGuideCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/resources/guides/${encodeURIComponent(title)}`}>Read Guide</Link>
+          <Link href={`/resources/${(slug)}`}>Read Guide</Link>
         </Button>
       </CardFooter>
     </Card>
   )
 }
+
 
 function CourseCard({
   title,
@@ -321,7 +285,7 @@ function CourseCard({
       </CardContent>
       <CardFooter>
         <Button asChild className="w-full bg-carbon-purple hover:bg-carbon-purple/90">
-          <Link href={`/resources/${(slug)}`}>Enroll Now</Link>
+          <Link href={`/resources/course/${(slug)}`}>Enroll Now</Link>
         </Button>
       </CardFooter>
     </Card>

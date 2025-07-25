@@ -5,13 +5,16 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongoose";
 import Course from "@/model/Course";
+import Guides from "@/model/Guide";
 
 export async function GET(_req: Request) {
+    
   // 1) connect to MongoDB
   const conn = await connectToDatabase();
   console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
 
-  // 2) find the guide by slug
+
+  // 2) find the course by slug
   const allCourses = await Course.find(
     {},
     {
@@ -26,11 +29,26 @@ export async function GET(_req: Request) {
       _id: 0,
     }
   ).lean();
-  if (allCourses && allCourses.length !== 0) {
-    console.log(`Found ${allCourses.length} courses in total`);
-    return NextResponse.json(allCourses);
-  }
-  return NextResponse.json({ error: "Course not found" }, { status: 404 });
+
+  // 3) find the guide by slug
+  const allGuides = await Guides.find(
+    {},
+    {
+      slug: 1,
+      title: 1,
+      description: 1,
+      heroImage: 1,
+      presentationLink: 1,
+      type: 1,
+      _id: 0,
+    }
+  ).lean();
+
+  let returnGuides = [...allCourses, ...allGuides];
+
+
+  // 4) return the found course and guide
+  return NextResponse.json(returnGuides);
 }
 
 export async function POST(
