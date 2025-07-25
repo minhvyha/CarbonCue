@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongoose";
-import Guides from "@/model/Guides";
+import Course from "@/model/Course";
 
 export async function GET(_req: Request) {
   // 1) connect to MongoDB
@@ -12,7 +12,7 @@ export async function GET(_req: Request) {
   console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
 
   // 2) find the guide by slug
-  const allGuides = await Guides.find(
+  const allCourses = await Course.find(
     {},
     {
       numberOfLesson: 1,
@@ -26,11 +26,11 @@ export async function GET(_req: Request) {
       _id: 0,
     }
   ).lean();
-  if (allGuides && allGuides.length !== 0) {
-    console.log(`Found ${allGuides.length} guides in total`);
-    return NextResponse.json(allGuides);
+  if (allCourses && allCourses.length !== 0) {
+    console.log(`Found ${allCourses.length} courses in total`);
+    return NextResponse.json(allCourses);
   }
-  return NextResponse.json({ error: "Guide not found" }, { status: 404 });
+  return NextResponse.json({ error: "Course not found" }, { status: 404 });
 }
 
 export async function POST(
@@ -44,14 +44,14 @@ export async function POST(
   const conn = await connectToDatabase();
   console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
 
-  // 2) create or update guide by slug
+  // 2) create or update course by slug
   const { slug } = params;
-  let guide = await Guides.findOneAndUpdate({ slug }, body, {
+  let course = await Course.findOneAndUpdate({ slug }, body, {
     new: true,
     upsert: true,
     setDefaultsOnInsert: true,
   });
 
-  // 3) return the new or updated guide
-  return NextResponse.json(guide);
+  // 3) return the new or updated course
+  return NextResponse.json(course);
 }

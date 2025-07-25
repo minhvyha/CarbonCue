@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-// Define the types of content blocks allowed in a guide
+// Define the types of content blocks allowed in a course
 export type BlockType =
   | 'heading'
   | 'paragraph'
@@ -19,8 +19,8 @@ export interface IBlock {
   meta?: Record<string, any>; // Any additional metadata
 }
 
-// Guides interface: the main document schema
-export interface IGuides extends Document {
+// Course interface: the main document schema
+export interface ICourse extends Document {
   slug: string;
   title: string;
   author: string;
@@ -47,8 +47,8 @@ const BlockSchema = new Schema<IBlock>(
   { _id: false }
 );
 
-// Main schema for guides
-const guidesSchema = new Schema<IGuides>(
+// Main schema for courses
+const courseSchema = new Schema<ICourse>(
   {
     slug:      { type: String, required: true, unique: true, trim: true },
     title:     { type: String, required: true, trim: true },
@@ -62,8 +62,8 @@ const guidesSchema = new Schema<IGuides>(
   }
 );
 
-// Create or reuse the model
-const Guides: Model<IGuides> =
-  mongoose.models.Guides || mongoose.model<IGuides>('Guides', guidesSchema);
+// Create or reuse the Course model
+const Course: Model<ICourse> =
+  mongoose.models.Course || mongoose.model<ICourse>('Course', courseSchema);
 
-export default Guides;
+export default Course;
