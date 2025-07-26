@@ -54,7 +54,7 @@ export default async function GuidePage({ params }: PageProps) {
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : "http://localhost:3000";
-
+  console.log("Fetching guide:", slug);
   const res = await fetch(`${baseUrl}/api/resources/guide/${slug}`, {
     cache: "no-store",
   });
