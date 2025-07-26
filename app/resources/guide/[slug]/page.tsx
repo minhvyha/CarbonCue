@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 
 interface IBlock {
   type: 'heading' | 'paragraph' | 'video' | 'list' | 'quote' | 'divider' | 'iframe';
@@ -35,14 +36,13 @@ function mapGuideToBlocks(guide: RawGuide): IBlock[] {
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
+  // Retrieve request host dynamically
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
+  const apiUrl = new URL(`/api/resources/guide/${encodeURIComponent(slug)}`, `${protocol}://${host}`);
 
-  const res = await fetch(
-    `${baseUrl}/api/resources/guide/${encodeURIComponent(slug)}`,
-    { cache: 'no-store' }
-  );
+  const res = await fetch(apiUrl.toString(), { cache: 'no-store' });
   if (!res.ok) {
     notFound();
   }
