@@ -238,7 +238,7 @@ function ResourceGuideCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/resources/${(slug)}`}>Read Guide</Link>
+          <Link href={`/resources/guide/${(slug)}`}>Read Guide</Link>
         </Button>
       </CardFooter>
     </Card>
