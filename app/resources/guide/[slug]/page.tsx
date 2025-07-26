@@ -1,16 +1,7 @@
-import { notFound } from "next/navigation";
-
-type BlockType =
-  | "heading"
-  | "paragraph"
-  | "video"
-  | "list"
-  | "quote"
-  | "divider"
-  | "iframe";
+import { notFound } from 'next/navigation';
 
 interface IBlock {
-  type: BlockType;
+  type: 'heading' | 'paragraph' | 'video' | 'list' | 'quote' | 'divider' | 'iframe';
   label?: string;
   text?: string;
   url?: string;
@@ -28,37 +19,34 @@ interface RawGuide {
   updatedAt: { $date: { $numberLong: string } };
 }
 
-interface PageProps {
-  params: { slug: string };
-}
-
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 // Convert raw guide data into renderable blocks
 function mapGuideToBlocks(guide: RawGuide): IBlock[] {
   const blocks: IBlock[] = [];
-
-  // Description
-  blocks.push({ type: "paragraph", text: guide.description });
-
-  // Embedded presentation
+  blocks.push({ type: 'paragraph', text: guide.description || '' });
   if (guide.presentationLink) {
-    blocks.push({ type: "iframe", url: guide.presentationLink });
+    blocks.push({ type: 'iframe', url: guide.presentationLink });
   }
-
   return blocks;
 }
 
-export default async function GuidePage({ params }: PageProps) {
-  const { slug } = params;
+// Server Component: await params promise
+export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
-  console.log(`${baseUrl}/api/resources/guide/${slug}`);
-  const res = await fetch(`${baseUrl}/api/resources/guide/${slug}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) notFound();
+    : 'http://localhost:3000';
+
+  const res = await fetch(
+    `${baseUrl}/api/resources/guide/${encodeURIComponent(slug)}`,
+    { cache: 'no-store' }
+  );
+  if (!res.ok) {
+    notFound();
+  }
+
   const guide: RawGuide = await res.json();
   const blocks = mapGuideToBlocks(guide);
 
@@ -69,54 +57,52 @@ export default async function GuidePage({ params }: PageProps) {
       </h1>
 
       {blocks.map((block, i) => {
-        switch (block.type) {
-          case "paragraph":
-            return (
-              <p key={i} className="mt-4 text-base leading-relaxed text-foreground">
-                {block.text}
-              </p>
-            );
-
-          case "iframe":
-            // Canva embed container
-            return (
-              <div
-                key={i}
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  height: 0,
-                  paddingTop: '56.25%',
-                  boxShadow: '0 2px 8px 0 rgba(63,69,81,0.16)',
-                  marginTop: '1.6em',
-                  marginBottom: '0.9em',
-                  overflow: 'hidden',
-                  borderRadius: '8px',
-                  willChange: 'transform',
-                }}
-              >
-                <iframe
-                  loading="lazy"
-                  style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    top: 0,
-                    left: 0,
-                    border: 'none',
-                    padding: 0,
-                    margin: 0,
-                  }}
-                  src={`${block.url}?embed`}
-                  allowFullScreen
-                  allow="fullscreen"
-                />
-              </div>
-            );
-
-          default:
-            return null;
+        if (block.type === 'paragraph') {
+          return (
+            <p key={i} className="mt-4 text-base leading-relaxed text-foreground">
+              {block.text}
+            </p>
+          );
         }
+
+        if (block.type === 'iframe') {
+          return (
+            <div
+              key={i}
+              style={{
+                position: 'relative',
+                width: '100%',
+                height: 0,
+                paddingTop: '56.25%',
+                boxShadow: '0 2px 8px 0 rgba(63,69,81,0.16)',
+                marginTop: '1.6em',
+                marginBottom: '0.9em',
+                overflow: 'hidden',
+                borderRadius: '8px',
+                willChange: 'transform',
+              }}
+            >
+              <iframe
+                loading="lazy"
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  left: 0,
+                  border: 'none',
+                  padding: 0,
+                  margin: 0,
+                }}
+                src={`${block.url}?embed`}
+                allowFullScreen
+                allow="fullscreen"
+              />
+            </div>
+          );
+        }
+
+        return null;
       })}
     </article>
   );
