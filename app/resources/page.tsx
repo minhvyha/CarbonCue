@@ -15,7 +15,9 @@ type Resource = {
   level?: string
   duration?: string
   numberOfLesson?: number
+  uploadDate?: string
   slug?: string
+  videoLink?: string
 }  
 
 
@@ -93,30 +95,17 @@ export default function ResourcesPage() {
 
           <TabsContent value="videos">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <VideoCard
-                title="The Carbon Cycle Explained"
-                description="A visual explanation of how carbon moves through Earth's systems and how human activities disrupt this cycle."
-                duration="12:34"
-                views={24500}
-              />
-              <VideoCard
-                title="Digital Carbon Footprint: The Hidden Impact"
-                description="Exploring the environmental impact of our digital lives and how to minimize it."
-                duration="18:21"
-                views={15800}
-              />
-              <VideoCard
-                title="Climate Solutions That Work"
-                description="Evidence-based approaches to addressing climate change at individual and systemic levels."
-                duration="22:45"
-                views={32100}
-              />
-              <VideoCard
-                title="The Future of Renewable Energy"
-                description="Exploring cutting-edge developments in renewable energy technology and implementation."
-                duration="15:18"
-                views={19700}
-              />
+              {resources.videos.map((video: Resource) => (
+                <VideoCard
+                  key={video.title}
+                  title={video.title}
+                  description={video.description}
+                  duration={video.duration || "N/A"}
+                  uploadDate={video.uploadDate || "Unknown"}
+                  videoLink={video.videoLink || ""}
+                />
+              ))}
+             
             </div>
           </TabsContent>
 
@@ -146,50 +135,6 @@ export default function ResourcesPage() {
             </div>
           </TabsContent>
         </Tabs>
-
-        <div className="mt-16">
-          <Card className="bg-carbon-sand dark:bg-carbon-charcoal/50">
-            <CardHeader>
-              <CardTitle className="text-2xl">Climate Change Crash Course</CardTitle>
-              <CardDescription>A comprehensive introduction to climate science, impacts, and solutions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                  <BookOpen className="h-6 w-6 text-carbon-red" />
-                  <div>
-                    <div className="text-sm font-medium">8 Modules</div>
-                    <div className="text-xs text-muted-foreground">Comprehensive curriculum</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                  <Video className="h-6 w-6 text-carbon-purple" />
-                  <div>
-                    <div className="text-sm font-medium">12 Video Lessons</div>
-                    <div className="text-xs text-muted-foreground">Visual explanations</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                  <Lightbulb className="h-6 w-6 text-carbon-deep-red" />
-                  <div>
-                    <div className="text-sm font-medium">24 Activities</div>
-                    <div className="text-xs text-muted-foreground">Hands-on learning</div>
-                  </div>
-                </div>
-              </div>
-              <p className="text-sm mb-4">
-                Our Climate Change Crash Course provides a solid foundation in climate science, impacts, and solutions.
-                Perfect for beginners and those looking to refresh their knowledge, this self-paced course combines
-                engaging videos, interactive activities, and practical resources.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full bg-carbon-red hover:bg-carbon-deep-red">
-                <Link href="/resources/crash-course">Start Learning</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
       </div>
     </div>
   )
@@ -296,12 +241,14 @@ function VideoCard({
   title,
   description,
   duration,
-  views,
+  uploadDate,
+  videoLink
 }: {
   title: string
   description: string
   duration: string
-  views: number
+  uploadDate: string  
+  videoLink?: string
 }) {
   return (
     <Card>
@@ -310,8 +257,8 @@ function VideoCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-40 bg-muted rounded-md flex items-center justify-center mb-4">
-          <Video className="h-10 w-10 text-muted-foreground" />
+        <div className="h-64 bg-muted rounded-md flex items-center justify-center mb-4">
+          <iframe src={videoLink} className="h-full w-full" ></iframe>
         </div>
         <div className="flex justify-between text-sm">
           <div className="flex items-center gap-2">
@@ -319,14 +266,14 @@ function VideoCard({
             <span>{duration}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Views:</span>
-            <span>{views.toLocaleString()}</span>
+            <span className="text-muted-foreground">Upload Date:</span>
+            <span>{uploadDate}</span>
           </div>
         </div>
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/resources/videos/${encodeURIComponent(title)}`}>Watch Video</Link>
+          <Link href={videoLink || ""} target="_blank">Watch Video</Link>
         </Button>
       </CardFooter>
     </Card>

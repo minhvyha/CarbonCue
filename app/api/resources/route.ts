@@ -6,6 +6,8 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongoose";
 import Course from "@/model/Course";
 import Guides from "@/model/Guide";
+import Videos from "@/model/Videos";
+
 
 export async function GET(_req: Request) {
     
@@ -44,7 +46,21 @@ export async function GET(_req: Request) {
     }
   ).lean();
 
-  let returnGuides = [...allCourses, ...allGuides];
+  // 3) find the videos
+  const allVideos = await Videos.find(
+    {},
+    {
+      title: 1,
+      description: 1,
+      videoLink: 1,
+      type: 1,
+      duration: 1,
+      uploadDate: 1,
+      _id: 0,
+    }
+  ).lean();
+
+  let returnGuides = [...allCourses, ...allGuides, ...allVideos];
 
 
   // 4) return the found course and guide

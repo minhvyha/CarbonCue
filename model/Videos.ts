@@ -1,41 +1,38 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-// Define content structure for guides
-export interface IGuideSection {
+// Define content structure (if needed for future video chapters or metadata)
+export interface IVideoSection {
   order?: number;
   title?: string;
   description?: string;
-  takeaways?: string[];
-  youtubeUrl?: string;
 }
 
-// Main Guide interface
-export interface IGuide extends Document {
+// Main Video interface
+export interface IVideo extends Document {
   slug: string;
   title: string;
   description: string;
-  heroImage: string;
-  presentationLink: string;
-  contents: IGuideSection[];
+  videoLink: string;
+  contents: IVideoSection[];
+  duration: string;
+  uploadDate: string;
   type: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Sub-schema for guide sections
-const GuideSectionSchema = new Schema<IGuideSection>(
+// Sub-schema for video sections (currently unused but extensible)
+const VideoSectionSchema = new Schema<IVideoSection>(
   {
     order: { type: Number },
     title: { type: String, trim: true },
     description: { type: String },
-    takeaways: [{ type: String }],
-    youtubeUrl: { type: String },
   },
   { _id: false }
 );
 
-// Main Guide schema
-const GuideSchema = new Schema<IGuide>(
+// Main Video schema
+const VideoSchema = new Schema<IVideo>(
   {
     slug: {
       type: String,
@@ -52,20 +49,26 @@ const GuideSchema = new Schema<IGuide>(
       type: String,
       required: true,
     },
-    heroImage: {
+    videoLink: {
       type: String,
       required: true,
     },
-    presentationLink: {
-      type: String,
-      required: true,
-    },
-    contents: { type: [GuideSectionSchema], default: [] },
+    contents: { type: [VideoSectionSchema], default: [] },
     type: {
       type: String,
-      default: 'guide',
+      default: 'video',
       trim: true,
     },
+    duration: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    uploadDate: {
+      type: String,
+      required: true,
+      trim: true,
+    }
   },
   {
     timestamps: true,
@@ -73,8 +76,8 @@ const GuideSchema = new Schema<IGuide>(
   }
 );
 
-// Create or reuse the Guide model
-const Guide: Model<IGuide> =
-  mongoose.models.Guide || mongoose.model<IGuide>('Guide', GuideSchema);
+// Create or reuse the Video model
+const Videos: Model<IVideo> =
+  mongoose.models.Video || mongoose.model<IVideo>('Video', VideoSchema);
 
-export default Guide;
+export default Videos;
