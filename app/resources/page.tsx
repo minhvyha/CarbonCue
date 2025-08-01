@@ -2,11 +2,12 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { BookOpen, FileText, Lightbulb, Video } from "lucide-react"
+import { FileText } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import LoadingOverlay from "@/components/loading-overlay"
 
 type Resource = {
   title: string
@@ -18,12 +19,17 @@ type Resource = {
   uploadDate?: string
   slug?: string
   videoLink?: string
+  abstract: string
+  researchLink: string
+  authors: string[]
+  year?: number
+  keywords?: string[]
 }  
 
 
 export default function ResourcesPage() {
   const [resources, setResources] = useState({ guides: [], courses: [], videos: [], research: [] });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
   fetch("/api/resources")
@@ -43,6 +49,8 @@ export default function ResourcesPage() {
 
   return (
     <div className="container py-10">
+      <LoadingOverlay isLoading={loading} />
+
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-4">Educational Resources</h1>
@@ -70,6 +78,7 @@ export default function ResourcesPage() {
                   level={guide.level || "Beginner"}
                   readTime={guide.duration || "10 min"}
                   slug={guide.slug || guide.title.toLowerCase().replace(/\s+/g, "-")}
+                  setLoading={setLoading}
                 />
               ))}
             </div>
@@ -86,6 +95,7 @@ export default function ResourcesPage() {
                   duration={course.duration || "N/A"}
                   level={course.level || "Beginner"}
                   slug={course.slug || course.title.toLowerCase().replace(/\s+/g, "-")}
+                  setLoading={setLoading}
                 />
               ))
                 }
@@ -105,33 +115,22 @@ export default function ResourcesPage() {
                   videoLink={video.videoLink || ""}
                 />
               ))}
-             
             </div>
           </TabsContent>
 
           <TabsContent value="research">
             <div className="grid grid-cols-1 gap-6">
-              <ResearchCard
-                title="Digital Carbon Emissions: A Systematic Review"
-                authors="Johnson, M., Smith, A., & Williams, K."
-                year={2022}
-                abstract="This paper reviews current research on the carbon footprint of digital technologies, including websites, cloud computing, and AI systems."
-                keywords={["digital carbon", "ICT emissions", "sustainable computing"]}
-              />
-              <ResearchCard
-                title="Effectiveness of Carbon Footprint Calculators: User Engagement and Behavior Change"
-                authors="Chen, L., Garcia, R., & Patel, S."
-                year={2023}
-                abstract="An analysis of how carbon footprint calculators influence user awareness and behavior change, with recommendations for improved design."
-                keywords={["carbon calculators", "behavior change", "user engagement"]}
-              />
-              <ResearchCard
-                title="Climate Justice and Digital Sustainability: Bridging the Gap"
-                authors="Okonkwo, J., Martinez, E., & Kim, H."
-                year={2022}
-                abstract="This research explores the intersection of climate justice principles and digital sustainability practices, highlighting opportunities for more equitable approaches."
-                keywords={["climate justice", "digital equity", "sustainable technology"]}
-              />
+              {resources.research.map((research: Resource) => (
+                <ResearchCard
+                  key={research.title}
+                  title={research.title}
+                  authors={research.authors.join(", ")}
+                  year={research.year || new Date().getFullYear()}
+                  abstract={research.abstract}
+                  keywords={research.keywords || []}
+                  researchLink={research.researchLink || ""}
+                />
+              ))}
             </div>
           </TabsContent>
         </Tabs>
@@ -146,7 +145,8 @@ function ResourceGuideCard({
   icon,
   level,
   readTime,
-  slug
+  slug,
+  setLoading
 }: {
   title: string
   description: string
@@ -154,6 +154,7 @@ function ResourceGuideCard({
   level: string
   readTime: string
   slug: string
+  setLoading: (loading: boolean) => void
 }) {
   return (
     <Card>
@@ -183,7 +184,7 @@ function ResourceGuideCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/resources/guide/${(slug)}`}>Read Guide</Link>
+          <Link href={`/resources/guide/${(slug)}`} onClick={() => setLoading(true)}>Read Guide</Link>
         </Button>
       </CardFooter>
     </Card>
@@ -197,7 +198,8 @@ function CourseCard({
   lessons,
   duration,
   level,
-  slug
+  slug,
+  setLoading
 }: {
   title: string
   description: string
@@ -205,6 +207,7 @@ function CourseCard({
   duration: string
   level: string
   slug: string
+  setLoading: (loading: boolean) => void
 }) {
   return (
     <Card>
@@ -230,7 +233,7 @@ function CourseCard({
       </CardContent>
       <CardFooter>
         <Button asChild className="w-full bg-carbon-purple hover:bg-carbon-purple/90">
-          <Link href={`/resources/course/${(slug)}`}>Enroll Now</Link>
+          <Link href={`/resources/course/${(slug)}`} onClick={() => setLoading(true)}>Enroll Now</Link>
         </Button>
       </CardFooter>
     </Card>
@@ -286,18 +289,20 @@ function ResearchCard({
   year,
   abstract,
   keywords,
+  researchLink,
 }: {
   title: string
   authors: string
   year: number
   abstract: string
   keywords: string[]
+  researchLink: string
 }) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>
+        <CardDescription >
           {authors} ({year})
         </CardDescription>
       </CardHeader>
@@ -305,7 +310,7 @@ function ResearchCard({
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-medium mb-1">Abstract</h4>
-            <p className="text-sm text-muted-foreground">{abstract}</p>
+            <p className="text-sm text-muted-foreground line-clamp-3">{abstract}</p>
           </div>
           <div>
             <h4 className="text-sm font-medium mb-1">Keywords</h4>
@@ -324,7 +329,7 @@ function ResearchCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/resources/research/${encodeURIComponent(title)}`}>Read Full Paper</Link>
+          <Link target="_blank" href={researchLink}>Read Full Paper</Link>
         </Button>
       </CardFooter>
     </Card>

@@ -7,6 +7,7 @@ import { connectToDatabase } from "@/lib/mongoose";
 import Course from "@/model/Course";
 import Guides from "@/model/Guide";
 import Videos from "@/model/Videos";
+import Researchs from "@/model/Researchs";
 
 
 export async function GET(_req: Request) {
@@ -59,8 +60,22 @@ export async function GET(_req: Request) {
       _id: 0,
     }
   ).lean();
+  const allResearchs = await Researchs.find(
+    {},
+    {
+      title: 1,
+      abstract: 1,
+      authors: 1,
+      researchLink: 1,
+      type: 1,
+      slug: 1,
+      keywords: 1,
+      year: 1,
 
-  let returnGuides = [...allCourses, ...allGuides, ...allVideos];
+    }
+  ).lean();
+
+  let returnGuides = [...allCourses, ...allGuides, ...allVideos, ...allResearchs];
 
 
   // 4) return the found course and guide
