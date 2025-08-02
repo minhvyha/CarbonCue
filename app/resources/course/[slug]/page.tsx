@@ -36,6 +36,7 @@ interface RawGuide {
   intro: string;
   sections: RawSection[];
   conclusion: string;
+  authors: string[];
   contents: RawContentItem[];
 }
 
@@ -99,6 +100,12 @@ export default async function GuidePage({ params }: PageProps) {
       <h1 className="text-4xl font-extrabold mb-6 text-center text-primary">
         {guide.title}
       </h1>
+      {/* Display authors if available */}
+      {guide.authors && guide.authors.length > 0 && (
+        <p className=" text-center text-foreground text-lg mt-2 mb-6 font-bold">
+          By: {guide.authors.join(', ')}
+        </p>
+      )}
 
       {blocks.map((block, i) => {
         switch (block.type) {

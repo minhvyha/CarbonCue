@@ -1,51 +1,63 @@
-'use client'
-import type React from "react"
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { FileText } from "lucide-react"
+"use client";
+import type React from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FileText } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import LoadingOverlay from "@/components/loading-overlay"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LoadingOverlay from "@/components/loading-overlay";
 
 type Resource = {
-  title: string
-  description: string
-  type: "guide" | "course" | "video" | "research"
-  level?: string
-  duration?: string
-  numberOfLesson?: number
-  uploadDate?: string
-  slug?: string
-  videoLink?: string
-  abstract: string
-  researchLink: string
-  authors: string[]
-  year?: number
-  keywords?: string[]
-}  
-
+  title: string;
+  description: string;
+  type: "guide" | "course" | "video" | "research";
+  level?: string;
+  duration?: string;
+  numberOfLesson?: number;
+  uploadDate?: string;
+  slug?: string;
+  videoLink?: string;
+  abstract: string;
+  researchLink: string;
+  authors: string[];
+  year?: number;
+  keywords?: string[];
+};
 
 export default function ResourcesPage() {
-  const [resources, setResources] = useState({ guides: [], courses: [], videos: [], research: [] });
+  const [resources, setResources] = useState({
+    guides: [],
+    courses: [],
+    videos: [],
+    research: [],
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  fetch("/api/resources")
-    .then((response) => response.json())
-    .then((data) => {
-      const groupedResources = {
-        guides: data.filter((item : Resource) => item.type === "guide"),
-        courses: data.filter((item : Resource) => item.type === "course"),
-        videos: data.filter((item : Resource) => item.type === "video"),
-        research: data.filter((item : Resource) => item.type === "research"),
-      };
-      setResources(groupedResources);
-      console.log("Resources fetched successfully:", data);
-      setLoading(false);
-    })
-}, [])
+    setLoading(true);
+    fetch("/api/resources")
+      .then((response) => response.json())
+      .then((data) => {
+        const groupedResources = {
+          guides: data.filter((item: Resource) => item.type === "guide"),
+          courses: data.filter((item: Resource) => item.type === "course"),
+          videos: data.filter((item: Resource) => item.type === "video"),
+          research: data.filter((item: Resource) => item.type === "research"),
+        };
+        setResources(groupedResources);
+        console.log("Resources fetched successfully:", data);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="container py-10">
@@ -55,7 +67,8 @@ export default function ResourcesPage() {
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-4">Educational Resources</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Learn about climate change, sustainability, and how you can make a difference.
+            Learn about climate change, sustainability, and how you can make a
+            difference.
           </p>
         </div>
 
@@ -65,6 +78,7 @@ export default function ResourcesPage() {
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="videos">Videos</TabsTrigger>
             <TabsTrigger value="research">Research</TabsTrigger>
+
           </TabsList>
 
           <TabsContent value="guides">
@@ -77,7 +91,9 @@ export default function ResourcesPage() {
                   icon={<FileText className="h-8 w-8 text-carbon-red" />}
                   level={guide.level || "Beginner"}
                   readTime={guide.duration || "10 min"}
-                  slug={guide.slug || guide.title.toLowerCase().replace(/\s+/g, "-")}
+                  slug={
+                    guide.slug || guide.title.toLowerCase().replace(/\s+/g, "-")
+                  }
                   setLoading={setLoading}
                 />
               ))}
@@ -94,12 +110,13 @@ export default function ResourcesPage() {
                   lessons={course.numberOfLesson || 0}
                   duration={course.duration || "N/A"}
                   level={course.level || "Beginner"}
-                  slug={course.slug || course.title.toLowerCase().replace(/\s+/g, "-")}
+                  slug={
+                    course.slug ||
+                    course.title.toLowerCase().replace(/\s+/g, "-")
+                  }
                   setLoading={setLoading}
                 />
-              ))
-                }
-              
+              ))}
             </div>
           </TabsContent>
 
@@ -136,7 +153,7 @@ export default function ResourcesPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }
 
 function ResourceGuideCard({
@@ -146,15 +163,15 @@ function ResourceGuideCard({
   level,
   readTime,
   slug,
-  setLoading
+  setLoading,
 }: {
-  title: string
-  description: string
-  icon: React.ReactNode
-  level: string
-  readTime: string
-  slug: string
-  setLoading: (loading: boolean) => void
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  level: string;
+  readTime: string;
+  slug: string;
+  setLoading: (loading: boolean) => void;
 }) {
   return (
     <Card>
@@ -184,13 +201,17 @@ function ResourceGuideCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={`/resources/guide/${(slug)}`} onClick={() => setLoading(true)}>Read Guide</Link>
+          <Link
+            href={`/resources/guide/${slug}`}
+            onClick={() => setLoading(true)}
+          >
+            Read Guide
+          </Link>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-
 
 function CourseCard({
   title,
@@ -199,15 +220,15 @@ function CourseCard({
   duration,
   level,
   slug,
-  setLoading
+  setLoading,
 }: {
-  title: string
-  description: string
-  lessons: number
-  duration: string
-  level: string
-  slug: string
-  setLoading: (loading: boolean) => void
+  title: string;
+  description: string;
+  lessons: number;
+  duration: string;
+  level: string;
+  slug: string;
+  setLoading: (loading: boolean) => void;
 }) {
   return (
     <Card>
@@ -232,12 +253,20 @@ function CourseCard({
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full bg-carbon-purple hover:bg-carbon-purple/90">
-          <Link href={`/resources/course/${(slug)}`} onClick={() => setLoading(true)}>Enroll Now</Link>
+        <Button
+          asChild
+          className="w-full bg-carbon-purple hover:bg-carbon-purple/90"
+        >
+          <Link
+            href={`/resources/course/${slug}`}
+            onClick={() => setLoading(true)}
+          >
+            Enroll Now
+          </Link>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function VideoCard({
@@ -245,13 +274,13 @@ function VideoCard({
   description,
   duration,
   uploadDate,
-  videoLink
+  videoLink,
 }: {
-  title: string
-  description: string
-  duration: string
-  uploadDate: string  
-  videoLink?: string
+  title: string;
+  description: string;
+  duration: string;
+  uploadDate: string;
+  videoLink?: string;
 }) {
   return (
     <Card>
@@ -261,7 +290,7 @@ function VideoCard({
       </CardHeader>
       <CardContent>
         <div className="h-64 bg-muted rounded-md flex items-center justify-center mb-4">
-          <iframe src={videoLink} className="h-full w-full" ></iframe>
+          <iframe src={videoLink} className="h-full w-full"></iframe>
         </div>
         <div className="flex justify-between text-sm">
           <div className="flex items-center gap-2">
@@ -276,11 +305,13 @@ function VideoCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link href={videoLink || ""} target="_blank">Watch Video</Link>
+          <Link href={videoLink || ""} target="_blank">
+            Watch Video
+          </Link>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function ResearchCard({
@@ -291,18 +322,18 @@ function ResearchCard({
   keywords,
   researchLink,
 }: {
-  title: string
-  authors: string
-  year: number
-  abstract: string
-  keywords: string[]
-  researchLink: string
+  title: string;
+  authors: string;
+  year: number;
+  abstract: string;
+  keywords: string[];
+  researchLink: string;
 }) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription >
+        <CardDescription>
           {authors} ({year})
         </CardDescription>
       </CardHeader>
@@ -310,7 +341,9 @@ function ResearchCard({
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-medium mb-1">Abstract</h4>
-            <p className="text-sm text-muted-foreground line-clamp-3">{abstract}</p>
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {abstract}
+            </p>
           </div>
           <div>
             <h4 className="text-sm font-medium mb-1">Keywords</h4>
@@ -329,9 +362,11 @@ function ResearchCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
-          <Link target="_blank" href={researchLink}>Read Full Paper</Link>
+          <Link target="_blank" href={researchLink}>
+            Read Full Paper
+          </Link>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

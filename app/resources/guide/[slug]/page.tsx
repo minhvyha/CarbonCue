@@ -18,6 +18,7 @@ interface RawGuide {
   type: string;
   createdAt: { $date: { $numberLong: string } };
   updatedAt: { $date: { $numberLong: string } };
+  authors: string[];
 }
 
 export const dynamic = 'force-dynamic';
@@ -52,9 +53,15 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-4">
-      <h1 className="text-4xl font-extrabold mb-6 text-center text-primary">
+      <h1 className="text-4xl font-extrabold mb-2 text-center text-primary">
         {guide.title}
       </h1>
+      {/* Display authors if available */}
+      {guide.authors && guide.authors.length > 0 && (
+        <p className=" text-center text-foreground text-lg my-4 font-bold">
+          By: {guide.authors.join(', ')}
+        </p>
+      )}
 
       {blocks.map((block, i) => {
         if (block.type === 'paragraph') {
