@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { triggerNavigationStart } from "@/lib/navigation"
 import { toast } from "sonner"
+import { useAuth } from "@/contexts/auth-context";
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -21,6 +22,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const router = useRouter()
+  const { refreshUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,6 +41,9 @@ export function LoginForm() {
   
       if (res.ok) {
         toast.success("Login successful");
+        // Refresh user context
+        await refreshUser();
+        // Redirect to dashboard or home page
         router.refresh();
         router.push("/dashboard");
       } else if (res.status === 401 || res.status === 404) {
