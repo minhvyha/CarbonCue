@@ -164,16 +164,7 @@ export function WebsiteCalculatorResults( { data }: { data: any }) {
             </TabsContent>
           </Tabs>
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
-            <span>Download Report</span>
-          </Button>
-          <Button variant="outline" className="gap-2">
-            <Share2 className="h-4 w-4" />
-            <span>Share Results</span>
-          </Button>
-        </CardFooter>
+
       </Card>
     </div>
   )
