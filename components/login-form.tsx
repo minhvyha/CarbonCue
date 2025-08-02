@@ -12,26 +12,47 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { triggerNavigationStart } from "@/lib/navigation"
+import { toast } from "sonner"
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setIsLoading(false)
-
-    // Navigate to dashboard after successful login
-    triggerNavigationStart()
-    router.push("/dashboard")
+    try {
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        toast.success("Login successful");
+        router.refresh();
+        router.push("/dashboard");
+      } else if (res.status === 401 || res.status === 404) {
+        setError(data.error || "Invalid credentials");
+      } else {
+        setError("Something went wrong");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Network error");
+    } finally {
+      setIsLoading(false);
+    }
+  
   }
 
   return (

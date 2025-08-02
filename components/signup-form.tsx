@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { triggerNavigationStart } from "@/lib/navigation"
+import { toast } from "sonner"
 
 export function SignupForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -26,14 +27,13 @@ export function SignupForm() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const router = useRouter()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
 
-    // Clear error when user starts typing
-    if (errors[name]) {
+    if (errors?.[name]) {
       setErrors((prev) => {
-        const newErrors = { ...prev }
+        const newErrors = { ...(prev || {}) }
         delete newErrors[name]
         return newErrors
       })
@@ -79,36 +79,53 @@ export function SignupForm() {
     }
 
     setIsLoading(true)
+    setErrors({}) // Clear previous errors
 
-    // Simulate API call
-    fetch("/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.firstName + " " + formData.lastName,
-        email: formData.email,
-        password: formData.password,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok")
-        }
-        return response.json()
-      })
-      .then((data) => {
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.firstName + " " + formData.lastName,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("User created successfully")
+        triggerNavigationStart()
+        router.push("/dashboard")
         console.log("User created:", data)
-      })
-      .catch((error) => {
-        console.error("Error creating user:", error)
-      })
-    setIsLoading(false)
-
-    // Navigate to dashboard after successful signup
-    triggerNavigationStart()
-    router.push("/dashboard")
+      } else if (response.status === 400) {
+        if (data.errors && typeof data.errors === 'object') {
+          setErrors(data.errors)
+        } else if (data.message) {
+          if (data.message.toLowerCase().includes('email')) {
+            setErrors({ email: data.message })
+          } else if (data.message.toLowerCase().includes('password')) {
+            setErrors({ password: data.message })
+          } else {
+            toast.error(data.message)
+          }
+        } else {
+          toast.error("Registration failed")
+        }
+      } else if (response.status === 409) {
+        setErrors({ email: "An account with this email already exists" })
+      } else {
+        toast.error(data.message || "Something went wrong")
+      }
+    } catch (error) {
+      console.error("Network error:", error)
+      toast.error("Network error occurred. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -124,9 +141,9 @@ export function SignupForm() {
                 placeholder="John"
                 value={formData.firstName}
                 onChange={handleChange}
-                className={errors.firstName ? "border-destructive" : "border-gray-300"}
+                className={errors?.firstName ? "border-destructive" : "border-gray-300"}
               />
-              {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
+              {errors?.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="lastName">Last name</Label>
@@ -136,9 +153,9 @@ export function SignupForm() {
                 placeholder="Doe"
                 value={formData.lastName}
                 onChange={handleChange}
-                className={errors.lastName ? "border-destructive" : "border-gray-300"}
+                className={errors?.lastName ? "border-destructive" : "border-gray-300"}
               />
-              {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
+              {errors?.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
             </div>
           </div>
 
@@ -154,9 +171,9 @@ export function SignupForm() {
               autoCorrect="off"
               value={formData.email}
               onChange={handleChange}
-              className={errors.email ? "border-destructive" : "border-gray-300"}
+              className={errors?.email ? "border-destructive" : "border-gray-300"}
             />
-            {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+            {errors?.email && <p className="text-xs text-destructive">{errors.email}</p>}
           </div>
 
           <div className="grid gap-2">
@@ -170,7 +187,7 @@ export function SignupForm() {
                 autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
-                className={errors.password ? "border-destructive " : "border-gray-300"}
+                className={errors?.password ? "border-destructive " : "border-gray-300"}
               />
               <Button
                 type="button"
@@ -187,7 +204,7 @@ export function SignupForm() {
                 <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
               </Button>
             </div>
-            {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+            {errors?.password && <p className="text-xs text-destructive">{errors.password}</p>}
           </div>
 
           <div className="grid gap-2">
@@ -200,9 +217,9 @@ export function SignupForm() {
               autoComplete="new-password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={errors.confirmPassword ? "border-destructive" : "border-gray-300"}
+              className={errors?.confirmPassword ? "border-destructive" : "border-gray-300"}
             />
-            {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+            {errors?.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
           </div>
 
 
