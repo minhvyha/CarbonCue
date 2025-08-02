@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner"
+import { useActivity } from "@/contexts/activity-context"
 
 const optionsRecycling = [
   { label: "Paper", value: "Paper" },
@@ -28,7 +29,8 @@ const optionsRecycling = [
 export function CarbonTrackerForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [activityType, setActivityType] = useState("");
-  const [formData, setFormData] = useState<Record<string, any>>({});    
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const { refreshActivityLogs } = useActivity();
 
 
   const handleChange = (field: string, value: any) => {
@@ -324,6 +326,7 @@ export function CarbonTrackerForm() {
     })
     if (response.ok) {
       toast.success("Activity added successfully")
+      refreshActivityLogs();
       // Reset form after successful submission
       setActivityType("");
       setFormData({});

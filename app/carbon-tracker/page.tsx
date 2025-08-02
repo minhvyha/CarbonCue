@@ -4,10 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CarbonTrackerForm } from "@/components/carbon-tracker-form"
+import { getCurrentUser } from "@/lib/getCurrentUser"
+import CarbonTrackerDaily from "@/components/carbon-tracker-daily"
+import { ActivityProvider } from "@/contexts/activity-context"
+import { ChartLineLabel } from "@/components/line-charts"
 
-export default function CarbonTrackerPage() {
+export default async function CarbonTrackerPage() {
+
   return (
-    <div className="container py-10">
+    <ActivityProvider>
+      <div className="container py-10">
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-4">Daily Carbon Footprint Tracker</h1>
@@ -18,57 +24,7 @@ export default function CarbonTrackerPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Your Carbon Footprint</CardTitle>
-                <CardDescription>Track your daily emissions and see how you compare</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-8">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold mb-2">8.2 kg</div>
-                    <div className="text-sm text-muted-foreground">CO₂e today</div>
-                    <div className="mt-4 flex justify-center">
-                      <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                        12% below your average
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Breakdown by Category</h3>
-                    <CategoryBreakdown
-                      icon={<Home className="h-4 w-4" />}
-                      label="Home Energy"
-                      value="3.1 kg"
-                      percentage={38}
-                      color="bg-carbon-red"
-                    />
-                    <CategoryBreakdown
-                      icon={<Car className="h-4 w-4" />}
-                      label="Transportation"
-                      value="2.7 kg"
-                      percentage={33}
-                      color="bg-carbon-purple"
-                    />
-                    <CategoryBreakdown
-                      icon={<ShoppingBag className="h-4 w-4" />}
-                      label="Consumption"
-                      value="1.5 kg"
-                      percentage={18}
-                      color="bg-carbon-deep-red"
-                    />
-                    <CategoryBreakdown
-                      icon={<BarChart className="h-4 w-4" />}
-                      label="Digital"
-                      value="0.9 kg"
-                      percentage={11}
-                      color="bg-carbon-magenta"
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <CarbonTrackerDaily />
 
             <Card>
               <CardHeader>
@@ -77,7 +33,7 @@ export default function CarbonTrackerPage() {
               </CardHeader>
               <CardContent>
                 <div className="h-[300px] w-full bg-muted rounded-md flex items-center justify-center text-muted-foreground">
-                  Carbon emissions chart placeholder
+                  <ChartLineLabel />
                 </div>
               </CardContent>
             </Card>
@@ -165,7 +121,8 @@ export default function CarbonTrackerPage() {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </ActivityProvider>
   )
 }
 
