@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 
 export function PrivacyPageClient() {
-  const lastUpdated = "January 15, 2024"
+  const lastUpdated = "August 2, 2024"
 
   return (
     <div className="flex flex-col">
@@ -30,12 +30,7 @@ export function PrivacyPageClient() {
                 <Calendar className="h-4 w-4" />
                 <span>Last updated: {lastUpdated}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Download className="h-4 w-4" />
-                <Button variant="link" className="p-0 h-auto text-sm">
-                  Download PDF
-                </Button>
-              </div>
+
             </div>
           </div>
         </div>
