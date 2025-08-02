@@ -33,7 +33,7 @@ export default function AboutPage() {
       <section className="py-20 md:py-32 bg-carbon-sand dark:bg-carbon-charcoal/50">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight gradient-text mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight gradient-text pb-6">
               Empowering Climate Action Through Technology
             </h1>
             <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
@@ -197,8 +197,8 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <TeamMember
-                name="Dr. Sarah Chen"
-                role="Co-Founder & CEO"
+                name="Salvio Ha"
+                role="Lead Developer"
                 bio="Environmental scientist with 15+ years in climate research and sustainable technology development."
                 image="/placeholder.svg?height=300&width=300"
               />
@@ -221,7 +221,7 @@ export default function AboutPage() {
                 image="/placeholder.svg?height=300&width=300"
               />
               <TeamMember
-                name="Dr. Aisha Patel"
+                name="Rozil Nguyen"
                 role="Head of Sustainability"
                 bio="Climate policy expert and former UN advisor on sustainable development goals."
                 image="/placeholder.svg?height=300&width=300"
