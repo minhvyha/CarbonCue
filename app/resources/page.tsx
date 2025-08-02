@@ -73,11 +73,12 @@ export default function ResourcesPage() {
         </div>
 
         <Tabs defaultValue="guides" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="guides">Guides</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="videos">Videos</TabsTrigger>
             <TabsTrigger value="research">Research</TabsTrigger>
+            <TabsTrigger value="Art Gallery">Art Gallery</TabsTrigger>
 
           </TabsList>
 
