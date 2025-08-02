@@ -131,6 +131,7 @@ export default function ResourcesPage() {
                   duration={video.duration || "N/A"}
                   uploadDate={video.uploadDate || "Unknown"}
                   videoLink={video.videoLink || ""}
+                  authors={video.authors}
                 />
               ))}
             </div>
@@ -276,18 +277,24 @@ function VideoCard({
   duration,
   uploadDate,
   videoLink,
+  authors
 }: {
   title: string;
   description: string;
   duration: string;
   uploadDate: string;
   videoLink?: string;
+  authors?: string[];
 }) {
+  console.log(authors)
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription className="line-clamp-3">
+          Authors: {authors ? authors.join(", ") : "Unknown"}
+        </CardDescription>
+        <CardDescription className="line-clamp-3">{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-64 bg-muted rounded-md flex items-center justify-center mb-4">

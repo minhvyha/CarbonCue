@@ -57,6 +57,7 @@ export async function GET(_req: Request) {
       type: 1,
       duration: 1,
       uploadDate: 1,
+      authors: 1,
       _id: 0,
     }
   ).lean();
@@ -71,6 +72,7 @@ export async function GET(_req: Request) {
       slug: 1,
       keywords: 1,
       year: 1,
+      _id: 0,
 
     }
   ).lean();
