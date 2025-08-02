@@ -1,18 +1,20 @@
-"use client"
+"use client";
 
-import Logo from '../public/logo.png'
-import Image from 'next/image' 
+import Logo from "../public/logo.png";
+import Image from "next/image";
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
 
-import { LoadingBar } from './loading-bar'
+import { LoadingBar } from "./loading-bar";
+import { toast } from "sonner";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -21,20 +23,37 @@ const navigation = [
   { name: "Carbon Tracker", href: "/carbon-tracker" },
   { name: "Volunteer Hub", href: "/volunteer-hub" },
   { name: "Resources", href: "/resources" },
-]
+];
 
 export function SiteHeader() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const { user, loading, logout } = useAuth();
+
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) {
+      toast.success("Logged out successfully");
+      router.push("/");
+      router.refresh();
+    } else {
+      toast.error("Failed to logout");
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <nav
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        aria-label="Global"
+      >
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">CarbonCue</span>
             <div className="flex items-center gap-2">
-              <Image src={Logo} alt="CarbonCue Logo"  className="h-14 w-14" />
+              <Image src={Logo} alt="CarbonCue Logo" className="h-14 w-14" />
               <span className="text-xl font-bold">CarbonCue</span>
             </div>
           </Link>
@@ -56,23 +75,41 @@ export function SiteHeader() {
               href={item.href}
               className={cn(
                 "text-md font-semibold leading-6 transition-colors hover:text-primary",
-                pathname === item.href ? "text-primary" : "text-foreground",
+                pathname === item.href ? "text-primary" : "text-foreground"
               )}
             >
               {item.name}
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-2">
           <ModeToggle />
-          <Button asChild>
-            <Link href="/login">Log in</Link>
-          </Button>
+          {loading ? (
+            <div className="flex items-center">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+            </div>
+          ) : user ? (
+            <>
+              <Button asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+              <Button onClick={handleLogout}>Log out</Button>
+            </>
+          ) : (
+            <Button asChild>
+              <Link href="/login">Log in</Link>
+            </Button>
+          )}
         </div>
       </nav>
 
       {/* Mobile menu */}
-      <div className={cn("lg:hidden", mobileMenuOpen ? "fixed inset-0 z-50" : "hidden")}>
+      <div
+        className={cn(
+          "lg:hidden",
+          mobileMenuOpen ? "fixed inset-0 z-50" : "hidden"
+        )}
+      >
         <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-background px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link href="/" className="-m-1.5 p-1.5">
@@ -82,7 +119,11 @@ export function SiteHeader() {
                 <span className="text-xl font-bold">CarbonCue</span>
               </div>
             </Link>
-            <Button variant="ghost" className="-m-2.5 rounded-md p-2.5" onClick={() => setMobileMenuOpen(false)}>
+            <Button
+              variant="ghost"
+              className="-m-2.5 rounded-md p-2.5"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <span className="sr-only">Close menu</span>
               <X className="h-6 w-6" aria-hidden="true" />
             </Button>
@@ -96,7 +137,9 @@ export function SiteHeader() {
                     href={item.href}
                     className={cn(
                       "-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7",
-                      pathname === item.href ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted",
+                      pathname === item.href
+                        ? "bg-primary/10 text-primary"
+                        : "text-foreground hover:bg-muted"
                     )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -109,9 +152,24 @@ export function SiteHeader() {
                   <span className="text-sm font-semibold">Toggle theme</span>
                   <ModeToggle />
                 </div>
-                <Button asChild className="w-full">
-                  <Link href="/login">Log in</Link>
-                </Button>
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  </div>
+                ) : user ? (
+                  <>
+                    <Button asChild className="w-full">
+                      <Link href="/dashboard">Dashboard</Link>
+                    </Button>
+                    <Button className="w-full" onClick={handleLogout}>
+                      Log out
+                    </Button>
+                  </>
+                ) : (
+                  <Button asChild className="w-full">
+                    <Link href="/login">Log in</Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -119,5 +177,5 @@ export function SiteHeader() {
       </div>
       <LoadingBar />
     </header>
-  )
+  );
 }

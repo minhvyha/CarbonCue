@@ -6,21 +6,27 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongoose';
 import Users from '@/model/Users';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 export async function GET() {
-  // 1) connect
-  const conn = await connectToDatabase();
-  console.log('Mongo readyState:', conn.connection.readyState); // 1 = connected
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
 
-  // 2) try an unfiltered find
-  const all = await Users.find({});
-  console.log(`Found ${all.length} total users`);
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-  // 3) then your filter
-  const filtered = await Users.find({ email: 'minhyv.ha@outlook.com' }).lean();
-  console.log(`Found ${filtered.length} users matching your email`);
-
-  // 4) return both sets so you can inspect in the browser
-  return NextResponse.json({ total: all });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      id: string;
+    };
+    await connectToDatabase();
+    const user = await Users.findById(decoded.id).select("-password");
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 }
 
 export async function POST(request: Request) {
