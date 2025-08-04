@@ -8,8 +8,7 @@ import { Search, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/toast-provider"
-
+import { useToast } from "@/components/toast-provider";
 
 export function WebsiteCalculatorForm({
   setData,
@@ -24,11 +23,9 @@ export function WebsiteCalculatorForm({
   const [isLoading, setIsLoading] = useState(false);
   const [green, setGreen] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState("");
-  const { toast } = useToast()
-
+  const { toast } = useToast();
 
   function manualCalculation(data: any) {
-
     let bytes = data.totalBytes || 0;
     if (!bytes || bytes <= 0) return;
 
@@ -118,7 +115,10 @@ export function WebsiteCalculatorForm({
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to fetch data");
+          // payload is expected to be { error: string, code?: string, ... }
+          const errMsg = res.statusText ?? "Unknown server error";
+          const errCode = res.status ? ` [${res.status}]` : "";
+          throw new Error(`${errMsg}${errCode}`);
         }
         return res.json();
       })
@@ -133,7 +133,7 @@ export function WebsiteCalculatorForm({
           title: "Error",
           description: error.message,
           variant: "destructive",
-        })
+        });
         setData(null);
       })
       .finally(() => {
@@ -145,18 +145,18 @@ export function WebsiteCalculatorForm({
     const val = e.target.value;
     setGreen(val === "renewable");
   };
-   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value)
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value);
     if (e.target.value) {
-      setPageSize("")
+      setPageSize("");
     }
-  }
+  };
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPageSize(e.target.value)
+    setPageSize(e.target.value);
     if (e.target.value) {
-      setUrl("")
+      setUrl("");
     }
-  }
+  };
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
@@ -187,7 +187,9 @@ export function WebsiteCalculatorForm({
             <div className="w-full border-t border-border"></div>
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground font-bold ">OR</span>
+            <span className="bg-card px-2 text-muted-foreground font-bold ">
+              OR
+            </span>
           </div>
         </div>
         <div className="space-y-2">
@@ -212,7 +214,7 @@ export function WebsiteCalculatorForm({
         </div>
         <Button
           type="submit"
-          disabled={isLoading || !url && !pageSize}
+          disabled={isLoading || (!url && !pageSize)}
           className="w-full bg-carbon-red hover:bg-carbon-deep-red"
         >
           {isLoading ? (
