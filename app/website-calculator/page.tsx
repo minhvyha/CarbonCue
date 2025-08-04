@@ -17,44 +17,7 @@ import { WebsiteCalculatorForm } from "@/components/website-calculator-form";
 import { WebsiteCalculatorResults } from "@/components/website-calculator-results";
 
 export default function WebsiteCalculatorPage() {
-  const [data, setData] = useState({
-    url: "https://www.websitecarbon.com/",
-    serverInfo: {
-      ip: "172.67.178.71",
-      server: "cloudflare",
-    },
-    totalBytes: 311046,
-    breakdown: {
-      document: 53720,
-      script: 154552,
-      stylesheet: 76031,
-      image: 3977,
-      font: 21376,
-      other: 1390,
-    },
-    websiteCarbon: {
-      url: "https://www.websitecarbon.com/",
-      green: true,
-      bytes: 174823,
-      cleanerThan: 0.96,
-      rating: "A+",
-      statistics: {
-        adjustedBytes: 131991.365,
-        energy: 0.00009957049568183721,
-        co2: {
-          grid: {
-            grams: 0.04401015909137205,
-            litres: 0.024478450486621128,
-          },
-          renewable: {
-            grams: 0.03815541394528002,
-            litres: 0.021222041236364744,
-          },
-        },
-      },
-      timestamp: 1752400673,
-    },
-  });
+  const [data, setData] = useState<any>(null);
   const [manualData, setManualData] = useState<any>(null);
   const [bytes, setBytes] = useState<number | undefined>();
   const [green, setGreen] = useState<boolean | undefined>(true);

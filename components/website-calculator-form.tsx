@@ -12,6 +12,64 @@ import { Label } from "@/components/ui/label"
 export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void }) {
   const [url, setUrl] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  function manualCalculation(data: any) {
+    let bytes = data.totalBytes || 0;
+    let green = data.websiteCarbon?.green || true;
+    if (!bytes || bytes <= 0) return;
+
+    // --- constants from SWDM & CO2.js ---
+    const ADJUSTMENT_FACTOR        = 0.7554;   // network/header/etc overhead
+    const ENERGY_INTENSITY_PER_GB  = 0.7545;   // kWh per GB transferred
+    const GRID_CARBON_INTENSITY    = 351;      // g CO2 per kWh (grid avg)
+    const RENEWABLE_INTENSITY      = 288;      // g CO2 per kWh (100% renewables)
+    const CO2_GAS_DENSITY          = 1.8;      // g CO2 per litre CO2
+
+    // 1) adjust bytes
+    const adjustedBytes = bytes * ADJUSTMENT_FACTOR;
+
+    // 2) to GB & energy
+    const GB         = adjustedBytes / 1e9;
+    const energy     = GB * ENERGY_INTENSITY_PER_GB; // kWh
+
+    // 3) co2 in grams
+    const co2grid_g  = energy * GRID_CARBON_INTENSITY;
+    const co2ren_g   = energy * RENEWABLE_INTENSITY;
+
+    // 4) convert to litres
+    const litresGrid = co2grid_g / CO2_GAS_DENSITY;
+    const litresRen  = co2ren_g  / CO2_GAS_DENSITY;
+
+    // Build the websiteCarbon object
+    const websiteCarbon = {
+      url:            data.url,
+      green:          green,
+      bytes:          bytes,
+      cleanerThan:    null,     // you could compute this if you have distribution data
+      rating:         null,     // likewise, derive A+/A/B…
+      statistics: {
+        adjustedBytes,
+        energy,
+        co2: {
+          grid: {
+            grams:   co2grid_g,
+            litres:  litresGrid,
+          },
+          renewable: {
+            grams:   co2ren_g,
+            litres:  litresRen,
+          },
+        },
+      },
+      timestamp: Math.floor(Date.now() / 1000),
+    };
+
+    // Merge into your data state
+    setData((prev: any) => ({
+      ...prev,
+      websiteCarbon,
+    }));
+  }
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +91,7 @@ export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void 
         return res.json()
       }).then((data) => {
         console.log(data)
-        setData(data)
+        manualCalculation( data);
       }).catch((error) => {
         console.error("Error fetching data:", error)
         setData(null)
