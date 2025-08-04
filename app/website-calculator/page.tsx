@@ -45,66 +45,21 @@ export default function WebsiteCalculatorPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="url" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="url">Website URL</TabsTrigger>
-            <TabsTrigger value="manual">Manual Input</TabsTrigger>
-          </TabsList>
+     
 
-          <TabsContent value="url">
             <Card>
               <CardHeader>
-                <CardTitle>Calculate by URL</CardTitle>
+                <CardTitle>Calculate by URL or Manual Input</CardTitle>
                 <CardDescription>
-                  Enter your website URL and we'll analyze its carbon footprint
+                  Enter your website URL or the byte size and we'll analyze its carbon footprint
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <WebsiteCalculatorForm setData={setData} monthlyVisitors={monthlyVisitors} setMonthlyVisitors={setMonthlyVisitors} />
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="manual">
-            <Card>
-              <CardHeader>
-                <CardTitle>Manual Calculation</CardTitle>
-                <CardDescription>
-                  Enter website details manually to calculate carbon emissions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-6">
-                  <div className="grid gap-3">
-                    <Label htmlFor="page-size">Page Size (KB)</Label>
-                    <Input
-                      id="page-size"
-                      type="number"
-                      placeholder="e.g., 2500"
-                      value={bytes}
-                      onChange={(e) => setBytes(Number(e.target.value))}
-                    />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="model-type">Sustainable Hosting</Label>
-                    <select
-                      id="model-type"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      onChange={(e) => setGreen(e.target.value === "true")}
-                      value={green ? "true" : "false"}
-                    >
-                      <option value="true">Yes</option>
-                      <option value="false">No</option>
-                    </select>
-                  </div>
-                  <Button className="w-full bg-carbon-red hover:bg-carbon-deep-red"  disabled={!bytes || bytes <= 0 || green === undefined}>
-                    Calculate Emissions
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+ 
 
         {data && <WebsiteCalculatorResults data={data} monthlyVisitors={monthlyVisitors} />}
         <div className="mt-16">

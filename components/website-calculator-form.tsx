@@ -2,13 +2,12 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { useState } from "react";
+import { Search, Info } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { set } from "mongoose";
 
 export function WebsiteCalculatorForm({
   setData,
@@ -21,9 +20,10 @@ export function WebsiteCalculatorForm({
 }) {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [green, setGreen] = useState<boolean >(false);
+  const [green, setGreen] = useState<boolean>(false);
+  const [pageSize, setPageSize] = useState("");
 
-  console.log(green)
+  console.log(green);
   function manualCalculation(data: any) {
     let bytes = data.totalBytes || 0;
     if (!bytes || bytes <= 0) return;
@@ -100,7 +100,7 @@ export function WebsiteCalculatorForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url) return;
+    if (!url && !pageSize) return;
 
     setIsLoading(true);
 
@@ -132,14 +132,24 @@ export function WebsiteCalculatorForm({
         setUrl(""); // Clear input after submission
       });
   };
-const handleEnergyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleEnergyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     setGreen(val === "renewable");
   };
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid gap-3">
+      <div className="flex flex-row items-center gap-3">
         <Label htmlFor="website-url">Website URL</Label>
+        <div className="flex gap-2">
+          <Input
+            id="website-url"
+            placeholder="https://example.com"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            className="flex-1"
+          />
+        </div>
+        or<Label htmlFor="website-url">Website URL</Label>
         <div className="flex gap-2">
           <Input
             id="website-url"
@@ -161,7 +171,13 @@ const handleEnergyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             ) : (
               <div className="flex items-center gap-2">
                 <Search className="h-4 w-4" />
-                <span>Analyze</span>
+                <span>
+                  {url
+                    ? "Analyze Website"
+                    : pageSize
+                    ? "Calculate Emissions"
+                    : "Enter URL or Page Size"}
+                </span>
               </div>
             )}
           </Button>
@@ -187,7 +203,7 @@ const handleEnergyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           <Label htmlFor="energy-source">Energy Source</Label>
           <select
             id="energy-source"
-            onChange={handleEnergyChange}               // handle change here
+            onChange={handleEnergyChange} // handle change here
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm 
                        ring-offset-background file:border-0 file:bg-transparent file:text-sm 
                        file:font-medium placeholder:text-muted-foreground focus-visible:outline-none 

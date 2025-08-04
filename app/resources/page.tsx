@@ -200,7 +200,7 @@ function ResourceGuideCard({
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild variant="outline" className="w-full">
+        <Button asChild variant="default" className="w-full">
           <Link
             href={`/resources/guide/${slug}`}
             onClick={() => setLoading(true)}
