@@ -136,52 +136,94 @@ export function WebsiteCalculatorForm({
     const val = e.target.value;
     setGreen(val === "renewable");
   };
+   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value)
+    if (e.target.value) {
+      setPageSize("")
+    }
+  }
+  const handlePageSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPageSize(e.target.value)
+    if (e.target.value) {
+      setUrl("")
+    }
+  }
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex flex-row items-center gap-3">
-        <Label htmlFor="website-url">Website URL</Label>
-        <div className="flex gap-2">
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            Enter either a website URL <strong>OR</strong> a page size in KB -
+            not both. We'll analyze your website automatically or use your
+            custom page size.
+          </p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="website-url" className="flex items-center gap-2">
+            Website URL
+            <span className="text-xs text-muted-foreground">(Option 1)</span>
+          </Label>
           <Input
             id="website-url"
             placeholder="https://example.com"
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="flex-1"
+            onChange={(e) => handleUrlChange(e)}
+            className={`${pageSize ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={!!pageSize}
           />
         </div>
-        or<Label htmlFor="website-url">Website URL</Label>
-        <div className="flex gap-2">
-          <Input
-            id="website-url"
-            placeholder="https://example.com"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="flex-1"
-          />
-          <Button
-            type="submit"
-            disabled={isLoading || !url}
-            className="bg-carbon-red hover:bg-carbon-deep-red"
-          >
-            {isLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                <span>Analyzing...</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Search className="h-4 w-4" />
-                <span>
-                  {url
-                    ? "Analyze Website"
-                    : pageSize
-                    ? "Calculate Emissions"
-                    : "Enter URL or Page Size"}
-                </span>
-              </div>
-            )}
-          </Button>
+        <div className="relative flex items-center justify-center ">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-border"></div>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground font-bold ">OR</span>
+          </div>
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="page-size" className="flex items-center gap-2">
+            Page Size
+            <span className="text-xs text-muted-foreground">(Option 2)</span>
+          </Label>
+          <div className="flex items-center gap-2">
+            <Input
+              id="page-size"
+              type="number"
+              placeholder="2400"
+              value={pageSize}
+              min="1"
+              max="50000"
+              disabled={!!url}
+              onChange={(e) => handlePageSizeChange(e)}
+              className={`flex-1 ${url ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
+            <span className="text-sm text-muted-foreground">KB</span>
+          </div>
+        </div>
+        <Button
+          type="submit"
+          disabled={isLoading || !url && !pageSize}
+          className="w-full bg-carbon-red hover:bg-carbon-deep-red"
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              <span>Analyzing...</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              <span>
+                {url
+                  ? "Analyze Website"
+                  : pageSize
+                  ? "Calculate Emissions"
+                  : "Enter URL or Page Size"}
+              </span>
+            </div>
+          )}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

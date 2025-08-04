@@ -48,10 +48,10 @@ export default function WebsiteCalculatorPage() {
      
 
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-[1rem]">
                 <CardTitle>Calculate by URL or Manual Input</CardTitle>
                 <CardDescription>
-                  Enter your website URL or the byte size and we'll analyze its carbon footprint
+                  Provide your website URL or manually input the total byte size to estimate its carbon emissions.
                 </CardDescription>
               </CardHeader>
               <CardContent>
