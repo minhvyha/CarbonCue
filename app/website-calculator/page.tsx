@@ -29,34 +29,7 @@ export default function WebsiteCalculatorPage() {
     console.log("Website Calculator initialized with data:", data);
   }, [data]);
 
-  async function manualCalculation(e: React.FormEvent) {
-    e.preventDefault();
-    if(!bytes || bytes <= 0 || green === undefined) {
-      console.log("Bytes:", bytes, "Green:", green);
-      return;
-    }
-    // Simulate API call
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000";
-    console.log(`${baseUrl}/api/websitecarbon/${bytes}/${green}}`)
-    fetch(`${baseUrl}/api/manual/${bytes}/${green}}`, {
-      cache: "no-store",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setManualData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {});
-  }
+
 
   return (
     <div className="container py-10">
@@ -123,7 +96,7 @@ export default function WebsiteCalculatorPage() {
                       <option value="false">No</option>
                     </select>
                   </div>
-                  <Button className="w-full bg-carbon-red hover:bg-carbon-deep-red" onClick={manualCalculation} disabled={!bytes || bytes <= 0 || green === undefined}>
+                  <Button className="w-full bg-carbon-red hover:bg-carbon-deep-red"  disabled={!bytes || bytes <= 0 || green === undefined}>
                     Calculate Emissions
                   </Button>
                 </div>

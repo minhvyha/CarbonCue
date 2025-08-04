@@ -8,6 +8,7 @@ import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { set } from "mongoose"
 
 export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void }) {
   const [url, setUrl] = useState("")
@@ -15,59 +16,76 @@ export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void 
   function manualCalculation(data: any) {
     let bytes = data.totalBytes || 0;
     let green = data.websiteCarbon?.green || true;
-    if (!bytes || bytes <= 0) return;
+  if (!bytes || bytes <= 0) return;
 
-    // --- constants from SWDM & CO2.js ---
-    const ADJUSTMENT_FACTOR        = 0.7554;   // network/header/etc overhead
-    const ENERGY_INTENSITY_PER_GB  = 0.7545;   // kWh per GB transferred
-    const GRID_CARBON_INTENSITY    = 351;      // g CO2 per kWh (grid avg)
-    const RENEWABLE_INTENSITY      = 288;      // g CO2 per kWh (100% renewables)
-    const CO2_GAS_DENSITY          = 1.8;      // g CO2 per litre CO2
+  // --- SWDM & CO2.js constants ---
+  const ADJUSTMENT_FACTOR       = 0.7554;   // network/header/etc overhead
+  const ENERGY_INTENSITY_GB     = 0.7545;   // kWh per GB transferred
+  const GRID_CARBON_INTENSITY   = 351;      // g CO₂ per kWh (grid avg)
+  const RENEWABLE_INTENSITY     = 288;      // g CO₂ per kWh (renewables)
+  const CO2_GAS_DENSITY         = 1.8;      // g CO₂ per litre CO₂
 
-    // 1) adjust bytes
-    const adjustedBytes = bytes * ADJUSTMENT_FACTOR;
+  // 1) adjust bytes
+  const adjustedBytes = bytes * ADJUSTMENT_FACTOR;
 
-    // 2) to GB & energy
-    const GB         = adjustedBytes / 1e9;
-    const energy     = GB * ENERGY_INTENSITY_PER_GB; // kWh
+  // 2) convert to GB & compute energy
+  const GB      = adjustedBytes / 1e9;
+  const energy  = GB * ENERGY_INTENSITY_GB; // kWh
 
-    // 3) co2 in grams
-    const co2grid_g  = energy * GRID_CARBON_INTENSITY;
-    const co2ren_g   = energy * RENEWABLE_INTENSITY;
+  // 3) compute CO₂ in grams
+  const co2Grid_g       = energy * GRID_CARBON_INTENSITY;
+  const co2Renewable_g  = energy * RENEWABLE_INTENSITY;
 
-    // 4) convert to litres
-    const litresGrid = co2grid_g / CO2_GAS_DENSITY;
-    const litresRen  = co2ren_g  / CO2_GAS_DENSITY;
+  // 4) convert grams → litres
+  const litresGrid      = co2Grid_g      / CO2_GAS_DENSITY;
+  const litresRenewable = co2Renewable_g / CO2_GAS_DENSITY;
 
-    // Build the websiteCarbon object
-    const websiteCarbon = {
-      url:            data.url,
-      green:          green,
-      bytes:          bytes,
-      cleanerThan:    null,     // you could compute this if you have distribution data
-      rating:         null,     // likewise, derive A+/A/B…
-      statistics: {
-        adjustedBytes,
-        energy,
-        co2: {
-          grid: {
-            grams:   co2grid_g,
-            litres:  litresGrid,
-          },
-          renewable: {
-            grams:   co2ren_g,
-            litres:  litresRen,
-          },
-        },
+  // 5) rating thresholds (bytes)
+  // A+ : < 100 KB
+  // A  : 100 KB – 250 KB
+  // A- : 250 KB – 500 KB
+  // B  : 500 KB – 1 MB
+  // C  : 1 MB – 2 MB
+  // D  : 2 MB – 3 MB
+  // F  : > 3 MB
+  let rating: string;
+  if      (bytes < 100 * 1024)           rating = "A+";
+  else if (bytes < 250 * 1024)           rating = "A";
+  else if (bytes < 500 * 1024)           rating = "A-";
+  else if (bytes < 1   * 1024 * 1024)    rating = "B";
+  else if (bytes < 2   * 1024 * 1024)    rating = "C";
+  else if (bytes < 3   * 1024 * 1024)    rating = "D";
+  else                                   rating = "F";
+  // 6) make up a 'cleanerThan' stat based on page size
+  const MAX_BYTES = 3 * 1024 * 1024; // 3 MB as 100% worst
+  let cleanerThan = (MAX_BYTES - bytes) / MAX_BYTES;
+  if (cleanerThan < 0) cleanerThan = 0;
+  // Round to two decimals
+  cleanerThan = Math.round(cleanerThan * 100) / 100; // e.g. 0.75 means cleaner than 75% of sites
+
+  // 7) assemble the results object
+  const websiteCarbon = {
+    url:       data.url,
+    green:     green,
+    bytes:     bytes,
+    cleanerThan: cleanerThan,
+    rating,
+    statistics: {
+      adjustedBytes,
+      energy,
+      co2: {
+        grid:      { grams: co2Grid_g,      litres: litresGrid },
+        renewable: { grams: co2Renewable_g, litres: litresRenewable },
       },
-      timestamp: Math.floor(Date.now() / 1000),
-    };
+    },
+    timestamp: Math.floor(Date.now() / 1000),
+  };
 
-    // Merge into your data state
-    setData((prev: any) => ({
-      ...prev,
-      websiteCarbon,
-    }));
+  // 8) update state
+  setData((prev: any) => ({
+    ...prev,
+    websiteCarbon,
+  }));
   }
 
 
@@ -82,7 +100,7 @@ export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void 
         ? `https://${process.env.VERCEL_URL}`
         : "http://localhost:3000";
     
-       fetch(`${baseUrl}/api/websitecarbon/${encodeURIComponent(url)}`, {
+       fetch(`${baseUrl}/api/emissioncalculator/${encodeURIComponent(url)}`, {
         cache: "no-store",
       }).then((res) => {
         if (!res.ok) {
@@ -90,7 +108,8 @@ export function WebsiteCalculatorForm({setData}: { setData: (data: any) => void 
         }
         return res.json()
       }).then((data) => {
-        console.log(data)
+        setData(data)
+        console.log("Fetched data:", data)
         manualCalculation( data);
       }).catch((error) => {
         console.error("Error fetching data:", error)

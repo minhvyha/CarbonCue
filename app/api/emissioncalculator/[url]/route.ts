@@ -36,15 +36,6 @@ export async function GET(
   await browser.close();
   const totalBytes = Object.values(assets).reduce((sum, val) => sum + val, 0);
 
-  // --- WEBSITE CARBON ---
-  let carbonData = null;
-  try {
-    const res = await fetch(`https://api.websitecarbon.com/site?url=${encodeURIComponent(targetUrl)}`);
-    if (res.ok) carbonData = await res.json();
-  } catch (e) {
-    console.error('WebsiteCarbon fetch failed:', e);
-  }
-
   // --- SERVER INFO ---
   const hostname = new URL(targetUrl).hostname;
   let ip = null;
@@ -76,6 +67,5 @@ export async function GET(
     serverInfo: { ip, server: serverHeader },
     totalBytes,
     breakdown: assets,
-    websiteCarbon: carbonData || { error: 'Could not fetch carbon data' }
   });
 }
