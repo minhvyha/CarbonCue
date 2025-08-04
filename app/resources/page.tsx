@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLoading } from "@/contexts/loading";
 
 type Resource = {
   title: string;
@@ -39,10 +40,10 @@ export default function ResourcesPage() {
     videos: [],
     research: [],
   });
-  const [loading, setLoading] = useState(false);
-
+  const { setShowOverlay } = useLoading();
+  
   useEffect(() => {
-    setLoading(true);
+    setShowOverlay(true);
     fetch("/api/resources")
       .then((response) => response.json())
       .then((data) => {
@@ -53,8 +54,7 @@ export default function ResourcesPage() {
           research: data.filter((item: Resource) => item.type === "research"),
         };
         setResources(groupedResources);
-        console.log("Resources fetched successfully:", data);
-        setLoading(false);
+        setShowOverlay(false);
       });
   }, []);
 
@@ -93,7 +93,6 @@ export default function ResourcesPage() {
                   slug={
                     guide.slug || guide.title.toLowerCase().replace(/\s+/g, "-")
                   }
-                  setLoading={setLoading}
                 />
               ))}
             </div>
@@ -113,7 +112,6 @@ export default function ResourcesPage() {
                     course.slug ||
                     course.title.toLowerCase().replace(/\s+/g, "-")
                   }
-                  setLoading={setLoading}
                 />
               ))}
             </div>
@@ -163,7 +161,6 @@ function ResourceGuideCard({
   level,
   readTime,
   slug,
-  setLoading,
 }: {
   title: string;
   description: string;
@@ -171,7 +168,6 @@ function ResourceGuideCard({
   level: string;
   readTime: string;
   slug: string;
-  setLoading: (loading: boolean) => void;
 }) {
   return (
     <Card>
@@ -203,7 +199,6 @@ function ResourceGuideCard({
         <Button asChild variant="default" className="w-full">
           <Link
             href={`/resources/guide/${slug}`}
-            onClick={() => setLoading(true)}
           >
             Read Guide
           </Link>
@@ -220,7 +215,6 @@ function CourseCard({
   duration,
   level,
   slug,
-  setLoading,
 }: {
   title: string;
   description: string;
@@ -228,7 +222,6 @@ function CourseCard({
   duration: string;
   level: string;
   slug: string;
-  setLoading: (loading: boolean) => void;
 }) {
   return (
     <Card>
@@ -259,7 +252,6 @@ function CourseCard({
         >
           <Link
             href={`/resources/course/${slug}`}
-            onClick={() => setLoading(true)}
           >
             Enroll Now
           </Link>

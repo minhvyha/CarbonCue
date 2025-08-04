@@ -1,11 +1,24 @@
-import type React from "react"
-import Link from "next/link"
-import { ArrowRight, BarChart3, Calendar, Globe, Leaf, Users } from "lucide-react"
+import type React from "react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BarChart3,
+  Calendar,
+  Globe,
+  Leaf,
+  Users,
+} from "lucide-react";
 
-import {features} from "@/constants/home" 
+import { features } from "@/constants/home";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -13,7 +26,12 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden bg-carbon-sand dark:bg-carbon-charcoal/50">
         <div className="absolute inset-0 z-0 opacity-20 dark:opacity-10">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1600')] bg-cover bg-center"></div>
+          <div
+            className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1600')] bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/hero-image.jpg')",
+            }}
+          ></div>
         </div>
         <div className="container relative z-10">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
@@ -21,12 +39,19 @@ export default function Home() {
               Track, Reduce, and Take Action on Your Carbon Footprint
             </h1>
             <p className="text-lg md:text-xl mb-8 max-w-2xl">
-              CarbonCue helps you understand and reduce your digital and personal carbon footprint through innovative
-              tools and community engagement.
+              CarbonCue helps you understand and reduce your digital and
+              personal carbon footprint through innovative tools and community
+              engagement.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="bg-carbon-red hover:bg-carbon-deep-red">
-                <Link href="/website-calculator">Calculate Website Emissions</Link>
+              <Button
+                asChild
+                size="lg"
+                className="bg-carbon-red hover:bg-carbon-deep-red"
+              >
+                <Link href="/website-calculator">
+                  Calculate Website Emissions
+                </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <Link href="/carbon-tracker">Track Your Footprint</Link>
@@ -40,9 +65,12 @@ export default function Home() {
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Sustainability Platform</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Our Sustainability Platform
+            </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Comprehensive tools to help you understand, track, and reduce your carbon footprint
+              Comprehensive tools to help you understand, track, and reduce your
+              carbon footprint
             </p>
           </div>
 
@@ -58,7 +86,9 @@ export default function Home() {
             ))}
             <Card className="bg-gradient-to-br from-carbon-red to-carbon-magenta text-white">
               <CardHeader>
-                <CardTitle className="text-xl">Ready to make an impact?</CardTitle>
+                <CardTitle className="text-xl">
+                  Ready to make an impact?
+                </CardTitle>
                 <CardDescription className="text-white/80">
                   Join thousands of users taking climate action today
                 </CardDescription>
@@ -81,7 +111,8 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Impact</h2>
             <p className="text-lg text-carbon-sand/80 max-w-2xl mx-auto">
-              Together, we're making a difference in the fight against climate change
+              Together, we're making a difference in the fight against climate
+              change
             </p>
           </div>
 
@@ -99,13 +130,20 @@ export default function Home() {
         <div className="container">
           <div className="bg-carbon-sand dark:bg-carbon-charcoal/50 rounded-xl p-8 md:p-12">
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Join the Climate Action Movement</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Join the Climate Action Movement
+              </h2>
               <p className="text-lg mb-8">
-                Start tracking your carbon footprint, find volunteer opportunities, and connect with a community
-                dedicated to sustainability.
+                Start tracking your carbon footprint, find volunteer
+                opportunities, and connect with a community dedicated to
+                sustainability.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Button asChild size="lg" className="bg-carbon-red hover:bg-carbon-deep-red">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-carbon-red hover:bg-carbon-deep-red"
+                >
                   <Link href="/signup">Create Free Account</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
@@ -117,7 +155,7 @@ export default function Home() {
         </div>
       </section>
     </div>
-  )
+  );
 }
 
 function FeatureCard({
@@ -126,10 +164,10 @@ function FeatureCard({
   description,
   href,
 }: {
-  icon: React.ReactNode
-  title: string
-  description: string
-  href: string
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  href: string;
 }) {
   return (
     <Card>
@@ -146,7 +184,7 @@ function FeatureCard({
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function StatCard({ value, label }: { value: string; label: string }) {
@@ -155,5 +193,5 @@ function StatCard({ value, label }: { value: string; label: string }) {
       <div className="text-4xl font-bold mb-2 text-carbon-red">{value}</div>
       <div className="text-carbon-sand">{label}</div>
     </div>
-  )
+  );
 }

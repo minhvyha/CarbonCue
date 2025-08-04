@@ -126,8 +126,10 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="relative">
-                <div className="aspect-square bg-gradient-to-br from-carbon-red to-carbon-magenta rounded-2xl p-8 flex items-center justify-center">
-                  <Globe className="h-32 w-32 text-white" />
+                <div className="aspect-square bg-gradient-to-br from-carbon-red to-carbon-magenta rounded-2xl p-8 flex items-center justify-center bg-cover bg-center" style={{
+              backgroundImage: "url('/story-image.jpg')",
+            }}>
+                  
                 </div>
                 <div className="absolute -bottom-4 -right-4 bg-carbon-sand dark:bg-carbon-charcoal p-4 rounded-xl shadow-lg">
                   <div className="text-2xl font-bold text-carbon-red">
