@@ -1,14 +1,86 @@
 "use client";
 
-import type React from "react";
-
-import { useState } from "react";
+import React, { useState, useCallback, FormEvent, ChangeEvent } from "react";
 import { Search, Info } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/toast-provider";
+
+// --- Constants & Thresholds ---
+const ADJUSTMENT_FACTOR = 0.7554;       // network/header/etc overhead
+const ENERGY_INTENSITY_GB = 0.7545;     // kWh per GB transferred
+const GRID_CARBON_INTENSITY = 351;      // g CO₂ per kWh (grid avg)
+const RENEWABLE_INTENSITY = 288;        // g CO₂ per kWh (renewables)
+const CO2_GAS_DENSITY = 1.8;            // g CO₂ per litre CO₂
+const MAX_BYTES = 3 * 1024 * 1024;      // 3 MB
+
+// Rating thresholds in bytes
+const RATING_THRESHOLDS: { limit: number; label: string }[] = [
+  { limit: 100 * 1024, label: "A+" },
+  { limit: 250 * 1024, label: "A" },
+  { limit: 500 * 1024, label: "A-" },
+  { limit: 1 * 1024 * 1024, label: "B" },
+  { limit: 2 * 1024 * 1024, label: "C" },
+  { limit: 3 * 1024 * 1024, label: "D" },
+];
+
+interface EmissionData {
+  url: string;
+  totalBytes?: number;
+}
+
+// --- Utility: Compute all emissions stats ---
+function calculateEmissions(
+  data: EmissionData,
+  green: boolean
+) {
+  const bytes = data.totalBytes || 0;
+  if (bytes <= 0) {
+    return null;
+  }
+
+  // 1) adjust bytes
+  const adjustedBytes = bytes * ADJUSTMENT_FACTOR;
+
+  // 2) convert to GB & compute energy
+  const GB = adjustedBytes / 1e9;
+  const energy = GB * ENERGY_INTENSITY_GB; // kWh
+
+  // 3) compute CO₂ in grams
+  const co2Grid_g = energy * GRID_CARBON_INTENSITY;
+  const co2Renewable_g = energy * RENEWABLE_INTENSITY;
+
+  // 4) convert grams → litres
+  const litresGrid = co2Grid_g / CO2_GAS_DENSITY;
+  const litresRenewable = co2Renewable_g / CO2_GAS_DENSITY;
+
+  // 5) determine rating
+  const rating =
+    RATING_THRESHOLDS.find((t) => bytes < t.limit)?.label ?? "F";
+
+  // 6) make up a 'cleanerThan' stat
+  let cleanerThan = Math.max(0, (MAX_BYTES - bytes) / MAX_BYTES);
+  cleanerThan = Math.round(cleanerThan * 100) / 100;
+
+  return {
+    url: data.url,
+    green,
+    bytes,
+    cleanerThan,
+    rating,
+    statistics: {
+      adjustedBytes,
+      energy,
+      co2: {
+        grid: { grams: co2Grid_g, litres: litresGrid },
+        renewable: { grams: co2Renewable_g, litres: litresRenewable },
+      },
+    },
+    timestamp: Math.floor(Date.now() / 1000),
+  };
+}
 
 export function WebsiteCalculatorForm({
   setData,
@@ -19,115 +91,70 @@ export function WebsiteCalculatorForm({
   monthlyVisitors: string;
   setMonthlyVisitors: (visitors: string) => void;
 }) {
+  // --- State ---
   const [url, setUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [green, setGreen] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [green, setGreen] = useState(false);
   const { toast } = useToast();
 
-  function manualCalculation(data: any) {
-    let bytes = data.totalBytes || 0;
-    if (!bytes || bytes <= 0) return;
+  // --- Handlers ---
+  const handleUrlChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setUrl(e.target.value);
+      if (e.target.value) setPageSize("");
+    },
+    []
+  );
 
-    // --- SWDM & CO2.js constants ---
-    const ADJUSTMENT_FACTOR = 0.7554; // network/header/etc overhead
-    const ENERGY_INTENSITY_GB = 0.7545; // kWh per GB transferred
-    const GRID_CARBON_INTENSITY = 351; // g CO₂ per kWh (grid avg)
-    const RENEWABLE_INTENSITY = 288; // g CO₂ per kWh (renewables)
-    const CO2_GAS_DENSITY = 1.8; // g CO₂ per litre CO₂
+  const handlePageSizeChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setPageSize(e.target.value);
+      if (e.target.value) setUrl("");
+    },
+    []
+  );
 
-    // 1) adjust bytes
-    const adjustedBytes = bytes * ADJUSTMENT_FACTOR;
+  const handleEnergyChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      setGreen(e.target.value === "renewable");
+    },
+    []
+  );
 
-    // 2) convert to GB & compute energy
-    const GB = adjustedBytes / 1e9;
-    const energy = GB * ENERGY_INTENSITY_GB; // kWh
+  const handleSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (!url && !pageSize) return;
 
-    // 3) compute CO₂ in grams
-    const co2Grid_g = energy * GRID_CARBON_INTENSITY;
-    const co2Renewable_g = energy * RENEWABLE_INTENSITY;
+      setIsLoading(true);
 
-    // 4) convert grams → litres
-    const litresGrid = co2Grid_g / CO2_GAS_DENSITY;
-    const litresRenewable = co2Renewable_g / CO2_GAS_DENSITY;
+      try {
+        const baseUrl = process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "http://localhost:3000";
+        const endpoint = url
+          ? `/api/emissioncalculator/${encodeURIComponent(url)}`
+          : `/api/emissioncalculator/pagesize/${pageSize}`;
 
-    // 5) rating thresholds (bytes)
-    // A+ : < 100 KB
-    // A  : 100 KB – 250 KB
-    // A- : 250 KB – 500 KB
-    // B  : 500 KB – 1 MB
-    // C  : 1 MB – 2 MB
-    // D  : 2 MB – 3 MB
-    // F  : > 3 MB
-    let rating: string;
-    if (bytes < 100 * 1024) rating = "A+";
-    else if (bytes < 250 * 1024) rating = "A";
-    else if (bytes < 500 * 1024) rating = "A-";
-    else if (bytes < 1 * 1024 * 1024) rating = "B";
-    else if (bytes < 2 * 1024 * 1024) rating = "C";
-    else if (bytes < 3 * 1024 * 1024) rating = "D";
-    else rating = "F";
-    // 6) make up a 'cleanerThan' stat based on page size
-    const MAX_BYTES = 3 * 1024 * 1024; // 3 MB as 100% worst
-    let cleanerThan = (MAX_BYTES - bytes) / MAX_BYTES;
-    if (cleanerThan < 0) cleanerThan = 0;
-    // Round to two decimals
-    cleanerThan = Math.round(cleanerThan * 100) / 100; // e.g. 0.75 means cleaner than 75% of sites
-
-    // 7) assemble the results object
-    const emissionDetails = {
-      url: data.url,
-      green: green,
-      bytes: bytes,
-      cleanerThan: cleanerThan,
-      rating,
-      statistics: {
-        adjustedBytes,
-        energy,
-        co2: {
-          grid: { grams: co2Grid_g, litres: litresGrid },
-          renewable: { grams: co2Renewable_g, litres: litresRenewable },
-        },
-      },
-      timestamp: Math.floor(Date.now() / 1000),
-    };
-
-    // 8) update state
-    setData((prev: any) => ({
-      ...prev,
-      emissionDetails,
-    }));
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!url && !pageSize) return;
-
-    setIsLoading(true);
-
-    // Simulate API call
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000";
-
-    fetch(`${baseUrl}/api/emissioncalculator/${encodeURIComponent(url)}`, {
-      cache: "no-store",
-    })
-      .then((res) => {
+        const res = await fetch(baseUrl + endpoint, { cache: "no-store" });
         if (!res.ok) {
-          // payload is expected to be { error: string, code?: string, ... }
-          const errMsg = res.statusText ?? "Unknown server error";
+          const errMsg = res.statusText || "Unknown server error";
           const errCode = res.status ? ` [${res.status}]` : "";
           throw new Error(`${errMsg}${errCode}`);
         }
-        return res.json();
-      })
-      .then((data) => {
+
+        const data: EmissionData = await res.json();
         setData(data);
-        console.log("Fetched data:", data);
-        manualCalculation(data);
-      })
-      .catch((error) => {
+
+        const emissionDetails = calculateEmissions(data, green);
+        if (emissionDetails) {
+          setData((prev: any) => ({
+            ...prev,
+            emissionDetails,
+          }));
+        }
+      } catch (error: any) {
         console.error("Error fetching data:", error);
         toast({
           title: "Error",
@@ -135,108 +162,99 @@ export function WebsiteCalculatorForm({
           variant: "destructive",
         });
         setData(null);
-      })
-      .finally(() => {
+      } finally {
         setIsLoading(false);
-        setUrl(""); // Clear input after submission
-      });
-  };
-  const handleEnergyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setGreen(val === "renewable");
-  };
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-    if (e.target.value) {
-      setPageSize("");
-    }
-  };
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPageSize(e.target.value);
-    if (e.target.value) {
-      setUrl("");
-    }
-  };
+        setUrl("");
+        setPageSize("");
+      }
+    },
+    [url, pageSize, green, setData, toast]
+  );
+
+  // --- JSX ---
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-          <p className="text-sm text-blue-700 dark:text-blue-300">
-            Enter either a website URL <strong>OR</strong> a page size in KB -
-            not both. We'll analyze your website automatically or use your
-            custom page size.
-          </p>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="website-url" className="flex items-center gap-2">
-            Website URL
-            <span className="text-xs text-muted-foreground">(Option 1)</span>
-          </Label>
-          <Input
-            id="website-url"
-            placeholder="https://example.com"
-            value={url}
-            onChange={(e) => handleUrlChange(e)}
-            className={`${pageSize ? "opacity-50 cursor-not-allowed" : ""}`}
-            disabled={!!pageSize}
-          />
-        </div>
-        <div className="relative flex items-center justify-center ">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border"></div>
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground font-bold ">
-              OR
-            </span>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="page-size" className="flex items-center gap-2">
-            Page Size
-            <span className="text-xs text-muted-foreground">(Option 2)</span>
-          </Label>
-          <div className="flex items-center gap-2">
-            <Input
-              id="page-size"
-              type="number"
-              placeholder="2400"
-              value={pageSize}
-              min="1"
-              max="50000"
-              disabled={!!url}
-              onChange={(e) => handlePageSizeChange(e)}
-              className={`flex-1 ${url ? "opacity-50 cursor-not-allowed" : ""}`}
-            />
-            <span className="text-sm text-muted-foreground">KB</span>
-          </div>
-        </div>
-        <Button
-          type="submit"
-          disabled={isLoading || (!url && !pageSize)}
-          className="w-full bg-carbon-red hover:bg-carbon-deep-red"
-        >
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              <span>Analyzing...</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Search className="h-4 w-4" />
-              <span>
-                {url
-                  ? "Analyze Website"
-                  : pageSize
-                  ? "Calculate Emissions"
-                  : "Enter URL or Page Size"}
-              </span>
-            </div>
-          )}
-        </Button>
+      {/* Info box */}
+      <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center gap-2">
+        <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+        <p className="text-sm text-blue-700 dark:text-blue-300">
+          Enter either a website URL <strong>OR</strong> a page size in KB –
+          not both.
+        </p>
       </div>
 
+      {/* URL Input */}
+      <div className="space-y-2">
+        <Label htmlFor="website-url" className="flex items-center gap-2">
+          Website URL <span className="text-xs text-muted-foreground">(Option 1)</span>
+        </Label>
+        <Input
+          id="website-url"
+          placeholder="https://example.com"
+          value={url}
+          onChange={handleUrlChange}
+          disabled={!!pageSize}
+          className={pageSize ? "opacity-50 cursor-not-allowed" : ""}
+        />
+      </div>
+
+      {/* OR Divider */}
+      <div className="relative flex items-center my-4">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border" />
+        </div>
+        <span className="relative px-2 bg-card text-xs uppercase text-muted-foreground font-bold">
+          OR
+        </span>
+      </div>
+
+      {/* Page Size Input */}
+      <div className="space-y-2">
+        <Label htmlFor="page-size" className="flex items-center gap-2">
+          Page Size <span className="text-xs text-muted-foreground">(Option 2)</span>
+        </Label>
+        <div className="flex items-center gap-2">
+          <Input
+            id="page-size"
+            type="number"
+            placeholder="2400"
+            value={pageSize}
+            min={1}
+            max={50000}
+            disabled={!!url}
+            onChange={handlePageSizeChange}
+            className={url ? "opacity-50 cursor-not-allowed flex-1" : "flex-1"}
+          />
+          <span className="text-sm text-muted-foreground">KB</span>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        disabled={isLoading || (!url && !pageSize)}
+        className="w-full bg-carbon-red hover:bg-carbon-deep-red"
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            <span>Analyzing...</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4" />
+            <span>
+              {url
+                ? "Analyze Website"
+                : pageSize
+                ? "Calculate Emissions"
+                : "Enter URL or Page Size"}
+            </span>
+          </div>
+        )}
+      </Button>
+
+      {/* Monthly Visitors & Energy Source */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="grid gap-3">
           <Label htmlFor="monthly-visitors">Monthly Visitors</Label>
@@ -246,9 +264,8 @@ export function WebsiteCalculatorForm({
             placeholder="10000"
             value={monthlyVisitors}
             onChange={(e) => setMonthlyVisitors(e.target.value)}
-            min="1"
-            max="10000000"
-            className="w-full"
+            min={1}
+            max={10000000}
           />
         </div>
 
@@ -256,12 +273,10 @@ export function WebsiteCalculatorForm({
           <Label htmlFor="energy-source">Energy Source</Label>
           <select
             id="energy-source"
-            onChange={handleEnergyChange} // handle change here
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm 
-                       ring-offset-background file:border-0 file:bg-transparent file:text-sm 
-                       file:font-medium placeholder:text-muted-foreground focus-visible:outline-none 
-                       focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
-                       disabled:cursor-not-allowed disabled:opacity-50"
+            onChange={handleEnergyChange}
+            className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm 
+                       placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 
+                       focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="mixed">Mixed (Default)</option>
             <option value="renewable">Renewable</option>
