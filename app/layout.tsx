@@ -6,8 +6,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { LoadingProvider } from "@/contexts/loading"
-import { Toaster } from "@/components/ui/sonner"
 import { AuthProvider } from "@/contexts/auth-context";
+import { ToastProvider } from "@/components/toast-provider"
+
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -32,12 +33,14 @@ export default function RootLayout({
         <LoadingProvider>
           <AuthProvider>
             <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+                          <ToastProvider>
+
               <div className="relative flex min-h-screen flex-col">
                 <SiteHeader />
                 <main className="flex-1">{children}</main>
                 <SiteFooter />
               </div>
-              <Toaster richColors />
+              </ToastProvider>
             </ThemeProvider>
           </AuthProvider>
         </LoadingProvider>

@@ -8,6 +8,8 @@ import { Search, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/toast-provider"
+
 
 export function WebsiteCalculatorForm({
   setData,
@@ -22,9 +24,11 @@ export function WebsiteCalculatorForm({
   const [isLoading, setIsLoading] = useState(false);
   const [green, setGreen] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState("");
+  const { toast } = useToast()
 
-  console.log(green);
+
   function manualCalculation(data: any) {
+
     let bytes = data.totalBytes || 0;
     if (!bytes || bytes <= 0) return;
 
@@ -125,6 +129,11 @@ export function WebsiteCalculatorForm({
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        })
         setData(null);
       })
       .finally(() => {
