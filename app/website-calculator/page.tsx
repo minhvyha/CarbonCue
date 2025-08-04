@@ -19,8 +19,9 @@ import { WebsiteCalculatorResults } from "@/components/website-calculator-result
 export default function WebsiteCalculatorPage() {
   const [data, setData] = useState<any>(null);
   const [manualData, setManualData] = useState<any>(null);
+  const [monthlyVisitors, setMonthlyVisitors] = useState("10000")
   const [bytes, setBytes] = useState<number | undefined>();
-  const [green, setGreen] = useState<boolean | undefined>(true);
+  const [green, setGreen] = useState<boolean>(false);
 
   useEffect(() => {
     // This effect can be used to fetch initial data if needed
@@ -59,7 +60,7 @@ export default function WebsiteCalculatorPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <WebsiteCalculatorForm setData={setData} />
+                <WebsiteCalculatorForm setData={setData} monthlyVisitors={monthlyVisitors} setMonthlyVisitors={setMonthlyVisitors} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -105,7 +106,7 @@ export default function WebsiteCalculatorPage() {
           </TabsContent>
         </Tabs>
 
-        {data && <WebsiteCalculatorResults data={data} />}
+        {data && <WebsiteCalculatorResults data={data} monthlyVisitors={monthlyVisitors} />}
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">How It Works</h2>
 

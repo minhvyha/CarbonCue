@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Download, Share2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,11 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // This is a placeholder component - in a real app, you would receive actual data
-export function WebsiteCalculatorResults({ data }: { data: any }) {
+export function WebsiteCalculatorResults({ data, monthlyVisitors }: { data: any, monthlyVisitors: string }) {
   // Placeholder state - would be populated from API response
 
   if (!data) return null;
@@ -29,11 +25,11 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
           <CardDescription>
             Analysis for{" "}
             <a
-              href={data.websiteCarbon.url}
+              href={data.emissionDetails.url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {data.websiteCarbon.url}
+              {data.emissionDetails.url}
             </a>
           </CardDescription>
         </CardHeader>
@@ -58,7 +54,7 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
                   label="Carbon per Page View"
                   value={
                     parseFloat(
-                      data.websiteCarbon.statistics.co2.grid.grams.toFixed(3)
+                      data.emissionDetails.statistics.co2.grid.grams.toFixed(3)
                     ) + "g"
                   }
                   description="CO₂ equivalent per page view"
@@ -75,54 +71,54 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
                 />
                 <EmissionMetric
                   label="Cleaner than"
-                  value={parseFloat(data.websiteCarbon.cleanerThan) * 100 + "%"}
+                  value={parseFloat(data.emissionDetails.cleanerThan) * 100 + "%"}
                   description="of websites tested"
                   rating={
-                    data.websiteCarbon.cleanerThan > 0.75
+                    data.emissionDetails.cleanerThan > 0.75
                       ? "Great"
-                      : data.websiteCarbon.cleanerThan > 0.5
+                      : data.emissionDetails.cleanerThan > 0.5
                       ? "Average"
                       : "Poor"
                   }
                   color={
-                    data.websiteCarbon.cleanerThan > 0.75
+                    data.emissionDetails.cleanerThan > 0.75
                       ? "green"
-                      : data.websiteCarbon.cleanerThan > 0.5
+                      : data.emissionDetails.cleanerThan > 0.5
                       ? "amber"
                       : "red"
                   }
                 />
                 <EmissionMetric
                   label="Website Rating"
-                  value={data.websiteCarbon.rating}
+                  value={data.emissionDetails.rating}
                   description="Overall environmental impact"
                   rating={
-                    data.websiteCarbon.rating === "A+"
+                    data.emissionDetails.rating === "A+"
                       ? "Excellent"
-                      : data.websiteCarbon.rating === "A"
+                      : data.emissionDetails.rating === "A"
                       ? "Very Good"
-                      : data.websiteCarbon.rating === "A-"
+                      : data.emissionDetails.rating === "A-"
                       ? "Good"
-                      : data.websiteCarbon.rating === "B"
+                      : data.emissionDetails.rating === "B"
                       ? "Fair"
-                      : data.websiteCarbon.rating === "C"
+                      : data.emissionDetails.rating === "C"
                       ? "Poor"
-                      : data.websiteCarbon.rating === "D"
+                      : data.emissionDetails.rating === "D"
                       ? "Very Poor"
                       : "Fail"
                   }
                   color={
-                    data.websiteCarbon.rating === "A+"
+                    data.emissionDetails.rating === "A+"
                       ? "green"
-                      : data.websiteCarbon.rating === "A"
+                      : data.emissionDetails.rating === "A"
                       ? "green"
-                      : data.websiteCarbon.rating === "A-"
+                      : data.emissionDetails.rating === "A-"
                       ? "green"
-                      : data.websiteCarbon.rating === "B"
+                      : data.emissionDetails.rating === "B"
                       ? "amber"
-                      : data.websiteCarbon.rating === "C"
+                      : data.emissionDetails.rating === "C"
                       ? "amber"
-                      : data.websiteCarbon.rating === "D"
+                      : data.emissionDetails.rating === "D"
                       ? "red"
                       : "red"
                   }
@@ -132,7 +128,7 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
               <div className="mt-8">
                 <h3 className="text-lg font-medium mb-2">Detailed Analysis</h3>
                 <p className="text-muted-foreground mb-2">
-                  Total page size: {formatBytes(data.websiteCarbon.bytes)}
+                  Total page size: {formatBytes(data.emissionDetails.bytes)}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card>
@@ -173,7 +169,7 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
                         <li className="flex justify-between">
                           <span>URL</span>
                           <span className="font-medium">
-                            {data.websiteCarbon.url}
+                            {data.emissionDetails.url}
                           </span>
                         </li>
                         <li className="flex justify-between">
@@ -197,10 +193,90 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
                         <li className="flex justify-between">
                           <span>Sustainable Hosting</span>
                           <span className="font-medium">
-                            {data.websiteCarbon.green ? "Yes" : "No"}
+                            {data.emissionDetails.green ? "Yes" : "No"}
                           </span>
                         </li>
                       </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+
+
+                
+              </div>
+
+              <div className="mt-8">
+                <h3 className="text-lg font-medium mb-4">CO₂ Emission Analysis</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Energy Source Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Adjusted Bytes</span>
+                          <span className="font-medium">{formatBytes(data.emissionDetails.statistics.adjustedBytes)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Green Hosting</span>
+                          <span className={`font-medium ${data.emissionDetails.green ? "text-green-600" : "text-red-600"}`}>{data.emissionDetails.green ? "Yes" : "No"}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Grid Energy Emissions</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>CO₂ from Grid Energy</span>
+                          <span className={`font-medium ${data.emissionDetails.green ? "" : "text-red-600"}`}>{formatWeight(data.emissionDetails.statistics.co2.grid.grams)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Equivalent in Liters</span>
+                          <span className={`font-medium ${data.emissionDetails.green ? "" : "text-red-600"}`}>{formatLitres(data.emissionDetails.statistics.co2.grid.litres)}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Green Energy Emissions</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>CO₂ from Green Energy</span>
+                          <span className={`font-medium ${data.emissionDetails.green ? "text-green-600" : ""}`}>{formatWeight(data.emissionDetails.statistics.co2.renewable.grams)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Equivalent in Liters</span>
+                          <span className={`font-medium ${data.emissionDetails.green ? "text-green-600" : ""}`}>{formatLitres(data.emissionDetails.statistics.co2.renewable.litres)}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">Emission Projections</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>Monthly ({monthlyVisitors.toLocaleString()} visitors)</span>
+                          <span className="font-medium">{data.emissionDetails.green? formatWeight(data.emissionDetails.statistics.co2.renewable.grams * parseInt(monthlyVisitors)) : formatWeight(data.emissionDetails.statistics.co2.grid.grams * parseInt(monthlyVisitors))} CO₂</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Yearly ({monthlyVisitors.toLocaleString()} visitors/month)</span>
+                          <span className="font-medium">{data.emissionDetails.green? formatWeight(data.emissionDetails.statistics.co2.renewable.grams * parseInt(monthlyVisitors) * 12) : formatWeight(data.emissionDetails.statistics.co2.grid.grams * parseInt(monthlyVisitors) * 12)} CO₂</span>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
@@ -211,7 +287,7 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
               <div className="space-y-6">
                 <div>
                   {/* <h3 className="text-lg font-medium mb-2">Page Weight</h3>
-                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.websiteCarbon.bytes)}</p> */}
+                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.emissionDetails.bytes)}</p> */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card>
                       <CardHeader className="pb-2">
@@ -254,7 +330,7 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
                           <li className="flex justify-between">
                             <span>URL</span>
                             <span className="font-medium">
-                              {data.websiteCarbon.url}
+                              {data.emissionDetails.url}
                             </span>
                           </li>
                           <li className="flex justify-between">
@@ -278,7 +354,7 @@ export function WebsiteCalculatorResults({ data }: { data: any }) {
                           <li className="flex justify-between">
                             <span>Sustainable Hosting</span>
                             <span className="font-medium">
-                              {data.websiteCarbon.green ? "Yes" : "No"}
+                              {data.emissionDetails.green ? "Yes" : "No"}
                             </span>
                           </li>
                         </ul>
@@ -358,24 +434,6 @@ function EmissionMetric({
   );
 }
 
-function EmissionBreakdown({
-  label,
-  percentage,
-}: {
-  label: string;
-  percentage: number;
-}) {
-  return (
-    <div>
-      <div className="flex justify-between mb-1">
-        <span className="text-sm">{label}</span>
-        <span className="text-sm font-medium">{percentage}%</span>
-      </div>
-      <Progress value={percentage} className={`h-2 bg-gray-400`} />
-    </div>
-  );
-}
-
 function RecommendationItem({
   title,
   description,
@@ -423,4 +481,28 @@ function formatBytes(bytesString: string) {
   }
 
   return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
+function formatWeight(grams: number){
+  const units = ["g", "kg", "t"];
+  let size = grams;
+  let unitIndex = 0;
+
+  while (size >= 1000 && unitIndex < units.length - 1) {
+    size /= 1000;
+    unitIndex++;
+  }
+
+  return `${size.toFixed(3)} ${units[unitIndex]}`;
+}
+function formatLitres(litres: number) {
+  const units = ["L", "mL"];
+  let size = litres;
+  let unitIndex = 0;
+
+  while (size >= 1000 && unitIndex < units.length - 1) {
+    size /= 1000;
+    unitIndex++;
+  }
+
+  return `${size.toFixed(3)} ${units[unitIndex]}`;
 }
