@@ -24,10 +24,10 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden bg-carbon-sand dark:bg-carbon-charcoal/50">
+      <section className="relative py-20 md:py-40 overflow-hidden bg-carbon-sand dark:bg-carbon-charcoal/50">
         <div className="absolute inset-0 z-0 opacity-20 dark:opacity-10">
           <div
-            className="absolute inset-0 bg-[url('/placeholder.svg?height=800&width=1600')] bg-cover bg-center"
+            className="absolute inset-0 bg-[url('/hero-image.jpg?height=800&width=1600')] bg-cover bg-center"
             style={{
               backgroundImage: "url('/hero-image.jpg')",
             }}
@@ -53,7 +53,7 @@ export default function Home() {
                   Calculate Website Emissions
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="secondary">
                 <Link href="/carbon-tracker">Track Your Footprint</Link>
               </Button>
             </div>
@@ -106,7 +106,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 md:py-24 bg-carbon-charcoal text-white">
+      <section className="py-16 md:py-24 bg-carbon-charcoal/80 text-white">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Impact</h2>
@@ -117,7 +117,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <StatCard value="10,000+" label="Websites Analyzed" />
+            <StatCard value="10,000+" label="Websites Analyzed"  />
             <StatCard value="5,000+" label="Active Users" />
             <StatCard value="250+" label="Volunteer Events" />
             <StatCard value="1,500+" label="Tons of CO₂ Saved" />
@@ -189,7 +189,7 @@ function FeatureCard({
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="text-center p-6 rounded-lg bg-carbon-charcoal/50">
+    <div className="text-center p-6 rounded-lg ">
       <div className="text-4xl font-bold mb-2 text-carbon-red">{value}</div>
       <div className="text-carbon-sand">{label}</div>
     </div>
