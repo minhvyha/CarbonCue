@@ -1,52 +1,66 @@
-import React from 'react';
+"use client"
 
-/**
- * LoadingOverlay Component
- *
- * Displays a full-screen dark grey overlay with a centered loading spinner.
- *
- * Props:
- * - isLoading (boolean): Toggle display of the overlay.
- * - overlayOpacity (number, optional): Opacity of the overlay (0-100). Default: 75.
- * - spinnerSize (number, optional): Size of the spinner in pixels. Default: 128.
- * - borderWidth (number, optional): Thickness of the spinner border in pixels. Default: 8.
- */
+import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
+
 interface LoadingOverlayProps {
-  isLoading: boolean;
-  overlayOpacity?: number;
-  spinnerSize?: number;
-  borderWidth?: number;
+  isVisible: boolean
 }
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
-  isLoading,
-  overlayOpacity = 75,
-  spinnerSize = 64,
-  borderWidth = 8,
-}) => {
-  if (!isLoading) return null;
+export function LoadingOverlay({ isVisible }: LoadingOverlayProps) {
+  const [mounted, setMounted] = useState(false)
 
-  // Calculate overlay background as RGBA
-  const overlayBg = `rgba(31, 41, 55, ${overlayOpacity / 100})`; // Tailwind gray-800 is #1f2937
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
 
   return (
     <div
-      className="fixed inset-0 flex justify-center items-center z-50"
-      style={{ backgroundColor: overlayBg }}
-      aria-busy="true"
-      role="status"
-      aria-label="Loading"
+      className={cn(
+        "fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-300",
+        isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+      )}
     >
-      <div
-        className="rounded-full border-gray-500 border-t-carbon-purple animate-spin"
-        style={{
-          width: spinnerSize,
-          height: spinnerSize,
-          borderWidth: borderWidth,
-        }}
-      />
-    </div>
-  );
-};
+      {/* Dark backdrop */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
-export default LoadingOverlay;
+      {/* Loading animation container */}
+      <div className="relative z-10 flex flex-col items-center justify-center">
+        {/* Hollow circle animation */}
+<div className="relative w-16 h-16">
+  {/* Outer rotating circle */}
+  <div
+    className="absolute inset-0
+               w-16 h-16
+               border-4 border-transparent border-t-carbon-red border-r-carbon-magenta
+               rounded-full
+               animate-spin"
+  />
+
+  {/* Centered wrapper for the two inner circles */}
+  <div className="absolute inset-0 flex items-center justify-center">
+    {/* Inner pulsing circle */}
+    <div className="w-16 h-16 border-4 border-carbon-red/30 rounded-full animate-pulse flex items-center justify-center">
+      {/* Center ping dot */}
+      <div className="w-8 h-8 bg-gradient-to-r from-carbon-red to-carbon-magenta rounded-full animate-ping" />
+    </div>
+  </div>
+</div>
+
+
+        {/* Loading text */}
+        <div className="mt-6 text-white font-medium text-lg tracking-wide">
+          <span className="inline-block animate-pulse">Loading</span>
+          <span className="inline-block animate-bounce ml-1 delay-100">.</span>
+          <span className="inline-block animate-bounce ml-1 delay-200">.</span>
+          <span className="inline-block animate-bounce ml-1 delay-300">.</span>
+        </div>
+
+        {/* Subtitle */}
+        <div className="mt-2 text-white/70 text-sm">Please wait while we prepare your content</div>
+      </div>
+    </div>
+  )
+}

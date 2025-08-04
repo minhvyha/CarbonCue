@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import LoadingOverlay from "@/components/loading-overlay";
 
 type Resource = {
   title: string;
@@ -61,7 +60,6 @@ export default function ResourcesPage() {
 
   return (
     <div className="container py-10">
-      <LoadingOverlay isLoading={loading} />
 
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-10">
