@@ -93,49 +93,52 @@ export function ContactPageClient() {
 
       {/* FAQ Section */}
       <section className="py-16 md:py-24 bg-muted/50">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-              <p className="text-lg text-muted-foreground">Quick answers to common questions about CarbonCue</p>
-            </div>
+  <div className="container">
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+        <p className="text-lg text-muted-foreground">
+          Quick answers to common questions about CarbonCue
+        </p>
+      </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <FAQCard
-                question="How accurate are your carbon calculations?"
-                answer="Our calculations are based on peer-reviewed research and industry standards from organizations like the EPA and IPCC. We regularly update our methodologies to reflect the latest scientific findings."
-              />
-              <FAQCard
-                question="Is CarbonCue free to use?"
-                answer="Yes! CarbonCue offers a comprehensive free tier that includes basic carbon tracking, website analysis, and access to our volunteer hub. Premium features are available for advanced users and organizations."
-              />
-              <FAQCard
-                question="Can I use CarbonCue for my business?"
-                answer="We offer enterprise solutions for businesses of all sizes. Contact our partnerships team to learn about custom features, bulk pricing, and integration options."
-              />
-              <FAQCard
-                question="How do you protect my data?"
-                answer="We take data privacy seriously. All data is encrypted in transit and at rest. We never sell your personal information and you can delete your account and data at any time."
-              />
-              <FAQCard
-                question="Do you offer API access?"
-                answer="Yes, we provide API access for developers and organizations who want to integrate carbon tracking into their own applications. Contact us for API documentation and access."
-              />
-              <FAQCard
-                question="How can I contribute to CarbonCue?"
-                answer="There are many ways to get involved! You can contribute to our open-source projects, join our volunteer network, provide feedback, or help spread awareness about climate action."
-              />
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <FAQCard
+          question="What is the Website Carbon Emission Calculator?"
+          answer="Our Website Calculator estimates a site’s carbon footprint by analyzing total file size, server location, and visitor geography. You can submit either a URL or upload your site files for a detailed breakdown."
+        />
+        <FAQCard
+          question="How does the AI Carbon Emission Calculator work?"
+          answer="We integrate with cloud provider APIs (AWS, Google Cloud, etc.) to measure energy use during model training and inference, and translate that into carbon emissions. You’ll get per-epoch and per-query emission benchmarks."
+        />
+        <FAQCard
+          question="Can I track my personal carbon footprint?"
+          answer="Yes—our Daily Carbon Footprint Tracker lets you log energy use, transportation choices, and other activities. View interactive charts of your day-to-day and monthly trends, plus get actionable tips to lower your impact."
+        />
+        <FAQCard
+          question="How can I join the Volunteer & Resource Hub?"
+          answer="Head over to our Volunteer Hub to browse local and global climate events, register for volunteer opportunities, earn badges, and connect with nonprofits. All listings are filtered by date, location, and cause."
+        />
+        <FAQCard
+          question="Do you offer API access?"
+          answer="Absolutely. Developers and organizations can integrate our calculators via RESTful APIs. Email us at minhvy.ha@mq.edu.au for documentation and keys."
+        />
+        <FAQCard
+          question="Where can I get help or provide feedback?"
+          answer="Join our Discord community (minhvha) for real-time support, or send us a message via the contact form below. We welcome contributions to our open-source GitHub repo and suggestions for new features!"
+        />
+      </div>
 
-            <div className="text-center mt-12">
-              <p className="text-muted-foreground mb-4">Don't see your question answered here?</p>
-              <Button asChild className="bg-carbon-red hover:bg-carbon-deep-red">
-                <Link href="#contact-form">Ask Us Directly</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="text-center mt-12">
+        <p className="text-muted-foreground mb-4">Still have questions?</p>
+        <Button asChild className="bg-carbon-red hover:bg-carbon-deep-red">
+          <Link href="#contact-form">Ask Us Directly</Link>
+        </Button>
+      </div>
+    </div>
+    </div>
+</section>
+
 
       {/* CTA Section */}
       <section className="py-16 md:py-24">
