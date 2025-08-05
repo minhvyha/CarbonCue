@@ -1,8 +1,7 @@
 "use client";
 import { Cloud, FileText, Globe, Server } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,26 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WebsiteCalculatorForm } from "@/components/website-calculator-form";
 import { WebsiteCalculatorResults } from "@/components/website-calculator-results";
 
 export default function WebsiteCalculatorPage() {
   const [data, setData] = useState<any>(null);
-  const [manualData, setManualData] = useState<any>(null);
   const [monthlyVisitors, setMonthlyVisitors] = useState("10000");
-  const [bytes, setBytes] = useState<number | undefined>();
-  const [green, setGreen] = useState<boolean>(false);
-
-  useEffect(() => {
-    // This effect can be used to fetch initial data if needed
-    // For example, you could fetch some default values or settings
-    // setData(initialData);
-    console.log("Website Calculator initialized with data:", data);
-  }, [data]);
-
+  
   return (
     <div className="container py-10">
       <div className="mx-auto max-w-4xl">

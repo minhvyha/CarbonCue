@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ContactForm } from "@/components/contact-form"
 export function ContactPageClient() {
+  
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -37,33 +39,33 @@ export function ContactPageClient() {
                 icon={<MessageSquare className="h-8 w-8 text-carbon-red" />}
                 title="General Inquiries"
                 description="Questions about our platform, features, or getting started"
-                contact="hello@carboncue.com"
+                contact="minhvy.ha@mq.edu.au"
                 action="Send Email"
-                href="mailto:hello@carboncue.com"
+                href="mailto:minhvy.ha@mq.edu.au"
               />
               <ContactMethodCard
                 icon={<Phone className="h-8 w-8 text-carbon-purple" />}
                 title="Technical Support"
                 description="Need help with your account or experiencing technical issues"
-                contact="support@carboncue.com"
+                contact="minhvy.ha@mq.edu.au"
                 action="Get Support"
-                href="mailto:support@carboncue.com"
+                href="mailto:minhvy.ha@mq.edu.au"
               />
               <ContactMethodCard
                 icon={<Mail className="h-8 w-8 text-carbon-deep-red" />}
                 title="Partnerships"
                 description="Interested in partnering with us or enterprise solutions"
-                contact="partnerships@carboncue.com"
+                contact="minhvy.ha@mq.edu.au"
                 action="Partner With Us"
-                href="mailto:partnerships@carboncue.com"
+                href="mailto:minhvy.ha@mq.edu.au"
               />
               <ContactMethodCard
                 icon={<Send className="h-8 w-8 text-carbon-magenta" />}
                 title="Media & Press"
                 description="Press inquiries, interviews, and media requests"
-                contact="press@carboncue.com"
+                contact="minhvy.ha@mq.edu.au"
                 action="Media Inquiry"
-                href="mailto:press@carboncue.com"
+                href="mailto:minhvy.ha@mq.edu.au"
               />
             </div>
 

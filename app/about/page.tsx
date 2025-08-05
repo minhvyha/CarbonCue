@@ -201,8 +201,8 @@ export default function AboutPage() {
               <TeamMember
                 name="Salvio Ha"
                 role="Lead Developer"
-                bio="Environmental scientist with 15+ years in climate research and sustainable technology development."
-                image="/placeholder.svg?height=300&width=300"
+                bio="Lead Developer with 3 years in UI, database, and core web development, passionate about green tech and climate action."
+                image="/team/minh.jpg?height=300&width=300"
               />
               <TeamMember
                 name="Marcus Rodriguez"
@@ -240,7 +240,7 @@ export default function AboutPage() {
       </section>
 
       {/* Impact Section */}
-      <section className="py-16 md:py-24">
+      {/* <section className="py-16 md:py-24">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
@@ -263,10 +263,10 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Recognition Section */}
-      <section className="py-16 md:py-24 bg-muted/50">
+      {/* <section className="py-16 md:py-24 bg-muted/50">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
@@ -300,7 +300,7 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-16 md:py-24">

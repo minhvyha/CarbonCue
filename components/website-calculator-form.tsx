@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/toast-provider";
-import { set } from "mongoose";
 
 // --- Constants & Thresholds ---
 const ADJUSTMENT_FACTOR = 0.7554; // network/header/etc overhead
@@ -147,9 +146,12 @@ export function WebsiteCalculatorForm({
           },
         });
         setIsLoading(false);
+        toast({
+          title: "Page Size Calculated",
+          description: `Emissions calculated for ${pageSize} KB page size.`,
+        });
         return;
       }
-      console.log("Submitting data:", { url, pageSize, green });
 
       try {
         const baseUrl = process.env.VERCEL_URL
@@ -186,6 +188,12 @@ export function WebsiteCalculatorForm({
         setData(null);
       } finally {
         setIsLoading(false);
+        toast({
+          title: "Calculation Complete",
+          description: `Emissions calculated for ${url || pageSize} with ${
+            green ? "renewable" : "mixed"
+          } energy source.`,
+        });
         setUrl("");
         setPageSize("");
       }
@@ -200,7 +208,9 @@ export function WebsiteCalculatorForm({
       <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center gap-2">
         <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
         <p className="text-sm text-blue-700 dark:text-blue-300">
-         Enter either a website URL <strong>OR</strong> a page size in KB - not both. We'll analyze your website automatically or use your custom page size.
+          Enter either a website URL <strong>OR</strong> a page size in KB - not
+          both. We'll analyze your website automatically or use your custom page
+          size.
         </p>
       </div>
 
@@ -241,7 +251,7 @@ export function WebsiteCalculatorForm({
             id="page-size"
             type="number"
             placeholder="2400"
-            value={(pageSize)}
+            value={pageSize}
             min={1}
             max={200000000}
             disabled={!!url}

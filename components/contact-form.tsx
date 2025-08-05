@@ -1,16 +1,18 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Loader2, Send } from "lucide-react"
+import type React from "react";
+import { useState } from "react";
+import { Loader2, Send } from "lucide-react";
+import emailjs from "@emailjs/browser";
+import { useToast } from "./toast-provider";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export function ContactForm() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,37 +20,65 @@ export function ContactForm() {
     subject: "",
     message: "",
     inquiryType: "general",
-  })
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    setIsLoading(false)
-    setIsSubmitted(true)
-
-    // Reset form after showing success message
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData({
-        name: "",
-        email: "",
-        company: "",
-        subject: "",
-        message: "",
-        inquiryType: "general",
+    fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
       })
-    }, 3000)
-  }
+      .then((data) => {
+        toast({
+          title: "Message Sent",
+          description: "Your message has been sent successfully!",
+        });
+        setIsLoading(false);
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setFormData({
+            name: "",
+            email: "",
+            company: "",
+            subject: "",
+            message: "",
+            inquiryType: "general",
+          });
+          setIsSubmitted(false);
+        }, 5000);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        toast({
+          title: "Error",
+          description:
+            "There was an issue sending your message. Please try again later.",
+          variant: "destructive",
+        });
+      });
+  };
 
   if (isSubmitted) {
     return (
@@ -56,7 +86,9 @@ export function ContactForm() {
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
           <Send className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="text-xl font-semibold mb-2">Message Sent Successfully!</h3>
+        <h3 className="text-xl font-semibold mb-2">
+          Message Sent Successfully!
+        </h3>
         <p className="text-muted-foreground mb-4">
           Thank you for contacting us. We'll get back to you within 24 hours.
         </p>
@@ -64,7 +96,7 @@ export function ContactForm() {
           Check your email for confirmation
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -72,7 +104,14 @@ export function ContactForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="grid gap-2">
           <Label htmlFor="name">Full Name *</Label>
-          <Input id="name" name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} required />
+          <Input
+            id="name"
+            name="name"
+            placeholder="John Doe"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="email">Email Address *</Label>
@@ -154,7 +193,12 @@ export function ContactForm() {
         </Label>
       </div>
 
-      <Button type="submit" disabled={isLoading} className="w-full bg-carbon-red hover:bg-carbon-deep-red" size="lg">
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-carbon-red hover:bg-carbon-deep-red"
+        size="lg"
+      >
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -168,5 +212,5 @@ export function ContactForm() {
         )}
       </Button>
     </form>
-  )
+  );
 }
