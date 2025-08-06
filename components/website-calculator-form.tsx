@@ -154,14 +154,11 @@ export function WebsiteCalculatorForm({
       }
 
       try {
-        const baseUrl = process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : "http://localhost:3000";
         const endpoint = url
           ? `/api/emissioncalculator/${encodeURIComponent(url)}`
           : `/api/emissioncalculator/pagesize/${pageSize}`;
 
-        const res = await fetch(baseUrl + endpoint, { cache: "no-store" });
+        const res = await fetch(endpoint, { cache: "no-store" });
         if (!res.ok) {
           const errMsg = res.statusText || "Unknown server error";
           const errCode = res.status ? ` [${res.status}]` : "";
@@ -178,6 +175,12 @@ export function WebsiteCalculatorForm({
             emissionDetails,
           }));
         }
+        toast({
+          title: "Calculation Complete",
+          description: `Emissions calculated for ${url || pageSize} with ${
+            green ? "renewable" : "mixed"
+          } energy source.`,
+        });
       } catch (error: any) {
         console.error("Error fetching data:", error);
         toast({
@@ -188,12 +191,7 @@ export function WebsiteCalculatorForm({
         setData(null);
       } finally {
         setIsLoading(false);
-        toast({
-          title: "Calculation Complete",
-          description: `Emissions calculated for ${url || pageSize} with ${
-            green ? "renewable" : "mixed"
-          } energy source.`,
-        });
+        
         setUrl("");
         setPageSize("");
       }
