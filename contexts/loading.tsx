@@ -11,7 +11,6 @@ import React, {
 } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { LoadingOverlay } from "@/components/loading-overlay";
-import { set } from "mongoose";
 
 type LoadingContextType = {
   loading: boolean;
@@ -40,10 +39,13 @@ function LoadingProviderInner({ children }: { children: ReactNode }) {
 
 
   useEffect(() => {
+    setTimeout(() =>{
+      setShowOverlay(false);
+      setIsNavigating(false);
+    }, 300)
     setLoading(true);
 
-    setShowOverlay(false);
-    setIsNavigating(false);
+    
     const tid = window.setTimeout(() => setLoading(false), 300);
     return () => window.clearTimeout(tid);
   }, [pathname, searchParams]);
