@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { triggerNavigationStart } from "@/lib/navigation"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { triggerNavigationStart } from "@/lib/navigation";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
   const { refreshUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       const res = await fetch("/api/auth/signin", {
@@ -36,16 +36,16 @@ export function LoginForm() {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await res.json();
-  
+
       if (res.ok) {
         toast.success("Login successful");
         // Refresh user context
         await refreshUser();
         // Redirect to dashboard or home page
         router.refresh();
-        router.push("/dashboard");
+        router.push("/");
       } else if (res.status === 401 || res.status === 404) {
         setError(data.error || "Invalid credentials");
       } else {
@@ -57,8 +57,7 @@ export function LoginForm() {
     } finally {
       setIsLoading(false);
     }
-  
-  }
+  };
 
   return (
     <div className="grid gap-6">
@@ -73,7 +72,7 @@ export function LoginForm() {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-                className="border-gray-300"
+              className="border-gray-300"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -108,11 +107,19 @@ export function LoginForm() {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <EyeOff
+                    className="h-4 w-4 text-muted-foreground"
+                    aria-hidden="true"
+                  />
                 ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <Eye
+                    className="h-4 w-4 text-muted-foreground"
+                    aria-hidden="true"
+                  />
                 )}
-                <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                <span className="sr-only">
+                  {showPassword ? "Hide password" : "Show password"}
+                </span>
               </Button>
             </div>
           </div>
@@ -125,7 +132,11 @@ export function LoginForm() {
               Remember me
             </Label>
           </div>
-          <Button type="submit" className="bg-carbon-red hover:bg-carbon-deep-red" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="bg-carbon-red hover:bg-carbon-deep-red"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -142,20 +153,30 @@ export function LoginForm() {
           <span className="w-full border-t border-gray-500" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
         </div>
       </div>
-        <Button variant="outline" type="button" className="border border-gray-300 hover:bg-carbon-charcoal" disabled={isLoading}>
-          Google
-        </Button>
+      <Button
+        variant="outline"
+        type="button"
+        className="border border-gray-300 hover:bg-carbon-charcoal"
+        disabled={isLoading}
+      >
+        Google
+      </Button>
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-primary hover:underline underline-offset-4">
+          <Link
+            href="/signup"
+            className="text-primary hover:underline underline-offset-4"
+          >
             Sign up
           </Link>
         </p>
       </div>
     </div>
-  )
+  );
 }

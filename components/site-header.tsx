@@ -36,7 +36,13 @@ export function SiteHeader() {
     const success = await logout();
     if (success) {
       toast.success("Logged out successfully");
-      router.push("/");
+
+      // Redirect to home page if on protected pages
+      const protectedPages = ["/carbon-tracker"];
+      if (protectedPages.some((page) => pathname.startsWith(page))) {
+        router.push("/");
+      }
+
       router.refresh();
     } else {
       toast.error("Failed to logout");
@@ -89,12 +95,7 @@ export function SiteHeader() {
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
             </div>
           ) : user ? (
-            <>
-              <Button asChild>
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-              <Button onClick={handleLogout}>Log out</Button>
-            </>
+            <Button onClick={handleLogout}>Log out</Button>
           ) : (
             <Button asChild>
               <Link href="/login">Log in</Link>
@@ -157,14 +158,9 @@ export function SiteHeader() {
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                   </div>
                 ) : user ? (
-                  <>
-                    <Button asChild className="w-full">
-                      <Link href="/dashboard">Dashboard</Link>
-                    </Button>
-                    <Button className="w-full" onClick={handleLogout}>
-                      Log out
-                    </Button>
-                  </>
+                  <Button className="w-full" onClick={handleLogout}>
+                    Log out
+                  </Button>
                 ) : (
                   <Button asChild className="w-full">
                     <Link href="/login">Log in</Link>

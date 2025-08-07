@@ -1,13 +1,12 @@
-export const dynamic = 'force-dynamic';
-
+export const dynamic = "force-dynamic";
 
 // app/api/resources/route.ts
 
-import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongoose';
-import Users from '@/model/Users';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongoose";
+import Users from "@/model/Users";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -31,11 +30,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  console.log('POST body:', body);
+  console.log("POST body:", body);
 
   // 1) connect
   const conn = await connectToDatabase();
-  console.log('Mongo readyState:', conn.connection.readyState); // 1 = connected
+  console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
 
   // 2) create a new user
   const newUser = new Users(body);
