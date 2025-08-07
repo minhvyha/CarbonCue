@@ -1,6 +1,14 @@
-"use client"
+"use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+  useEffect,
+} from "react";
+import { useAuth } from "./auth-context";
 
 // Define the type for activity log data from the API
 interface ActivityLogCategory {
@@ -15,9 +23,12 @@ interface ActivityContextType {
   setActivityLogs: (logs: ActivityLogCategory[]) => void;
 }
 
-const ActivityContext = createContext<ActivityContextType | undefined>(undefined);
+const ActivityContext = createContext<ActivityContextType | undefined>(
+  undefined
+);
 
 export function ActivityProvider({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth();
   const [activityLogs, setActivityLogs] = useState<ActivityLogCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,6 +40,13 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         credentials: "include",
       });
 
+      // Handle 401 Unauthorized (user not logged in) gracefully
+      if (res.status === 401) {
+        console.log("User not authenticated, clearing activity logs");
+        setActivityLogs([]);
+        return;
+      }
+
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
@@ -37,18 +55,34 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       setActivityLogs(data.total_emissions_based_categories || []);
     } catch (err) {
       console.error("Failed to fetch activity data:", err);
+      // Clear activity logs on error
+      setActivityLogs([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  // Auto-fetch activity logs when user authentication changes
+  useEffect(() => {
+    if (!loading && user) {
+      // User is authenticated, fetch activity logs
+      refreshActivityLogs();
+    } else if (!loading && !user) {
+      // User is not authenticated, clear activity logs
+      setActivityLogs([]);
+      setIsLoading(false);
+    }
+  }, [user, loading, refreshActivityLogs]);
+
   return (
-    <ActivityContext.Provider value={{
-      activityLogs,
-      isLoading,
-      refreshActivityLogs,
-      setActivityLogs
-    }}>
+    <ActivityContext.Provider
+      value={{
+        activityLogs,
+        isLoading,
+        refreshActivityLogs,
+        setActivityLogs,
+      }}
+    >
       {children}
     </ActivityContext.Provider>
   );
@@ -57,7 +91,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
 export function useActivity() {
   const context = useContext(ActivityContext);
   if (context === undefined) {
-    throw new Error('useActivity must be used within an ActivityProvider');
+    throw new Error("useActivity must be used within an ActivityProvider");
   }
   return context;
-} 
+}

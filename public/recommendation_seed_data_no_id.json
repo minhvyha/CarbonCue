@@ -1,0 +1,227 @@
+[
+  {
+    "title": "Metro to Campus",
+    "description": "Use the Sydney Metro instead of driving to Macquarie University.",
+    "category": "transportation",
+    "impact": "10.2 kg CO\u2082 saved",
+    "impactValue": 10.2,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Bike to Class",
+    "description": "Cycle to campus and park near MUSE or 10 Wally's Walk.",
+    "category": "transportation",
+    "impact": "14.5 kg CO\u2082 saved",
+    "impactValue": 14.5,
+    "difficulty": "Medium",
+    "treesEarned": 2
+  },
+  {
+    "title": "Carpool with Classmates",
+    "description": "Organize rides with friends to reduce single-passenger trips.",
+    "category": "transportation",
+    "impact": "12.7 kg CO\u2082 saved",
+    "impactValue": 12.7,
+    "difficulty": "Medium",
+    "treesEarned": 2
+  },
+  {
+    "title": "Walk Between Buildings",
+    "description": "Skip the shuttle \u2014 walk to your next class for health and the planet.",
+    "category": "transportation",
+    "impact": "4.2 kg CO\u2082 saved",
+    "impactValue": 4.2,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Tap Opal Off-Peak",
+    "description": "Travel off-peak using your Opal card to reduce congestion and emissions.",
+    "category": "transportation",
+    "impact": "6.3 kg CO\u2082 saved",
+    "impactValue": 6.3,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Veggie UBar Day",
+    "description": "Choose the plant-based burger at UBar once this week.",
+    "category": "fooddiet",
+    "impact": "5.6 kg CO\u2082 saved",
+    "impactValue": 5.6,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Reusable Coffee Cup",
+    "description": "Bring your own mug to Courtyard Caf\u00e9 to cut waste and get discounts.",
+    "category": "fooddiet",
+    "impact": "1.9 kg CO\u2082 saved",
+    "impactValue": 1.9,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Meat-Free Monday",
+    "description": "Go vegetarian every Monday for one month.",
+    "category": "fooddiet",
+    "impact": "9.8 kg CO\u2082 saved",
+    "impactValue": 9.8,
+    "difficulty": "Medium",
+    "treesEarned": 2
+  },
+  {
+    "title": "Zero Waste Meal Plan",
+    "description": "Use all groceries before expiry this week.",
+    "category": "fooddiet",
+    "impact": "4.7 kg CO\u2082 saved",
+    "impactValue": 4.7,
+    "difficulty": "Medium",
+    "treesEarned": 1
+  },
+  {
+    "title": "Buy Local Challenge",
+    "description": "Get fresh produce from local markets or vendors near campus.",
+    "category": "fooddiet",
+    "impact": "6.1 kg CO\u2082 saved",
+    "impactValue": 6.1,
+    "difficulty": "Medium",
+    "treesEarned": 1
+  },
+  {
+    "title": "Dorm Device Unplug",
+    "description": "Unplug laptop, chargers, and lamps in your dorm when not in use.",
+    "category": "homeenergy",
+    "impact": "5.4 kg CO\u2082 saved",
+    "impactValue": 5.4,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Power-Saving Mode",
+    "description": "Enable eco mode on your laptop and phone for a full week.",
+    "category": "homeenergy",
+    "impact": "3.3 kg CO\u2082 saved",
+    "impactValue": 3.3,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Charge at the Library",
+    "description": "Use the solar-powered library to charge devices instead of your dorm.",
+    "category": "homeenergy",
+    "impact": "2.7 kg CO\u2082 saved",
+    "impactValue": 2.7,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Lights Out Habit",
+    "description": "Turn off lights in shared dorm areas when leaving.",
+    "category": "homeenergy",
+    "impact": "4.8 kg CO\u2082 saved",
+    "impactValue": 4.8,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Natural Light Days",
+    "description": "Use natural daylight for study instead of artificial lights.",
+    "category": "homeenergy",
+    "impact": "3.6 kg CO\u2082 saved",
+    "impactValue": 3.6,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Textbook Swap",
+    "description": "Buy or trade secondhand textbooks from other students.",
+    "category": "shopping",
+    "impact": "7.5 kg CO\u2082 saved",
+    "impactValue": 7.5,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Reuse Market Visit",
+    "description": "Pick up or donate items at the campus reuse market.",
+    "category": "shopping",
+    "impact": "6.9 kg CO\u2082 saved",
+    "impactValue": 6.9,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "No-Buy Week",
+    "description": "Avoid all non-essential purchases for one week.",
+    "category": "shopping",
+    "impact": "12.2 kg CO\u2082 saved",
+    "impactValue": 12.2,
+    "difficulty": "Hard",
+    "treesEarned": 3
+  },
+  {
+    "title": "Library Loan First",
+    "description": "Borrow electronics or materials from the library before buying.",
+    "category": "shopping",
+    "impact": "5.2 kg CO\u2082 saved",
+    "impactValue": 5.2,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Bag It Better",
+    "description": "Use a reusable bag at Macquarie Centre for every purchase this week.",
+    "category": "shopping",
+    "impact": "2.4 kg CO\u2082 saved",
+    "impactValue": 2.4,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Download Lectures",
+    "description": "Watch lectures offline instead of streaming them repeatedly.",
+    "category": "digitalusage",
+    "impact": "3.1 kg CO\u2082 saved",
+    "impactValue": 3.1,
+    "difficulty": "Medium",
+    "treesEarned": 1
+  },
+  {
+    "title": "Tab Management Master",
+    "description": "Keep fewer browser tabs open while studying.",
+    "category": "digitalusage",
+    "impact": "1.7 kg CO\u2082 saved",
+    "impactValue": 1.7,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Low-Bandwidth Zoom",
+    "description": "Disable HD video and backgrounds in Zoom for all your meetings this week.",
+    "category": "digitalusage",
+    "impact": "2.9 kg CO\u2082 saved",
+    "impactValue": 2.9,
+    "difficulty": "Medium",
+    "treesEarned": 1
+  },
+  {
+    "title": "Dark Mode Days",
+    "description": "Use dark mode on all your devices for the entire week.",
+    "category": "digitalusage",
+    "impact": "1.6 kg CO\u2082 saved",
+    "impactValue": 1.6,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  },
+  {
+    "title": "Email Efficiency",
+    "description": "Send fewer, consolidated emails to reduce cloud activity.",
+    "category": "digitalusage",
+    "impact": "2.2 kg CO\u2082 saved",
+    "impactValue": 2.2,
+    "difficulty": "Easy",
+    "treesEarned": 1
+  }
+]

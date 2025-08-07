@@ -7,11 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { BarChart, Car, Home, ShoppingBag, Utensils } from "lucide-react";
+import { BarChart, Car, Home, Info, ShoppingBag, Utensils } from "lucide-react";
 import { useEffect } from "react";
 import { useActivity } from "../contexts/activity-context";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { cn } from "@/lib/utils";
+import { LoadingOverlay } from "./loading-overlay";
+import { useAuth } from "@/contexts/auth-context";
 
 const colorsType = {
   home_energy: "bg-carbon-red",
@@ -46,6 +48,7 @@ const ColoredProgress = ({
 
 export default function CarbonTrackerDaily() {
   const { activityLogs, isLoading, refreshActivityLogs } = useActivity();
+  const { user } = useAuth();
 
   useEffect(() => {
     refreshActivityLogs();
@@ -63,59 +66,70 @@ export default function CarbonTrackerDaily() {
 
   return (
     <Card className="mb-6">
-      <CardHeader>
-        <CardTitle>Your Carbon Footprint</CardTitle>
-        <CardDescription>
-          Track your daily emissions and see how you compare
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : activityLogs.length === 0 ? (
-          <div className="text-center text-muted-foreground">
-            No activity data found. Start logging your activities to see your
-            carbon footprint!
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <div className="text-center">
-              <div className="text-5xl font-bold mb-2">
-                {activityLogs
-                  .reduce((sum, cat) => sum + cat.totalEmissions, 0)
-                  .toFixed(1)}{" "}
-                kg
+      {isLoading ? (
+        <div className="flex justify-center items-center min-h-[200px]">
+          <div className="w-8 h-8 border-4 border-carbon-red border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <>
+          <CardHeader>
+            <CardTitle>{user?.name}'s Carbon Footprint</CardTitle>
+            <CardDescription>
+              Track your daily emissions and see how you compare
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {activityLogs.length === 0 ? (
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800 flex items-center gap-2">
+                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  No activity today. Start logging your activities to see your
+                  footprint!
+                </p>
               </div>
-              <div className="text-sm text-muted-foreground">CO₂e total</div>
-            </div>
+            ) : (
+              <div className="space-y-8">
+                <div className="text-center">
+                  <div className="text-5xl font-bold mb-2">
+                    {activityLogs
+                      .reduce((sum, cat) => sum + cat.totalEmissions, 0)
+                      .toFixed(1)}{" "}
+                    kg
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    CO₂e total
+                  </div>
+                </div>
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Breakdown by Category</h3>
-              {activityLogs.map((cat) => (
-                <CategoryBreakdown
-                  key={cat.activityType}
-                  icon={
-                    categoryIcons[cat.activityType] || (
-                      <BarChart className="h-4 w-4" />
-                    )
-                  } // fallback icon
-                  label={cat.activityType
-                    .replace("_", " ")
-                    .replace(/\b\w/g, (l: string) => l.toUpperCase())}
-                  value={`${cat.totalEmissions.toFixed(1)} kg`}
-                  percentage={Math.min(
-                    100,
-                    Math.round((cat.totalEmissions / 10) * 100)
-                  )} // placeholder logic
-                  color={
-                    colorsType[cat.activityType as keyof typeof colorsType]
-                  }
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </CardContent>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Breakdown by Category</h3>
+                  {activityLogs.map((cat) => (
+                    <CategoryBreakdown
+                      key={cat.activityType}
+                      icon={
+                        categoryIcons[cat.activityType] || (
+                          <BarChart className="h-4 w-4" />
+                        )
+                      } // fallback icon
+                      label={cat.activityType
+                        .replace("_", " ")
+                        .replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                      value={`${cat.totalEmissions.toFixed(1)} kg`}
+                      percentage={Math.min(
+                        100,
+                        Math.round((cat.totalEmissions / 10) * 100)
+                      )} // placeholder logic
+                      color={
+                        colorsType[cat.activityType as keyof typeof colorsType]
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 }

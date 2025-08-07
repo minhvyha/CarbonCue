@@ -11,6 +11,7 @@ import {
 
 import { useState, useEffect } from "react";
 import { useActivity } from "@/contexts/activity-context";
+import { useAuth } from "@/contexts/auth-context";
 
 const monthNames = [
   "January",
@@ -35,6 +36,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ChartLineLabel() {
+  const { user, loading } = useAuth();
+  if (!user && !loading) {
+    return null;
+  }
+
   const [chartData, setChartData] = useState([]);
   const { activityLogs, refreshActivityLogs } = useActivity();
 
