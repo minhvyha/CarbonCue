@@ -42,7 +42,9 @@ export default function ResourcesPage() {
   const { show, hide } = useLoading();
 
   useEffect(() => {
-    show();
+    setTimeout(() => {
+      show();
+    }, 300);
     fetch("/api/resources")
       .then((response) => response.json())
       .then((data) => {

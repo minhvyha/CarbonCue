@@ -58,7 +58,6 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setTimeout(() => {
       hide();
-      hide();
     }, 300);
   }, [pathname, searchParams]);
   return (
