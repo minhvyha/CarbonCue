@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "npx playwright install-deps"
-
+    "lint": "next lint"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -42,9 +40,9 @@
     "@radix-ui/react-tooltip": "^1.1.6",
     "@vercel/analytics": "^1.5.0",
     "autoprefixer": "^10.4.20",
+    "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cheerio": "^1.1.2",
-    "chrome-aws-lambda": "^10.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
@@ -56,8 +54,6 @@
     "mongoose": "^8.14.3",
     "next": "15.2.4",
     "next-themes": "latest",
-    "playwright-aws-lambda": "^0.11.0",
-    "playwright-core": "^1.54.2",
     "react": "^19",
     "react-dom": "^19",
     "react-hook-form": "^7.54.1",
