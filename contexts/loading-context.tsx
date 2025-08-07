@@ -56,16 +56,14 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
     };
   }, []);
   useEffect(() => {
-    setTimeout(() => {
-      hide();
-    }, 100);
+    hide();
   }, [pathname, searchParams]);
   return (
-      <LoadingContext.Provider value={{ show, hide }}>
-        {children}
-        {/* Only render overlay once mounted */}
-        {mounted && <LoadingOverlay isVisible={isVisible} />}
-      </LoadingContext.Provider>
+    <LoadingContext.Provider value={{ show, hide }}>
+      {children}
+      {/* Only render overlay once mounted */}
+      {mounted && <LoadingOverlay isVisible={isVisible} />}
+    </LoadingContext.Provider>
   );
 }
 // Public provider wrapped in Suspense for CSR bailout
