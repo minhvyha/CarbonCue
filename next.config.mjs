@@ -15,6 +15,13 @@ const nextConfig = {
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
   },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.map$/,
+      loader: 'ignore-loader',
+    });
+    return config;
+  },
 }
 
 
