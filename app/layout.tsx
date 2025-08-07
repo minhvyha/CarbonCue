@@ -11,7 +11,7 @@ import { LoadingProviderOuter } from "@/contexts/loading-context";
 import { AuthProvider } from "@/contexts/auth-context";
 import { ToastProvider } from "@/components/toast-provider";
 import { Analytics } from "@vercel/analytics/next";
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -50,6 +50,7 @@ export default function RootLayout({
           </AuthProvider>
         </LoadingProviderOuter>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
