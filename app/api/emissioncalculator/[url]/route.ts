@@ -34,11 +34,17 @@ export async function GET(
     if (isProd) {
       // on Vercel: use the Lambda layer Chromium
       browser = await puppeteerCore.launch({
-        args: chromium.args,
-        executablePath: await chromium.executablePath,
-        headless: chromium.headless,
-        defaultViewport: chromium.defaultViewport,
-      });
+  args: [
+    ...chromium.args,
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--single-process',
+  ],
+  executablePath: await chromium.executablePath,
+  headless: chromium.headless,
+  defaultViewport: chromium.defaultViewport,
+});
     } else {
       // locally: use the full Puppeteer bundle (downloads its own Chromium)
       browser = await puppeteerDev.launch();
