@@ -13,7 +13,6 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
 
-import { LoadingBar } from "./loading-bar";
 import { toast } from "sonner";
 
 const navigation = [
@@ -175,7 +174,6 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
-      <LoadingBar />
     </header>
   );
 }

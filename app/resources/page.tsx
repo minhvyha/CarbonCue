@@ -3,7 +3,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
-
+import { useLoading } from "@/contexts/loading-context";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLoading } from "@/contexts/loading";
 
 type Resource = {
   title: string;
@@ -40,10 +39,10 @@ export default function ResourcesPage() {
     videos: [],
     research: [],
   });
-  const { setShowOverlay } = useLoading();
-  
+  const { show, hide } = useLoading();
+
   useEffect(() => {
-    setShowOverlay(true);
+    show();
     fetch("/api/resources")
       .then((response) => response.json())
       .then((data) => {
@@ -54,7 +53,8 @@ export default function ResourcesPage() {
           research: data.filter((item: Resource) => item.type === "research"),
         };
         setResources(groupedResources);
-        setShowOverlay(false);
+      }).finally(() => {
+        hide();
       });
   }, []);
 
