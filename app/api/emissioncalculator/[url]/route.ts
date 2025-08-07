@@ -39,14 +39,8 @@ export async function GET(
 
     // Launch with extra flags
     browser = await puppeteerCore.launch({
-      executablePath: dest,
-      args: [
-        ...chromium.args,
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--single-process',
-      ],
+      executablePath: await chromium.executablePath,  // already points at the downloaded chrome
+      args: chromium.args,
       headless: chromium.headless,
       defaultViewport: chromium.defaultViewport,
     });
