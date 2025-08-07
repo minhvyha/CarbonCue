@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "puppeteer:install": "npx puppeteer browsers install chrome",
-    "install": "npm run puppeteer:install && npm install",
     "build": "next build",
     "start": "next start",
     "dev": "next dev",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npx @puppeteer/browsers install chrome@stable --with-deps"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
