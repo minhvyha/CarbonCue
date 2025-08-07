@@ -6,6 +6,7 @@ import React, {
   useState,
   ReactNode,
   useEffect,
+  Suspense,
 } from "react";
 import { LoadingOverlay } from "@/components/loading-overlay";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -15,9 +16,7 @@ type LoadingContextType = {
   hide: () => void;
 };
 
-const LoadingContext = createContext<LoadingContextType | undefined>(
-  undefined
-);
+const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
 export function LoadingProvider({ children }: { children: ReactNode }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -57,17 +56,19 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
     };
   }, []);
   useEffect(() => {
-    setTimeout(() =>{
+    setTimeout(() => {
       hide();
       hide();
-    }, 300)
+    }, 300);
   }, [pathname, searchParams]);
   return (
-    <LoadingContext.Provider value={{ show, hide }}>
-      {children}
-      {/* Only render overlay once mounted */}
-      {mounted && <LoadingOverlay isVisible={isVisible} />}
-    </LoadingContext.Provider>
+    <Suspense fallback={<LoadingOverlay isVisible={true} />}>
+      <LoadingContext.Provider value={{ show, hide }}>
+        {children}
+        {/* Only render overlay once mounted */}
+        {mounted && <LoadingOverlay isVisible={isVisible} />}
+      </LoadingContext.Provider>
+    </Suspense>
   );
 }
 
