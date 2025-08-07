@@ -219,20 +219,46 @@ export default function CarbonTrackerPage() {
               </CardHeader>
               <CardContent>
                 <Tabs value={currentTab} onValueChange={setCurrentTab}>
-                  <TabsList className="grid w-full grid-cols-6 mb-6">
-                    <TabsTrigger value="recommendations">
-                      Recommendations
-                    </TabsTrigger>
-                    <TabsTrigger value="transportation">
-                      Transportation
-                    </TabsTrigger>
-                    <TabsTrigger value="home_energy">Home Energy</TabsTrigger>
-                    <TabsTrigger value="food_diet">Food & Diet</TabsTrigger>
-                    <TabsTrigger value="shopping">Shopping</TabsTrigger>
-                    <TabsTrigger value="digital_usage">
-                      Digital Usage
-                    </TabsTrigger>
-                  </TabsList>
+                  <div className="w-full mb-6 overflow-x-auto">
+                    <TabsList className="w-max min-w-full h-auto p-1 flex sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:w-full">
+                      <TabsTrigger
+                        value="recommendations"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Recommendations
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="transportation"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Transportation
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="home_energy"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Home Energy
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="food_diet"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Food & Diet
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="shopping"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Shopping
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="digital_usage"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Digital Usage
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
                   <div className="mt-6">
                     <CarbonTrackerRecommendation
                       value={currentTab}
