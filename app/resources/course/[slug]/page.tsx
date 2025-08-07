@@ -1,5 +1,5 @@
-// app/resources/guides/[slug]/page.tsx
 import { notFound } from "next/navigation";
+import { headers } from 'next/headers';
 
 type BlockType =
   | "heading"
@@ -84,11 +84,14 @@ function mapGuideToBlocks(guide: RawGuide): IBlock[] {
 
 export default async function GuidePage({ params }: PageProps) {
   const { slug } = await params;
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+    const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = host?.includes('localhost') ? 'http' : 'https';
 
-  const res = await fetch(`${baseUrl}/api/resources/${slug}`, {
+  const apiUrl = new URL(`/api/resources/${encodeURIComponent(slug)}`, `${protocol}://${host}`);
+  console.log("Fetching guide from:", apiUrl.toString());
+
+  const res = await fetch(apiUrl.toString(), {
     cache: "no-store",
   });
   if (!res.ok) notFound();

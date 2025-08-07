@@ -44,8 +44,7 @@ export default function ResourcesPage() {
   useEffect(() => {
     setTimeout(() => {
       show();
-    }, 300);
-    fetch("/api/resources")
+          fetch("/api/resources")
       .then((response) => response.json())
       .then((data) => {
         const groupedResources = {
@@ -58,6 +57,8 @@ export default function ResourcesPage() {
       }).finally(() => {
         hide();
       });
+    }, 300);
+
   }, []);
 
   return (
