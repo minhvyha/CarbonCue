@@ -44,7 +44,7 @@ export default function ResourcesPage() {
   useEffect(() => {
     setTimeout(() => {
       show();
-    }, 500);
+    }, 300);
     fetch("/api/resources")
       .then((response) => response.json())
       .then((data) => {

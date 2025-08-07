@@ -58,7 +58,7 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setTimeout(() => {
       hide();
-    }, 300);
+    }, 100);
   }, [pathname, searchParams]);
   return (
       <LoadingContext.Provider value={{ show, hide }}>
