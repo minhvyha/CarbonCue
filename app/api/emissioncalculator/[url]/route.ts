@@ -1,10 +1,10 @@
-// app/api/scrape/[url]/route.ts  (or wherever yours lives)
+// pages/api/emissioncalculator/[url].ts  (or route.ts)
 
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';           // still full puppeteer
+import chromium from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer-core';
 import { lookup } from 'dns/promises';
 import https from 'https';
-import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,50 +13,35 @@ export async function GET(
   { params }: { params: { url: string } }
 ) {
   const targetUrl = decodeURIComponent(params.url);
-  const hostname = new URL(targetUrl).hostname;
+  const hostname  = new URL(targetUrl).hostname;
 
   // --- DOMAIN AVAILABILITY CHECK ---
   try {
     await lookup(hostname);
   } catch {
-    return NextResponse.json(
-      { error: `Domain not found: ${hostname}`, code: 'DOMAIN_NOT_FOUND' },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: `Domain not found: ${hostname}`, code: 'DOMAIN_NOT_FOUND' }, { status: 404 });
   }
 
-  // --- LAUNCH PUPPETEER USING THE INSTALLED CHROME BINARY ---
+  // --- LAUNCH PUPPETEER ---
   let browser;
   const assets: Record<string, number> = {};
   try {
-    // Prefer the env var set by @puppeteer/browsers; fallback to the folder under project root.
-    const envPath = process.env.PUPPETEER_EXECUTABLE_PATH;
-    const fallbackPath = path.join(
-      process.cwd(),
-      'chrome',
-      'linux-139.0.7258.66',
-      'chrome-linux64',
-      'chrome'
-    );
-    const executablePath = envPath || fallbackPath;
-
     browser = await puppeteer.launch({
-      executablePath,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      headless: true,
+      args:      chromium.args,
+      executablePath: await chromium.executablePath,
+      headless:  chromium.headless,
+      defaultViewport: chromium.defaultViewport,
     });
 
     const page = await browser.newPage();
     await page.setRequestInterception(true);
-    page.on('request', (r) => r.continue());
-    page.on('response', async (response) => {
+    page.on('request',   (r) => r.continue());
+    page.on('response',  async (res) => {
       try {
-        const buffer = await response.buffer();
-        const type = response.request().resourceType();
-        assets[type] = (assets[type] || 0) + buffer.length;
-      } catch {
-        // ignore any buffer errors
-      }
+        const buf  = await res.buffer();
+        const key  = res.request().resourceType();
+        assets[key] = (assets[key] || 0) + buf.length;
+      } catch {}
     });
 
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
@@ -69,19 +54,16 @@ export async function GET(
     if (browser) await browser.close();
   }
 
-  const totalBytes = Object.values(assets).reduce((sum, val) => sum + val, 0);
+  // --- COLLECT & RESPOND ---
+  const totalBytes = Object.values(assets).reduce((a, b) => a + b, 0);
 
-  // --- SERVER INFO ---
+  // DNS & server header as before...
   let ip: string, serverHeader: string;
   try {
     ip = (await lookup(hostname)).address;
   } catch {
-    return NextResponse.json(
-      { error: `DNS lookup failed for: ${hostname}`, code: 'DNS_LOOKUP_FAILED' },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: `DNS lookup failed for: ${hostname}`, code: 'DNS_LOOKUP_FAILED' }, { status: 502 });
   }
-
   try {
     await new Promise<void>((resolve, reject) => {
       const req = https.get(targetUrl, (res) => {
@@ -92,10 +74,7 @@ export async function GET(
       req.on('error', () => reject(new Error('Failed to fetch server header')));
     });
   } catch {
-    return NextResponse.json(
-      { error: `Fetching server header failed for: ${targetUrl}`, code: 'SERVER_HEADER_FAILED' },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: `Fetching server header failed`, code: 'SERVER_HEADER_FAILED' }, { status: 502 });
   }
 
   return NextResponse.json({
