@@ -26,13 +26,13 @@ export async function GET(
 
   // 2) FETCH HTML
   const assets: Record<string, number> = {
-  html: 0,
-  css: 0,
-  js: 0,
-  image: 0,    // now also covers SVG
-  font: 0,
-  other: 0,    // now includes JSON, XML, PDF, octet-stream, audio (±video)
-};
+    html: 0,
+    css: 0,
+    js: 0,
+    image: 0,
+    font: 0,
+    other: 0,
+  };
 
   let html = "";
   try {
@@ -50,27 +50,39 @@ export async function GET(
     );
   }
 
-  // collect initial resources
+  // load cheerio and prepare URL collector
   const $ = cheerio.load(html);
   const baseUrl = new URL(targetUrl);
   const resourceUrls = new Set<string>();
-
   const collectUrl = (raw: string) => {
     try {
-      const full = new URL(raw, baseUrl).href;
-      if (!resourceUrls.has(full)) resourceUrls.add(full);
+      const full = new URL(raw.trim(), baseUrl).href;
+      resourceUrls.add(full);
     } catch {}
   };
 
-  // tags
-  $('img[src], script[src], link[rel="stylesheet"][href], iframe[src], video[src], audio[src], source[src]').each((_, el) => {
+  // 3) COLLECT STATIC REFERENCES
+  // tags: imgs, scripts, stylesheets, iframes, media, preload/prefetch, manifests
+  $('img[src], img[srcset], source[src], source[srcset], script[src], link[rel="stylesheet"][href], link[rel="preload"][href], link[rel="prefetch"][href], link[rel="manifest"][href], iframe[src], video[src], audio[src], [src]').each((_, el) => {
     const tag = el.tagName.toLowerCase();
-    const attr = el.tagName.toLowerCase() === 'link' ? 'href' : 'src';
-    const raw = $(el).attr(attr);
-    if (raw) collectUrl(raw);
+    if (tag === 'img' || tag === 'source') {
+      const src = $(el).attr('src');
+      if (src) collectUrl(src);
+      const srcset = $(el).attr('srcset');
+      if (srcset) {
+        srcset.split(',').forEach(item => {
+          const [urlPart] = item.trim().split(/\s+/);
+          collectUrl(urlPart);
+        });
+      }
+    } else {
+      const attr = $(el).attr('href') ? 'href' : 'src';
+      const raw = $(el).attr(attr);
+      if (raw) collectUrl(raw);
+    }
   });
 
-  // inline styles
+  // inline style URLs
   $('[style]').each((_, el) => {
     const style = $(el).attr('style')!;
     const urlRegex = /url\(\s*['"]?([^)'"\s]+)['"]?\s*\)/g;
@@ -79,19 +91,29 @@ export async function GET(
     }
   });
 
-  // 3) FETCH RESOURCES (including CSS parsing for imports/url())
-  const classify = (contentType?: string) => {
-    if (!contentType) return 'other';
-    contentType = contentType.toLowerCase();
-    if (contentType.includes('text/html')) return 'html';
-    if (contentType.includes('text/css')) return 'css';
-    if (contentType.includes('javascript')) return 'js';
-    if (contentType.startsWith('image/')) return 'image';
-    if (contentType.startsWith('font/') || contentType.includes('font')) return 'font';
+  // data-* lazy-loaded attributes
+  $('[data-src], [data-srcset], [data-href]').each((_, el) => {
+    const ds = $(el).attr('data-src');
+    if (ds) collectUrl(ds);
+    const dss = $(el).attr('data-srcset');
+    if (dss) {
+      dss.split(',').forEach(item => collectUrl(item.trim().split(/\s+/)[0]));
+    }
+    const dh = $(el).attr('data-href');
+    if (dh) collectUrl(dh);
+  });
+
+  // 4) FETCH & PROCESS QUEUE
+  const classify = (ct?: string) => {
+    ct = ct?.toLowerCase() || '';
+    if (ct.includes('html')) return 'html';
+    if (ct.includes('css')) return 'css';
+    if (ct.includes('javascript')) return 'js';
+    if (ct.startsWith('image/')) return 'image';
+    if (ct.startsWith('font/')) return 'font';
     return 'other';
   };
 
-  // BFS-like fetch queue
   const queue = Array.from(resourceUrls);
   while (queue.length) {
     const url = queue.shift()!;
@@ -101,36 +123,26 @@ export async function GET(
       const type = classify(res.headers['content-type']);
       assets[type] = (assets[type] || 0) + size;
 
-      // if CSS, parse for more URLs
+      // parse CSS for deeper imports
       if (type === 'css') {
         const text = res.data.toString('utf8');
         const urlRegex = /url\(\s*['"]?([^)'"\s]+)['"]?\s*\)/g;
         const importRegex = /@import\s+['"]([^'"]+)['"]/g;
-        for (const match of text.matchAll(urlRegex)) {
-          const raw = match[1];
-          const full = new URL(raw, url).href;
-          if (!resourceUrls.has(full)) {
-            resourceUrls.add(full);
-            queue.push(full);
-          }
+        for (const m of text.matchAll(urlRegex)) {
+          const full = new URL(m[1], url).href;
+          if (!resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
         }
-        for (const match of text.matchAll(importRegex)) {
-          const raw = match[1];
-          const full = new URL(raw, url).href;
-          if (!resourceUrls.has(full)) {
-            resourceUrls.add(full);
-            queue.push(full);
-          }
+        for (const m of text.matchAll(importRegex)) {
+          const full = new URL(m[1], url).href;
+          if (!resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
         }
       }
-    } catch {
-      // ignore individual failures
-    }
+    } catch {}
   }
 
   const totalBytes = Object.values(assets).reduce((a, b) => a + b, 0);
 
-  // 4) DNS & SERVER HEADER
+  // 5) DNS & SERVER INFO
   let ip: string;
   try {
     ip = (await lookup(hostname)).address;
@@ -146,10 +158,9 @@ export async function GET(
     await new Promise<void>((resolve, reject) => {
       const req = https.get(targetUrl, res => {
         serverHeader = (res.headers['server'] as string) || 'Unknown';
-        res.resume();
-        resolve();
+        res.resume(); resolve();
       });
-      req.on('error', () => reject(new Error('Failed to fetch server header')));
+      req.on('error', () => reject(new Error()));
     });
   } catch {
     return NextResponse.json(
@@ -158,7 +169,6 @@ export async function GET(
     );
   }
 
-  // 5) RESPOND
   return NextResponse.json({
     url: targetUrl,
     serverInfo: { ip, server: serverHeader },
