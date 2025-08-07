@@ -151,7 +151,7 @@ export function WebsiteCalculatorResults({
                           Object.entries(data.breakdown).map(([type, size]) => (
                             <li key={type} className="flex justify-between">
                               <span>
-                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                                {type.toUpperCase()}
                               </span>
                               <span className="font-medium">
                                 {formatBytes(
