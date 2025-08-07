@@ -1,9 +1,10 @@
-// Combined API handler to get asset breakdown, carbon data, and server info
+// app/api/scrape/[url]/route.ts  (or wherever yours lives)
 
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer';           // still full puppeteer
 import { lookup } from 'dns/promises';
 import https from 'https';
+import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,53 +19,63 @@ export async function GET(
   try {
     await lookup(hostname);
   } catch {
-    // Return 404 if domain does not exist
     return NextResponse.json(
       { error: `Domain not found: ${hostname}`, code: 'DOMAIN_NOT_FOUND' },
       { status: 404 }
     );
   }
 
-  // --- ASSET BREAKDOWN ---
+  // --- LAUNCH PUPPETEER USING THE INSTALLED CHROME BINARY ---
   let browser;
   const assets: Record<string, number> = {};
   try {
-    browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    // Prefer the env var set by @puppeteer/browsers; fallback to the folder under project root.
+    const envPath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    const fallbackPath = path.join(
+      process.cwd(),
+      'chrome',
+      'linux-139.0.7258.66',
+      'chrome-linux64',
+      'chrome'
+    );
+    const executablePath = envPath || fallbackPath;
 
+    browser = await puppeteer.launch({
+      executablePath,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true,
+    });
+
+    const page = await browser.newPage();
     await page.setRequestInterception(true);
-    page.on('request', (req) => req.continue());
+    page.on('request', (r) => r.continue());
     page.on('response', async (response) => {
-      const type = response.request().resourceType();
-      const buffer = await response.buffer();
-      const size = buffer.length;
-      assets[type] = (assets[type] || 0) + size;
+      try {
+        const buffer = await response.buffer();
+        const type = response.request().resourceType();
+        assets[type] = (assets[type] || 0) + buffer.length;
+      } catch {
+        // ignore any buffer errors
+      }
     });
 
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
   } catch (err: any) {
-    // Return 502 if Puppeteer cannot navigate to the URL
     return NextResponse.json(
       { error: `Unable to reach URL: ${targetUrl}`, code: 'URL_UNREACHABLE', details: err.message },
       { status: 502 }
     );
   } finally {
-    if (browser) {
-      await browser.close();
-    }
+    if (browser) await browser.close();
   }
 
   const totalBytes = Object.values(assets).reduce((sum, val) => sum + val, 0);
 
   // --- SERVER INFO ---
-  let ip: string | null;
-  let serverHeader: string | null;
-
+  let ip: string, serverHeader: string;
   try {
-    const result = await lookup(hostname);
-    ip = result.address;
+    ip = (await lookup(hostname)).address;
   } catch {
-    // If DNS lookup fails here, return a 502 error
     return NextResponse.json(
       { error: `DNS lookup failed for: ${hostname}`, code: 'DNS_LOOKUP_FAILED' },
       { status: 502 }
@@ -81,17 +92,15 @@ export async function GET(
       req.on('error', () => reject(new Error('Failed to fetch server header')));
     });
   } catch {
-    // Return 502 if unable to fetch server header
     return NextResponse.json(
       { error: `Fetching server header failed for: ${targetUrl}`, code: 'SERVER_HEADER_FAILED' },
       { status: 502 }
     );
   }
 
-  // --- FINAL RESPONSE ---
   return NextResponse.json({
     url: targetUrl,
-    serverInfo: { ip: ip!, server: serverHeader! },
+    serverInfo: { ip, server: serverHeader! },
     totalBytes,
     breakdown: assets,
   });
