@@ -1,4 +1,13 @@
 {
-  "installCommand": "npm install && npx playwright install-deps",
-  "buildCommand":   "npm run build"
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "builds": [
+    {
+      "src": "Dockerfile",
+      "use": "@vercel/docker"
+    }
+  ]
 }
