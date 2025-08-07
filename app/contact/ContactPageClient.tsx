@@ -4,9 +4,9 @@ import type React from "react"
 import Link from "next/link"
 import { Clock, Mail, MapPin, MessageSquare, Phone, Send } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ContactForm } from "@/components/contact-form"
+import { Button } from "../../components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..//components/ui/card"
+import { ContactForm } from "../..//components/contact-form"
 export function ContactPageClient() {
   
 
