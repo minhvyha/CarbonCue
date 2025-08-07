@@ -4,11 +4,11 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Zap, Tv, Home, Plane, Lightbulb, Droplets } from "lucide-react";
 
 // This is a placeholder component - in a real app, you would receive actual data
 export function WebsiteCalculatorResults({
@@ -22,7 +22,82 @@ export function WebsiteCalculatorResults({
 
   if (!data) return null;
   console.log("WebsiteCalculatorResults data:", data);
+  // Inside WebsiteCalculatorResults(), just before the `return(...)`:
+  let totalCO2g = 0;
+  if(data.emissionDetails.green){
 
+     totalCO2g =
+      data.emissionDetails.statistics.co2.renewable.grams *
+      parseInt(monthlyVisitors, 10);
+  }
+  else{
+      totalCO2g =
+        data.emissionDetails.statistics.co2.grid.grams *
+        parseInt(monthlyVisitors, 10);
+  }
+
+  // Define per-unit CO₂ rates (all in grams):
+  const rates = {
+    microwave: 400, // g per use
+    tv: 170, // g per hour
+    household: 42000, // g per day (42 kg/day)
+    flight: 160, // g per km
+    bulb: 6.1, // g per hour (10 W)
+    waterHeater: 16.2, // g per litre (0.0162 kg/L)
+  };
+
+  const funFacts = [
+    {
+      icon: <Zap className="h-6 w-6 text-orange-600" />,
+      title: "Microwave Uses",
+      // number of uses = totalCO2g ÷ rate
+      value: `${(totalCO2g / rates.microwave).toFixed(1)}`,
+      unit: "uses",
+      description: "Full-power microwave cycles",
+      bg: "bg-orange-50 dark:bg-orange-950/20",
+    },
+    {
+      icon: <Tv className="h-6 w-6 text-indigo-600" />,
+      title: "TV Watching",
+      value: `${(totalCO2g / rates.tv).toFixed(1)}`,
+      unit: "hours",
+      description: "Watching a 50″ LED TV",
+      bg: "bg-indigo-50 dark:bg-indigo-950/20",
+    },
+    {
+      icon: <Home className="h-6 w-6 text-emerald-600" />,
+      title: "Household Days",
+      // convert CO₂ to days: divide by g/day
+      value: `${(totalCO2g / rates.household).toFixed(2)}`,
+      unit: "days",
+      description: "Avg. Australian household footprint",
+      bg: "bg-emerald-50 dark:bg-emerald-950/20",
+    },
+    {
+      icon: <Plane className="h-6 w-6 text-sky-600" />,
+      title: "Flight Distance",
+      value: `${(totalCO2g / rates.flight).toFixed(0)}`,
+      unit: "km",
+      description: "Economy-class air travel",
+      bg: "bg-sky-50 dark:bg-sky-950/20",
+    },
+    {
+      icon: <Lightbulb className="h-6 w-6 text-yellow-600" />,
+      title: "LED Bulb Hours",
+      value: `${(totalCO2g / rates.bulb).toFixed(0)}`,
+      unit: "hours",
+      description: "10 W LED bulb runtime",
+      bg: "bg-yellow-50 dark:bg-yellow-950/20",
+    },
+    {
+      icon: <Droplets className="h-6 w-6 text-cyan-600" />,
+      title: "Water Heating",
+      value: `${(totalCO2g / rates.waterHeater).toFixed(1)}`,
+      unit: "L",
+      description: "Water heated from cold to boiling",
+      bg: "bg-cyan-50 dark:bg-cyan-950/20",
+    },
+  ];
   return (
     <div className="mt-10">
       <Card>
@@ -30,11 +105,7 @@ export function WebsiteCalculatorResults({
           <CardTitle className="text-2xl">Carbon Emission Results</CardTitle>
           <CardDescription>
             Analysis for{" "}
-            <a
-              href={data.url || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={data.url || "#"} target="_blank" rel="noopener noreferrer">
               {data.url || data.totalBytes + " bytes"}
             </a>
           </CardDescription>
@@ -133,83 +204,86 @@ export function WebsiteCalculatorResults({
                 />
               </div>
 
-              {data.emissionDetails.url &&<div className="mt-8">
-                <h3 className="text-lg font-medium mb-2">Detailed Analysis</h3>
-                <p className="text-muted-foreground mb-2">
-                  Total page size: {formatBytes(data.emissionDetails.bytes)}
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">
-                        Asset Breakdown
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2 text-sm">
-                        {data.breakdown &&
-                          Object.entries(data.breakdown).map(([type, size]) => (
-                            <li key={type} className="flex justify-between">
-                              <span>
-                                {type.toUpperCase()}
-                              </span>
-                              <span className="font-medium">
-                                {formatBytes(
-                                  typeof size === "number"
-                                    ? size.toString()
-                                    : String(size)
-                                )}
-                              </span>
-                            </li>
-                          ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
+              {data.emissionDetails.url && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-medium mb-2">
+                    Detailed Analysis
+                  </h3>
+                  <p className="text-muted-foreground mb-2">
+                    Total page size: {formatBytes(data.emissionDetails.bytes)}
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">
+                          Asset Breakdown
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 text-sm">
+                          {data.breakdown &&
+                            Object.entries(data.breakdown).map(
+                              ([type, size]) => (
+                                <li key={type} className="flex justify-between">
+                                  <span>{type.toUpperCase()}</span>
+                                  <span className="font-medium">
+                                    {formatBytes(
+                                      typeof size === "number"
+                                        ? size.toString()
+                                        : String(size)
+                                    )}
+                                  </span>
+                                </li>
+                              )
+                            )}
+                        </ul>
+                      </CardContent>
+                    </Card>
 
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">
-                        Server Information
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2 text-sm">
-                        <li className="flex justify-between">
-                          <span>URL</span>
-                          <span className="font-medium">
-                            {data.emissionDetails.url}
-                          </span>
-                        </li>
-                        <li className="flex justify-between">
-                          <span>Page Weight</span>
-                          <span className="font-medium">
-                            {formatBytes(data.totalBytes)}
-                          </span>
-                        </li>
-                        <li className="flex justify-between">
-                          <span>Server</span>
-                          <span className="font-medium">
-                            {data.serverInfo.server}
-                          </span>
-                        </li>
-                        <li className="flex justify-between">
-                          <span>IP Address</span>
-                          <span className="font-medium">
-                            {data.serverInfo.ip}
-                          </span>
-                        </li>
-                        <li className="flex justify-between">
-                          <span>Sustainable Hosting</span>
-                          <span className="font-medium">
-                            {data.emissionDetails.green ? "Yes" : "No"}
-                          </span>
-                        </li>
-                      </ul>
-                    </CardContent>
-                  </Card>
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">
+                          Server Information
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2 text-sm">
+                          <li className="flex justify-between">
+                            <span>URL</span>
+                            <span className="font-medium">
+                              {data.emissionDetails.url}
+                            </span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span>Page Weight</span>
+                            <span className="font-medium">
+                              {formatBytes(data.totalBytes)}
+                            </span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span>Server</span>
+                            <span className="font-medium">
+                              {data.serverInfo.server}
+                            </span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span>IP Address</span>
+                            <span className="font-medium">
+                              {data.serverInfo.ip}
+                            </span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span>Sustainable Hosting</span>
+                            <span className="font-medium">
+                              {data.emissionDetails.green ? "Yes" : "No"}
+                            </span>
+                          </li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
-              </div> }
-              
+              )}
 
               <div className="mt-8">
                 <h3 className="text-lg font-medium mb-4">
@@ -374,91 +448,48 @@ export function WebsiteCalculatorResults({
                     </CardContent>
                   </Card>
                 </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="details">
-              <div className="space-y-6">
-                <div>
-                  {/* <h3 className="text-lg font-medium mb-2">Page Weight</h3>
-                  <p className="text-muted-foreground mb-2">Total page size: {formatBytes(data.emissionDetails.bytes)}</p> */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">
-                          Asset Breakdown
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2 text-sm">
-                          {data.breakdown &&
-                            Object.entries(data.breakdown).map(
-                              ([type, size]) => (
-                                <li key={type} className="flex justify-between">
-                                  <span>
-                                    {type.charAt(0).toUpperCase() +
-                                      type.slice(1)}
-                                  </span>
-                                  <span className="font-medium">
-                                    {formatBytes(
-                                      typeof size === "number"
-                                        ? size.toString()
-                                        : String(size)
-                                    )}
-                                  </span>
-                                </li>
-                              )
-                            )}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">
-                          Server Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2 text-sm">
-                          <li className="flex justify-between">
-                            <span>URL</span>
-                            <span className="font-medium">
-                              {data.emissionDetails.url}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Page Weight</span>
-                            <span className="font-medium">
-                              {formatBytes(data.totalBytes)}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Server</span>
-                            <span className="font-medium">
-                              {data.serverInfo.server}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>IP Address</span>
-                            <span className="font-medium">
-                              {data.serverInfo.ip}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Sustainable Hosting</span>
-                            <span className="font-medium">
-                              {data.emissionDetails.green ? "Yes" : "No"}
-                            </span>
-                          </li>
-                        </ul>
-                      </CardContent>
-                    </Card>
+                <div className="mt-8">
+                  <h3 className="text-lg font-medium mb-2">
+                    Fun Facts About Your Carbon Footprint
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                  These fun facts are calculated from your website’s total carbon emissions over one month of visits.
+                </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {funFacts.map(
+                      ({ icon, title, value, unit, description, bg }) => (
+                        <FunFactCard
+                          key={title}
+                          icon={icon}
+                          title={title}
+                          value={`${value} ${unit}`}
+                          description={description}
+                          bgColor={bg}
+                        />
+                      )
+                    )}
                   </div>
+
+                  <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 rounded-lg border border-green-200 dark:border-green-800">
+  <div className="flex items-start gap-3">
+    <Zap className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
+    <div>
+      <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">
+        Energy Impact Perspective
+      </h4>
+      <p className="text-sm text-green-700 dark:text-green-300 leading-relaxed">
+        Your site’s monthly carbon footprint of{' '}
+        <strong>{(totalCO2g / 1000).toFixed(2)} kg CO₂</strong> is equivalent to running a
+        microwave for{' '}
+        <strong>{(totalCO2g / rates.microwave).toFixed(1)} minutes</strong> or watching TV for{' '}
+        <strong>{(totalCO2g / rates.tv).toFixed(1)} hours</strong>. Small optimizations can make a big difference!
+      </p>
+    </div>
+  </div>
+</div>
                 </div>
               </div>
             </TabsContent>
-
             <TabsContent value="recommendations">
               <div className="space-y-4">
                 <RecommendationItem
@@ -557,6 +588,37 @@ function RecommendationItem({
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function FunFactCard({
+  icon,
+  title,
+  value,
+  description,
+  bgColor,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+  description: string;
+  bgColor: string;
+}) {
+  return (
+    <Card className={`${bgColor} border-0`}>
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0">{icon}</div>
+          <div className="min-w-0 flex-1">
+            <h4 className="font-semibold text-sm mb-1">{title}</h4>
+            <div className="text-2xl font-bold mb-1">{value}</div>
+            <p className="text-xs text-muted-foreground leading-tight">
+              {description}
+            </p>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
