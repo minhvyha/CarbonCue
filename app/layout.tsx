@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { LoadingProvider } from "@/contexts/loading"
 import { AuthProvider } from "@/contexts/auth-context";
 import { ToastProvider } from "@/components/toast-provider"
+import { Analytics } from '@vercel/analytics/next';
 
 
 const inter = Inter({ subsets: ["latin"] })
@@ -44,6 +45,8 @@ export default function RootLayout({
             </ThemeProvider>
           </AuthProvider>
         </LoadingProvider>
+                <Analytics />
+
       </body>
     </html>
   )

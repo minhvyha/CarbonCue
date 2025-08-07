@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "start": "next start",
-    "dev": "next dev",
-    "lint": "next lint",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "dev":    "next dev",
+    "prepare": "npx @puppeteer/browsers install chrome@stable --with-deps",
+    "build":  "next build",
+    "start":  "next start",
+    "lint":   "next lint"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -39,6 +39,7 @@
     "@radix-ui/react-toggle": "^1.1.1",
     "@radix-ui/react-toggle-group": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.6",
+    "@vercel/analytics": "^1.5.0",
     "autoprefixer": "^10.4.20",
     "bcryptjs": "^3.0.2",
     "cheerio": "^1.1.2",
@@ -72,11 +73,14 @@
     "@types/react-dom": "^19",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@puppeteer/browsers": "^1.0.0"
   },
   "functions": {
     "api/**/*.ts": {
-      "includeFiles": ["node_modules/chrome-aws-lambda/**/*"]
+      "includeFiles": [
+        "node_modules/chrome-aws-lambda/**/*"
+      ]
     }
   }
 }
