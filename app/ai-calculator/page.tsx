@@ -1,3 +1,5 @@
+'use client'
+
 import { Cpu, Database, LineChart, Server } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -5,8 +7,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect, useState } from "react"
 
 export default function AICalculatorPage() {
+  const [gpus, setGpus] = useState<string[]>([]);
+  const [providers, setProviders] = useState<string[]>([]);
+  const [hours, setHours] = useState<number>(0);
+  const [location, setLocation] = useState<string>('');
+
+  useEffect(() =>{
+    fetch('/api/ai-calculator/gpus').then(response => response.json())
+      .then(data => setGpus(data.gpus || []))
+      .catch(error => console.error('Error fetching GPUs:', error));
+
+    fetch('/api/ai-calculator/providers').then(response => response.json())
+      .then(data => setProviders(data.providers || []))
+      .catch(error => console.error('Error fetching providers:', error));
+
+    fetch('/api/ai-calculator/locations').then(response => response.json())
+      .then(data => setLocation(data.location || ''))
+      .catch(error => console.error('Error fetching locations:', error));
+  }, [])
+  
+
   return (
     <div className="container py-10">
       <div className="mx-auto max-w-4xl">
