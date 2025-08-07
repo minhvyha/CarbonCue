@@ -1,4 +1,4 @@
 {
-  "installCommand": "npm install && npx playwright install",
+  "installCommand": "npm install && npx playwright install-deps",
   "buildCommand":   "npm run build"
 }
