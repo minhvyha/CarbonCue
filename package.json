@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev":    "next dev",
-    "prepare": "npx @puppeteer/browsers install chrome@stable --with-deps",
     "build":  "next build",
     "start":  "next start",
-    "lint":   "next lint"
+    "lint":   "next lint",
+    "postinstall": "npx @puppeteer/browsers install chrome@stable --with-deps"
+
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
