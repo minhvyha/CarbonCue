@@ -1,10 +1,9 @@
-// pages/api/emissioncalculator/[url].ts
+// app/api/emissioncalculator/[url]/route.ts
 
 import { NextResponse } from 'next/server';
-import chromium from 'chrome-aws-lambda';
-import puppeteer from 'puppeteer-core';
 import { lookup } from 'dns/promises';
 import https from 'https';
+import { launchChromium } from 'playwright-aws-lambda';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +12,7 @@ export async function GET(
   { params }: { params: { url: string } }
 ) {
   const targetUrl = decodeURIComponent(params.url);
-  const hostname = new URL(targetUrl).hostname;
+  const hostname  = new URL(targetUrl).hostname;
 
   // 1) DOMAIN CHECK
   try {
@@ -25,37 +24,37 @@ export async function GET(
     );
   }
 
-  // 2) LAUNCH CHROME
-  let browser;
+  // 2) LAUNCH PLAYWRIGHT + MEASURE ASSETS
+  let browser  = null;
   const assets: Record<string, number> = {};
+
   try {
-    browser = await puppeteer.launch({
-      executablePath: await chromium.executablePath,
-      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
-      headless: chromium.headless,
-      defaultViewport: chromium.defaultViewport,
+    browser = await launchChromium({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      headless: true,
     });
 
-    const page = await browser.newPage();
-    await page.setRequestInterception(true);
-    page.on('request', (req) => req.continue());
+    const context = await browser.newContext();
+    const page    = await context.newPage();
+    await page.setViewportSize({ width: 1280, height: 720 });
+
     page.on('response', async (res) => {
       try {
-        const buf = await res.buffer();
-        const type = res.request().resourceType();
-        assets[type] = (assets[type] || 0) + buf.length;
+        const buffer = await res.body();
+        const type   = res.request().resourceType();
+        assets[type] = (assets[type] || 0) + buffer.length;
       } catch {
         // ignore
       }
     });
 
-    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 60_000 });
   } catch (err: any) {
-    console.error('Puppeteer launch error:', err);
+    console.error('Playwright error:', err);
     return NextResponse.json(
       {
-        error: `Unable to reach URL: ${targetUrl}`,
-        code: 'URL_UNREACHABLE',
+        error:   `Unable to reach URL: ${targetUrl}`,
+        code:    'URL_UNREACHABLE',
         details: err.message,
       },
       { status: 502 }
@@ -97,9 +96,9 @@ export async function GET(
 
   // 5) RESPOND
   return NextResponse.json({
-    url: targetUrl,
+    url:        targetUrl,
     serverInfo: { ip, server: serverHeader },
     totalBytes,
-    breakdown: assets,
+    breakdown:  assets,
   });
 }
