@@ -29,15 +29,13 @@ export async function GET(
   let browser;
   const assets: Record<string, number> = {};
   try {
-    // Launch using chrome-aws-lambda's downloaded binary
     browser = await puppeteer.launch({
       executablePath: await chromium.executablePath,
-      args: chromium.args,
+      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
       headless: chromium.headless,
       defaultViewport: chromium.defaultViewport,
     });
 
-    // Asset interception
     const page = await browser.newPage();
     await page.setRequestInterception(true);
     page.on('request', (req) => req.continue());
@@ -47,11 +45,10 @@ export async function GET(
         const type = res.request().resourceType();
         assets[type] = (assets[type] || 0) + buf.length;
       } catch {
-        // ignore buffer errors
+        // ignore
       }
     });
 
-    // Navigate
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
   } catch (err: any) {
     console.error('Puppeteer launch error:', err);
