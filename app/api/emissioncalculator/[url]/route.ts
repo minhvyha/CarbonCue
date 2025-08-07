@@ -2,11 +2,9 @@
 
 import { NextResponse } from 'next/server';
 import chromium from 'chrome-aws-lambda';
-import puppeteerCore from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
 import { lookup } from 'dns/promises';
 import https from 'https';
-import fs from 'fs/promises';
-import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,19 +25,13 @@ export async function GET(
     );
   }
 
-  // 2) PREPARE & LAUNCH CHROME
+  // 2) LAUNCH CHROME
   let browser;
   const assets: Record<string, number> = {};
   try {
-    // Copy binary to /tmp to avoid ETXTBSY
-    const src = await chromium.executablePath;
-    const dest = path.join('/tmp', 'chrome');
-    await fs.copyFile(src, dest);
-    await fs.chmod(dest, 0o755);
-
-    // Launch with extra flags
-    browser = await puppeteerCore.launch({
-      executablePath: await chromium.executablePath,  // already points at the downloaded chrome
+    // Launch using chrome-aws-lambda's downloaded binary
+    browser = await puppeteer.launch({
+      executablePath: await chromium.executablePath,
       args: chromium.args,
       headless: chromium.headless,
       defaultViewport: chromium.defaultViewport,
@@ -48,13 +40,15 @@ export async function GET(
     // Asset interception
     const page = await browser.newPage();
     await page.setRequestInterception(true);
-    page.on('request', (r) => r.continue());
+    page.on('request', (req) => req.continue());
     page.on('response', async (res) => {
       try {
         const buf = await res.buffer();
         const type = res.request().resourceType();
         assets[type] = (assets[type] || 0) + buf.length;
-      } catch {}
+      } catch {
+        // ignore buffer errors
+      }
     });
 
     // Navigate
@@ -76,7 +70,7 @@ export async function GET(
   // 3) COLLECT METRICS
   const totalBytes = Object.values(assets).reduce((sum, n) => sum + n, 0);
 
-  // DNS & SERVER HEADER
+  // 4) DNS & SERVER HEADER
   let ip: string;
   try {
     ip = (await lookup(hostname)).address;
@@ -87,7 +81,7 @@ export async function GET(
     );
   }
 
-  let serverHeader: string;
+  let serverHeader = 'Unknown';
   try {
     await new Promise<void>((resolve, reject) => {
       const req = https.get(targetUrl, (res) => {
@@ -104,10 +98,10 @@ export async function GET(
     );
   }
 
-  // 4) RESPOND
+  // 5) RESPOND
   return NextResponse.json({
     url: targetUrl,
-    serverInfo: { ip, server: serverHeader! },
+    serverInfo: { ip, server: serverHeader },
     totalBytes,
     breakdown: assets,
   });
