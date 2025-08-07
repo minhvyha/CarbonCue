@@ -62,16 +62,21 @@ export function LoadingProvider({ children }: { children: ReactNode }) {
     }, 300);
   }, [pathname, searchParams]);
   return (
-    <Suspense fallback={<LoadingOverlay isVisible={true} />}>
       <LoadingContext.Provider value={{ show, hide }}>
         {children}
         {/* Only render overlay once mounted */}
         {mounted && <LoadingOverlay isVisible={isVisible} />}
       </LoadingContext.Provider>
+  );
+}
+// Public provider wrapped in Suspense for CSR bailout
+export function LoadingProviderOuter({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={null}>
+      <LoadingProvider>{children}</LoadingProvider>
     </Suspense>
   );
 }
-
 export function useLoading() {
   const ctx = useContext(LoadingContext);
   if (!ctx) {

@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-import { LoadingProvider } from "@/contexts/loading-context";
+import { LoadingProviderOuter } from "@/contexts/loading-context";
 
 import { AuthProvider } from "@/contexts/auth-context";
 import { ToastProvider } from "@/components/toast-provider";
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <LoadingProvider>
+        <LoadingProviderOuter>
           <AuthProvider>
             <ThemeProvider
               attribute="class"
@@ -48,7 +48,7 @@ export default function RootLayout({
               </ToastProvider>
             </ThemeProvider>
           </AuthProvider>
-        </LoadingProvider>
+        </LoadingProviderOuter>
         <Analytics />
       </body>
     </html>
