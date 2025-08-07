@@ -61,6 +61,8 @@ export default function AICalculatorPage() {
       const providerResponse = await fetch("/api/ai-calculator/providers");
       const providerData = await providerResponse.json();
       setProviders(providerData.providers || []);
+      
+      setSelectedGpu(gpuData.gpus[0]);
       setSelectedProvider(providerData.providers[0].value);
 
       fetchRegions(providerData.providers[0].value);
@@ -139,6 +141,7 @@ export default function AICalculatorPage() {
       }
 
       const result = await response.json();
+      console.log("Calculation result:", result);
       toast({
         title: "Calculation Successful",
         description: `Estimated emissions: ${result.emissions} kg CO2`,
@@ -151,6 +154,7 @@ export default function AICalculatorPage() {
         variant: "destructive",
       });
     }
+    hide();
   };
 
   return (
