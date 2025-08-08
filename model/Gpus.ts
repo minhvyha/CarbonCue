@@ -12,6 +12,6 @@ const gpuSchema = new Schema<IGpu>({
 });
 
 // Use existing model if already compiled
-const Gpus: Model<IGpu> = mongoose.models.Gpu || mongoose.model<IGpu>("Gpu", gpuSchema);
+const Gpus: Model<IGpu> = mongoose.models.Gpus || mongoose.model<IGpu>("Gpus", gpuSchema);
 
 export default Gpus;

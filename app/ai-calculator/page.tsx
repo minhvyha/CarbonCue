@@ -20,13 +20,14 @@ import { useToast } from "@/components/toast-provider";
 
 interface provider {
   providerName: string;
-  value: string;
+  name: string;
 }
 
 interface region {
   regionName: string;
   offsetRatio: string;
   impact: number;
+  country: string;
 }
 
 export default function AICalculatorPage() {
@@ -63,9 +64,9 @@ export default function AICalculatorPage() {
       setProviders(providerData.providers || []);
       
       setSelectedGpu(gpuData.gpus[0]);
-      setSelectedProvider(providerData.providers[0].value);
+      setSelectedProvider(providerData.providers[0].name);
 
-      fetchRegions(providerData.providers[0].value);
+      fetchRegions(providerData.providers[0].name);
     } catch (error) {
       console.error("Error fetching impact data:", error);
       setImpact(0);
@@ -83,6 +84,7 @@ export default function AICalculatorPage() {
   async function fetchRegions(providerName: string) {
     try {
       show();
+      console.log("Fetching regions for provider:", providerName);
       const response = await fetch("/api/ai-calculator/providers", {
         method: "POST",
         headers: {
@@ -222,7 +224,7 @@ export default function AICalculatorPage() {
                       onChange={(e) => setSelectedProvider(e.target.value)}
                     >
                       {providers.map((provider) => (
-                        <option key={provider.value} value={provider.value}>
+                        <option key={provider.name} value={provider.name}>
                           {provider.providerName}
                         </option>
                       ))}
@@ -253,8 +255,8 @@ export default function AICalculatorPage() {
                       {regions.map((region) => {
                         return (
                           <option
-                            key={region.regionName}
-                            value={region.regionName}
+                            key={region.regionName + region.country}
+                            value={region.regionName }
                           >
                             {region.regionName}
                           </option>
