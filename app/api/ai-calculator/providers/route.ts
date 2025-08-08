@@ -60,7 +60,7 @@ export async function POST(request: Request ) {
         { status: 400 }
       );
     }
-    const regions: IProvider | null = await Providers.findOne({ name: 'gcp' });
+    const regions: IProvider | null = await Providers.findOne({ name: requestBody.providerName });
     // console.log("Regions fetched:", regions?.regions);
     let regionList: Array<RegionListItem> = [];
     if (regions && regions.regions) {
