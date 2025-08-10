@@ -136,15 +136,23 @@ export function WebsiteCalculatorResults({
                   }
                   description="CO₂ equivalent per page view"
                   rating={
-                    data.totalBytes < 100 * 1024
+                    data.totalBytes < 1 * 1024 * 1024
                       ? "Great"
-                      : data.totalBytes < 250 * 1024
+                      : data.totalBytes < 2 * 1024 * 1024
                       ? "Good"
-                      : data.totalBytes < 500 * 1024
+                      : data.totalBytes < 3 * 1024 * 1024
                       ? "Average"
                       : "Poor"
                   }
-                  color="amber"
+                  color={
+                    data.totalBytes < 1 * 1024 * 1024
+                      ? "green"
+                      : data.totalBytes < 2 * 1024 * 1024
+                      ? "amber"
+                      : data.totalBytes < 3 * 1024 * 1024
+                      ? "amber"
+                      : "red"
+                  }
                 />
                 <EmissionMetric
                   label="Cleaner than"

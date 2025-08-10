@@ -14,16 +14,16 @@ const ENERGY_INTENSITY_GB = 0.7545; // kWh per GB transferred
 const GRID_CARBON_INTENSITY = 351; // g CO₂ per kWh (grid avg)
 const RENEWABLE_INTENSITY = 288; // g CO₂ per kWh (renewables)
 const CO2_GAS_DENSITY = 1.8; // g CO₂ per litre CO₂
-const MAX_BYTES = 3 * 1024 * 1024; // 3 MB
+const MAX_BYTES = 5 * 1024 * 1024; // 3 MB
 
 // Rating thresholds in bytes
 const RATING_THRESHOLDS: { limit: number; label: string }[] = [
-  { limit: 100 * 1024, label: "A+" },
-  { limit: 250 * 1024, label: "A" },
-  { limit: 500 * 1024, label: "A-" },
-  { limit: 1 * 1024 * 1024, label: "B" },
-  { limit: 2 * 1024 * 1024, label: "C" },
-  { limit: 3 * 1024 * 1024, label: "D" },
+  { limit: 500 * 1024, label: "A+" },
+  { limit: 1 * 1024 * 1024, label: "A" },
+  { limit: 1.5 * 1025 * 1024, label: "A-" },
+  { limit: 2 * 1024 * 1024, label: "B" },
+  { limit: 3 * 1024 * 1024, label: "C" },
+  { limit: 4 * 1024 * 1024, label: "D" },
 ];
 
 interface EmissionData {
