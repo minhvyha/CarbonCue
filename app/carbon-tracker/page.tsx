@@ -1,172 +1,278 @@
-import type React from "react"
-import { BarChart, Car, Home, Leaf, ShoppingBag } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CarbonTrackerForm } from "@/components/carbon-tracker-form"
+"use client";
+
+import type React from "react";
+import {
+  BarChart,
+  Car,
+  Home,
+  Leaf,
+  ShoppingBag,
+  TrendingDown,
+  TreePine,
+  Flame,
+  Lightbulb,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CarbonTrackerForm } from "@/components/carbon-tracker-form";
+import { getCurrentUser } from "@/lib/getCurrentUser";
+import CarbonTrackerDaily from "@/components/carbon-tracker-daily";
+import { ActivityProvider } from "@/contexts/activity-context";
+import { ChartLineLabel } from "@/components/line-charts";
+import CarbonTrackerRecommendation from "@/components/carbon-tracker-recommendation";
+import { useState, useEffect } from "react";
+import { fetchUserStats, UserStats } from "@/lib/userStatsApi";
+import { useAuth } from "@/contexts/auth-context";
+import CarbonQuote from "@/components/carbon_quote";
 
 export default function CarbonTrackerPage() {
+  const { user, loading } = useAuth();
+  const [currentTab, setCurrentTab] = useState("recommendations");
+  const [userStats, setUserStats] = useState<UserStats>({
+    carbonReduced: 0,
+    treesPlanted: 0,
+    streak: 0,
+  });
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  // Fetch user stats on component mount (only when user is authenticated)
+  useEffect(() => {
+    const loadUserStats = async () => {
+      setIsLoadingStats(true);
+      try {
+        const stats = await fetchUserStats();
+        setUserStats(stats);
+      } catch (error) {
+        console.error("Failed to load user stats:", error);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    // Only fetch stats if user is authenticated and not loading
+    if (!loading && user) {
+      loadUserStats();
+    } else if (!loading && !user) {
+      // Reset stats if user is not authenticated
+      setUserStats({
+        carbonReduced: 0,
+        treesPlanted: 0,
+        streak: 0,
+      });
+      setIsLoadingStats(false);
+    }
+  }, [user, loading]);
+
+  // Handle stats updates from API
+  const handleStatsUpdate = (newStats: UserStats) => {
+    console.log("📊 Page received stats update:", newStats);
+    setUserStats(newStats);
+  };
+
   return (
-    <div className="container py-10">
-      <div className="mx-auto max-w-5xl">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-4">Daily Carbon Footprint Tracker</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Monitor and reduce your personal carbon footprint with our interactive dashboard.
-          </p>
-        </div>
+    <ActivityProvider>
+      <div className="container py-10">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-bold mb-4">
+              Daily Carbon Footprint Tracker
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Monitor and reduce your personal carbon footprint with our
+              interactive dashboard.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Your Carbon Footprint</CardTitle>
-                <CardDescription>Track your daily emissions and see how you compare</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-8">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold mb-2">8.2 kg</div>
-                    <div className="text-sm text-muted-foreground">CO₂e today</div>
-                    <div className="mt-4 flex justify-center">
-                      <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                        12% below your average
-                      </div>
-                    </div>
+          {/* User Stats Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-blue-600">
+                      Carbon Reduced
+                    </p>
+                    <p className="text-3xl font-bold text-blue-700">
+                      {isLoadingStats
+                        ? "..."
+                        : userStats.carbonReduced.toFixed(1)}{" "}
+                      kg
+                    </p>
+                    <p className="text-xs text-blue-500">CO₂ saved total</p>
                   </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Breakdown by Category</h3>
-                    <CategoryBreakdown
-                      icon={<Home className="h-4 w-4" />}
-                      label="Home Energy"
-                      value="3.1 kg"
-                      percentage={38}
-                      color="bg-carbon-red"
-                    />
-                    <CategoryBreakdown
-                      icon={<Car className="h-4 w-4" />}
-                      label="Transportation"
-                      value="2.7 kg"
-                      percentage={33}
-                      color="bg-carbon-purple"
-                    />
-                    <CategoryBreakdown
-                      icon={<ShoppingBag className="h-4 w-4" />}
-                      label="Consumption"
-                      value="1.5 kg"
-                      percentage={18}
-                      color="bg-carbon-deep-red"
-                    />
-                    <CategoryBreakdown
-                      icon={<BarChart className="h-4 w-4" />}
-                      label="Digital"
-                      value="0.9 kg"
-                      percentage={11}
-                      color="bg-carbon-magenta"
-                    />
+                  <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <TrendingDown className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Monthly Trends</CardTitle>
-                <CardDescription>Track your progress over time</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px] w-full bg-muted rounded-md flex items-center justify-center text-muted-foreground">
-                  Carbon emissions chart placeholder
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-green-600">
+                      Trees Planted
+                    </p>
+                    <p className="text-3xl font-bold text-green-700">
+                      {isLoadingStats ? "..." : userStats.treesPlanted}
+                    </p>
+                    <p className="text-xs text-green-500">
+                      Virtual trees earned
+                    </p>
+                  </div>
+                  <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
+                    <TreePine className="h-6 w-6 text-green-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-orange-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-orange-600">
+                      Current Activity Streak
+                    </p>
+                    <p className="text-3xl font-bold text-orange-700">
+                      {isLoadingStats ? "..." : userStats.streak}
+                    </p>
+                    <p className="text-xs text-orange-500">
+                      Activities completed
+                    </p>
+                  </div>
+                  <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center">
+                    <Flame className="h-6 w-6 text-orange-600" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <div>
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Log Activity</CardTitle>
-                <CardDescription>Add your daily activities to track emissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CarbonTrackerForm />
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <CarbonTrackerDaily />
 
+              <Card>
+                <CardHeader>
+                  <CardTitle>Monthly Trends</CardTitle>
+                  <CardDescription>
+                    Track your progress over time
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px] w-full bg-muted rounded-md flex items-center justify-center text-muted-foreground">
+                    <ChartLineLabel />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div>
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>Log Activity</CardTitle>
+                  <CardDescription>
+                    Add your daily activities to track emissions
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CarbonTrackerForm />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex gap-2 pb-2">
+                  <CardTitle className="text-green-800 font-semibold flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5 text-green-600" />
+                    Green Tip of the Day
+                  </CardTitle>
+                  <CardDescription className="font-bold">
+                    Small actions, big impact.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CarbonQuote />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="mt-10">
             <Card>
               <CardHeader>
-                <CardTitle>Sustainability Tips</CardTitle>
-                <CardDescription>Personalized recommendations to reduce your footprint</CardDescription>
+                <CardTitle>
+                  Sustainability Tips{" "}
+                  <Leaf className="w-6 h-6 inline-block text-green-600" />
+                </CardTitle>
+                <CardDescription>
+                  Personalized recommendations to reduce your footprint
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <SustainabilityTip
-                    title="Switch to LED Bulbs"
-                    description="Replace your home lighting with LED bulbs to save energy."
-                    icon={<Leaf className="h-5 w-5 text-green-600" />}
-                  />
-                  <SustainabilityTip
-                    title="Reduce Meat Consumption"
-                    description="Try having one meat-free day per week to reduce emissions."
-                    icon={<Leaf className="h-5 w-5 text-green-600" />}
-                  />
-                  <SustainabilityTip
-                    title="Use Public Transport"
-                    description="Take public transport for your commute twice a week."
-                    icon={<Leaf className="h-5 w-5 text-green-600" />}
-                  />
-                </div>
+                <Tabs value={currentTab} onValueChange={setCurrentTab}>
+                  <div className="w-full mb-6 overflow-x-auto">
+                    <TabsList className="w-max min-w-full h-auto p-1 flex sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:w-full">
+                      <TabsTrigger
+                        value="recommendations"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Recommendations
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="transportation"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Transportation
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="home_energy"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Home Energy
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="food_diet"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Food & Diet
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="shopping"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Shopping
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="digital_usage"
+                        className="flex-shrink-0 text-xs sm:text-sm whitespace-nowrap px-3 py-2 sm:flex-1"
+                      >
+                        Digital Usage
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
+                  <div className="mt-6">
+                    <CarbonTrackerRecommendation
+                      value={currentTab}
+                      onStatsUpdate={handleStatsUpdate}
+                    />
+                  </div>
+                </Tabs>
               </CardContent>
             </Card>
           </div>
-        </div>
-
-        <div className="mt-10">
-          <Card>
-            <CardHeader>
-              <CardTitle>Carbon Reduction Goals</CardTitle>
-              <CardDescription>Track your progress towards your sustainability targets</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="weekly">
-                <TabsList className="grid w-full grid-cols-3 mb-6">
-                  <TabsTrigger value="weekly">Weekly</TabsTrigger>
-                  <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                  <TabsTrigger value="yearly">Yearly</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="weekly">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <GoalCard title="Reduce Home Energy" target="15 kg CO₂e" current="12.4 kg CO₂e" percentage={83} />
-                    <GoalCard
-                      title="Lower Transportation Emissions"
-                      target="20 kg CO₂e"
-                      current="18.9 kg CO₂e"
-                      percentage={95}
-                    />
-                    <GoalCard title="Digital Carbon Diet" target="5 kg CO₂e" current="3.2 kg CO₂e" percentage={64} />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="monthly">
-                  <div className="h-[200px] w-full bg-muted rounded-md flex items-center justify-center text-muted-foreground">
-                    Monthly goals chart placeholder
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="yearly">
-                  <div className="h-[200px] w-full bg-muted rounded-md flex items-center justify-center text-muted-foreground">
-                    Yearly goals chart placeholder
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
         </div>
       </div>
-    </div>
-  )
+    </ActivityProvider>
+  );
 }
 
 function CategoryBreakdown({
@@ -176,24 +282,26 @@ function CategoryBreakdown({
   percentage,
   color,
 }: {
-  icon: React.ReactNode
-  label: string
-  value: string
-  percentage: number
-  color: string
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  percentage: number;
+  color: string;
 }) {
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
         <div className="flex items-center gap-2">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">{icon}</span>
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-muted">
+            {icon}
+          </span>
           <span className="text-sm">{label}</span>
         </div>
         <span className="text-sm font-medium">{value}</span>
       </div>
       <Progress value={percentage} className={`h-2 ${color}`} />
     </div>
-  )
+  );
 }
 
 function SustainabilityTip({
@@ -201,9 +309,9 @@ function SustainabilityTip({
   description,
   icon,
 }: {
-  title: string
-  description: string
-  icon: React.ReactNode
+  title: string;
+  description: string;
+  icon: React.ReactNode;
 }) {
   return (
     <div className="flex gap-3">
@@ -213,7 +321,7 @@ function SustainabilityTip({
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
     </div>
-  )
+  );
 }
 
 function GoalCard({
@@ -222,10 +330,10 @@ function GoalCard({
   current,
   percentage,
 }: {
-  title: string
-  target: string
-  current: string
-  percentage: number
+  title: string;
+  target: string;
+  current: string;
+  percentage: number;
 }) {
   return (
     <Card>
@@ -238,5 +346,5 @@ function GoalCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

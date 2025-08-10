@@ -1,4 +1,4 @@
-import { ArrowRight, BarChart3, Calendar, Globe, Leaf, Users } from "lucide-react"
+import { BarChart3, Calendar, Globe, Leaf, Users } from "lucide-react"
 
 
 let features = [

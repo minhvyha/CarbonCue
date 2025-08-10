@@ -1,101 +1,86 @@
+// app/api/seed/route.ts
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongoose";
+import Providers from "@/model/Providers";
+import {IProvider} from "@/model/Providers";
 /**
- * API: Cloud Providers Information
- * --------------------------------
- * Endpoint:
- *   - GET  /ai-calculator/providers
- *       → Returns a list of all available cloud providers with their display names.
- *   - POST /ai-calculator/providers
- *       → Returns a list of locations/regions for a specific provider.
- *
- * GET:
- *   - No parameters required.
- *   - Response 200 OK:
- *       {
- *         "providers": [
- *           { "value": "gcp", "providerName": "Google Cloud Platform" },
- *           { "value": "aws", "providerName": "Amazon Web Services" },
- *           ...
- *         ]
- *       }
- *   - Response 500 Internal Server Error:
- *       { "error": "Error message" }
- *
- * POST:
- *   - Request body (JSON):
- *       { "providerName": "gcp" }
- *   - Response 200 OK:
- *       { "locations": ["asia-east1", "us-central1", ...] }
- *   - Response 400 Bad Request:
- *       { "error": "Invalid or missing JSON body." }
- *       { "error": "Invalid input: Must provide valid provider name" }
- *   - Response 404 Not Found:
- *       { "error": "Provider not found" }
- *
- * Example curl for GET:
- *   curl http://localhost:3000/api/ai-calculator/providers
- *
- * Example curl for POST:
- *   curl -X POST http://localhost:3000/api/ai-calculator/providers \
- *     -H "Content-Type: application/json" \
- *     -d '{"providerName":"gcp"}'
+ * NOTE:
+ * - Place this file under your Next.js `app` folder (e.g. app/api/seed/route.ts).
+ * - Call this endpoint once (e.g. open /api/seed in your browser or curl it).
+ * - Remove or protect the route after seeding to avoid accidental re-seeds.
  */
 
-import { NextResponse } from 'next/server';
-import { getProviders, getJSON } from './getProviders';
-
-interface ProviderInfo {
-    value: string;
-    providerName: string;
+interface RegionListItem {
+  regionName: string;
+  country: string;
+  state?: string;
+  city?: string;
+  source?: string;
+  comment?: string;
+  providerName?: string;
+  offsetRatio?: string;
+  impact?: number;
 }
 
-interface ProvidersResponse {
-    providers: ProviderInfo[];
-}
-
-interface LocationsResponse {
-    locations: string[];
-}
-
-interface ErrorResponse {
-    error: string;
-}
 
 interface ProviderRequest {
-    providerName: string;
+  providerName: string;
 }
 
-const providers: ProviderInfo[] = getProviders();
-const data = getJSON("../data.json");
+export async function GET() {
+  try {
+    await connectToDatabase();
 
-export function GET(): NextResponse<ProvidersResponse | ErrorResponse> {
-    try {
-        return NextResponse.json({ providers: providers }, { status: 200 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    const providers = await Providers.find({}, {
+      name: 1,
+      providerName: 1,
+      _id: 1,
+    }); // find all providers
+    return NextResponse.json(
+      {
+        providers
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Seed error:", error);
+    return NextResponse.json({ error: error.message ?? String(error) }, { status: 500 });
+  }
 }
 
-export async function POST(request: Request): Promise<NextResponse<LocationsResponse | ErrorResponse>> {
-    try {
-        const values: ProviderRequest = await request.json();
 
-        if (values == null || typeof values !== 'object') {
-            return NextResponse.json({ error: 'Invalid or missing JSON body.' }, { status: 400 });
-        }
+export async function POST(request: Request ) {
+  try {
+    await connectToDatabase();
 
-        const { providerName } = values;
-        if (!providerName || typeof providerName !== "string") {
-            return NextResponse.json({ error: 'Invalid input: Must provide valid provider name' }, { status: 400 });
-        }
-
-        const provider = data.providers[providerName];
-        if (!provider) {
-            return NextResponse.json({ error: 'Provider not found' }, { status: 404 });
-        }
-
-        const locations = Object.keys(provider).filter(key => !key.startsWith('__'));
-        return NextResponse.json({ locations }, { status: 200 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
+    const requestBody = await request.json();
+    if (!requestBody || typeof requestBody !== "object") {
+      return NextResponse.json(
+        { error: "Invalid or missing JSON body." },
+        { status: 400 }
+      );
     }
+    const regions: IProvider | null = await Providers.findOne({ name: requestBody.providerName });
+    // console.log("Regions fetched:", regions?.regions);
+    let regionList: Array<RegionListItem> = [];
+    if (regions && regions.regions) {
+      regionList = Array.from(regions.regions.values()).map(region => ({
+        regionName: region.regionName ?? "",
+        country: region.country ?? "",
+        state: region.state,
+        city: region.city,
+        source: region.source,
+        comment: region.comment,
+        providerName: region.providerName,
+        offsetRatio: region.offsetRatio,
+        impact: region.impact
+      }));
+    }
+
+    // Example seed data
+    return NextResponse.json({ regions: regionList || [] }, { status: 200 });
+  } catch (error: any) {
+    console.error("Seed error:", error);
+    return NextResponse.json({ error: error.message ?? String(error) }, { status: 500 });
+  }
 }
