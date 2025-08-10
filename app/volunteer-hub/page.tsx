@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
+import { Pagination } from "@/components/pagination";
 
 type Listing = {
   id: number;
@@ -34,53 +35,28 @@ export default function VolunteerHubPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch("https://www.volunteerconnector.org/api/search/?page=2");
-        if (!res.ok) throw new Error("Failed to fetch listings");
-        const json = await res.json();
-        const results = json.results as any[];
+useEffect(() => {
+  async function load() {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/volunteer-hub?page=${page}`);
+      if (!res.ok) throw new Error("Failed to fetch data");
 
-        // Events
-        const shuffled = results.sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 6).map((r) => ({
-          id: r.id,
-          title: r.title,
-          org: r.organization.name,
-          location: r.remote_or_online
-            ? "Online"
-            : r.audience?.scope === "local"
-            ? `${r.audience.latitude?.toFixed(2)}, ${r.audience.longitude?.toFixed(2)}`
-            : r.dates,
-          remote: r.remote_or_online,
-          dates: r.dates,
-          url: r.url,
-        }));
-        setListings(selected);
-
-        // Unique organizations
-        const orgMap = new Map();
-        results.forEach((r) => {
-          const org = r.organization;
-          if (org?.name && !orgMap.has(org.name)) {
-            orgMap.set(org.name, {
-              name: org.name,
-              logo: org.logo?.startsWith("//") ? `https:${org.logo}` : org.logo,
-              url: org.url,
-            });
-          }
-        });
-        setOrganizations(Array.from(orgMap.values()));
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+      const { events, organizations } = await res.json();
+      setListings(events);
+      setOrganizations(organizations);
+      setHasMore(events.length > 0); // If no events, disable Next
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    load();
-  }, []);
+  }
+  load();
+}, [page]);
 
   return (
     <div className="container py-10">
@@ -111,7 +87,6 @@ export default function VolunteerHubPage() {
           <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="events">Upcoming Events</TabsTrigger>
             <TabsTrigger value="organizations">Organizations</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
           </TabsList>
 
           <TabsContent value="events">
@@ -134,6 +109,11 @@ export default function VolunteerHubPage() {
                 ))
               )}
             </div>
+
+             {/* Pagination */}
+             {!loading && listings.length > 0 && (
+              <Pagination currentPage={page} onPageChange={setPage} disableNext={!hasMore} />
+              )}
           </TabsContent>
 
           <TabsContent value="organizations">
