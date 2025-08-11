@@ -293,7 +293,7 @@ export default function AICalculatorPage() {
                       placeholder="e.g., 100"
                       value={offset}
                       onChange={(e) => setOffset(Number(e.target.value))}
-                      min={1}
+                      min={0}
                       max={1000}
                     />
                   </div>

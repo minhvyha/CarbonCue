@@ -46,6 +46,8 @@
 import { NextResponse } from 'next/server';
 import calculateCO2 from './calculator';
 
+
+
 interface CalculatorRequest {
     gpu: string;
     provider: string | null;
@@ -76,7 +78,6 @@ export async function POST(
         if (values == null || typeof values !== 'object') {
             return NextResponse.json({ error: 'Invalid or missing JSON body.' }, { status: 400 });
         }
-
         const { provider, region, customImpact, customOffset } = values;
 
         const isCustomNull = customImpact == null && customOffset == null;
@@ -87,21 +88,11 @@ export async function POST(
         // Only valid if:
         // 1. customImpact and customOffset are both null, provider and region must be valid
         // 2. provider and region are both null, customImpact and customOffset must be numbers
-        if (
-            !(
-                (isCustomNull && isProviderValid) ||
-                (isProviderNull && isCustomValid)
-            )
-        ) {
-            return NextResponse.json(
-                { error: 'Invalid input: must provide either provider/region or customImpact/customOffset.' },
-                { status: 400 }
-            );
-        }
 
         let result: CalculatorResponse;
         try {
-            result = calculateCO2(values);
+            result = await calculateCO2(values);
+            console.log("Calculation result:", result);
         } catch (err: any) {
             return NextResponse.json({ error: err.message }, { status: 400 });
         }

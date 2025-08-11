@@ -34,23 +34,17 @@
  *   });
  */
 
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import data from '@/app/api/ai-calculator/data.json'
 
+// Add these helpers to allow runtime string indexing:
+const gpus = data.gpus as Record<string, { watt: number }>;
+const providers = (data.providers as unknown) as Record<
+  string,
+  Record<string, { impact: number; offsetRatio: number }>
+>;
 const twoDigits = (n: number): number => Number(Number(n).toFixed(2));
 const toDigits = (n: number, d: number): number => Number(Number(n).toFixed(d));
-
-function loadData(fileName: string): any {
-    const filePath = join(__dirname, fileName);
-    const fileContent = readFileSync(filePath, 'utf8');
-    return JSON.parse(fileContent);
-}
-
-const data = loadData('../data.json');
 
 export interface CalculateCO2Input {
     gpu: string;
@@ -69,8 +63,9 @@ export interface CalculateCO2Result {
     offsetPercents: number;
 }
 
-export default function calculateCO2(values: CalculateCO2Input): CalculateCO2Result {
+export default async function calculateCO2(values: CalculateCO2Input): Promise<CalculateCO2Result> {
     const { gpu, hours, provider, region, customImpact, customOffset } = values;
+
 
     // Validate input
     if (
@@ -83,44 +78,25 @@ export default function calculateCO2(values: CalculateCO2Input): CalculateCO2Res
     }
 
     // Validate GPU existence
-    if (!data.gpus[gpu]) {
+    if (!gpus[gpu]) {
         throw new Error('GPU not found.');
     }
 
-    // Case 1: Use provider/region emission factors
-    if (customImpact == null && customOffset == null) {
-        if (typeof provider !== 'string' || typeof region !== 'string') {
-            throw new Error('Provider and region are required when customImpact/customOffset are null.');
-        }
-        if (!data.providers[provider] || !data.providers[provider][region]) {
-            throw new Error('Provider or region not found.');
-        }
-        const energy = twoDigits((data.gpus[gpu].watt * hours) / 1000); // kWh
-        const impact = twoDigits(data.providers[provider][region].impact / 1000); // kg/kWh
-        const co2 = twoDigits(energy * impact);
-        const offset = twoDigits((co2 * data.providers[provider][region].offsetRatio) / 100);
-        const offsetPercents = twoDigits(data.providers[provider][region].offsetRatio);
 
-        return { energy, impact, co2, offset, offsetPercents };
-    }
-
-    // Case 2: Use custom emission factors
-    if (
-        provider == null &&
-        region == null &&
-        typeof customImpact === 'number' &&
-        typeof customOffset === 'number'
-    ) {
-        const energy = twoDigits((data.gpus[gpu].watt * hours) / 1000); // kWh
-        const impact = customImpact;
+        const energy = twoDigits((gpus[gpu].watt * hours) / 1000); // kWh
+        const impact = customImpact ?? undefined;
+        if (impact === null || impact === undefined || isNaN(impact)) {
+            throw new Error('Impact value is missing or invalid.');
+        }
+        if (customOffset === null || customOffset === undefined || isNaN(customOffset)) {
+            throw new Error('Offset value is missing or invalid.');
+        }
         const co2 = twoDigits(energy * impact);
         const offset = twoDigits((co2 * customOffset) / 100);
         const offsetPercents = twoDigits(customOffset);
 
         return { energy, impact, co2, offset, offsetPercents };
-    }
-
-    throw new Error('Invalid input: must provide either provider/region or customImpact/customOffset.');
+    
 }
 
 // =================================================
