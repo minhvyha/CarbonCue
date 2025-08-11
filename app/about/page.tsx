@@ -3,9 +3,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
-  Award,
-  Globe,
-  Heart,
   Leaf,
   Target,
   Users,
@@ -205,19 +202,19 @@ export default function AboutPage() {
                 image="/team/minh.jpg?height=300&width=300"
               />
               <TeamMember
-                name="Marcus Rodriguez"
+                name="Khoi Nguyen Vu"
                 role="Co-Founder & CTO"
                 bio="Full-stack engineer passionate about using technology to solve environmental challenges."
                 image="/placeholder.svg?height=300&width=300"
               />
               <TeamMember
-                name="Dr. Aisha Patel"
+                name="Thanh Tra Tran"
                 role="Head of Sustainability"
                 bio="Climate policy expert and former UN advisor on sustainable development goals."
                 image="/placeholder.svg?height=300&width=300"
               />
               <TeamMember
-                name="Marcus Rodriguez"
+                name="Khoi Nguyen"
                 role="Co-Founder & CTO"
                 bio="Full-stack engineer passionate about using technology to solve environmental challenges."
                 image="/placeholder.svg?height=300&width=300"
@@ -229,7 +226,7 @@ export default function AboutPage() {
                 image="/placeholder.svg?height=300&width=300"
               />
               <TeamMember
-                name="Dr. Aisha Patel"
+                name="Jessica Mei Phillips"
                 role="Head of Sustainability"
                 bio="Climate policy expert and former UN advisor on sustainable development goals."
                 image="/placeholder.svg?height=300&width=300"
