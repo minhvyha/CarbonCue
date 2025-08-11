@@ -1,37 +1,35 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner"
-import { useActivity } from "@/contexts/activity-context"
+import { toast } from "sonner";
+import { useActivity } from "@/contexts/activity-context";
 
 const optionsRecycling = [
   { label: "Paper", value: "Paper" },
   { label: "Plastic", value: "Plastic" },
   { label: "Glass", value: "Glass" },
   { label: "Metal", value: "Metal" },
-]
-
+];
 
 export function CarbonTrackerForm() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [activityType, setActivityType] = useState("");
   const [formData, setFormData] = useState<Record<string, any>>({});
   const { refreshActivityLogs } = useActivity();
-
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({
@@ -45,16 +43,23 @@ export function CarbonTrackerForm() {
       case "transportation":
         return (
           <>
-          <div className="grid gap-2">
-            <Label htmlFor="vehicle_monthly_distance_km">Details</Label>
-          </div>
+            <div className="grid gap-2">
+              <Label htmlFor="vehicle_monthly_distance_km">Details</Label>
+            </div>
             <Input
               id="vehicle_monthly_distance_km"
               type="number"
               placeholder="Distance (km)"
-              onChange={(e) => handleChange('vehicle_monthly_distance_km', parseFloat(e.target.value))}
+              onChange={(e) =>
+                handleChange(
+                  "vehicle_monthly_distance_km",
+                  parseFloat(e.target.value)
+                )
+              }
             />
-            <Select onValueChange={(value) => handleChange('vehicle_type', value)}>
+            <Select
+              onValueChange={(value) => handleChange("vehicle_type", value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select vehicle type" />
               </SelectTrigger>
@@ -65,7 +70,7 @@ export function CarbonTrackerForm() {
                 <SelectItem value="None">None</SelectItem>
               </SelectContent>
             </Select>
-            <Select onValueChange={(value) => handleChange('transport', value)}>
+            <Select onValueChange={(value) => handleChange("transport", value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select transport type" />
               </SelectTrigger>
@@ -75,7 +80,11 @@ export function CarbonTrackerForm() {
                 <SelectItem value="walk/bicycle">Walk/Bicycle</SelectItem>
               </SelectContent>
             </Select>
-            <Select onValueChange={(value) => handleChange('frequency_of_traveling_by_air', value)}>
+            <Select
+              onValueChange={(value) =>
+                handleChange("frequency_of_traveling_by_air", value)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select frequency of traveling by air" />
               </SelectTrigger>
@@ -87,14 +96,18 @@ export function CarbonTrackerForm() {
               </SelectContent>
             </Select>
           </>
-        )
+        );
       case "home_energy":
         return (
           <>
             <div className="grid gap-2">
               <Label htmlFor="heating_energy_source">Details</Label>
             </div>
-            <Select onValueChange={(value) => handleChange('heating_energy_source', value)}>
+            <Select
+              onValueChange={(value) =>
+                handleChange("heating_energy_source", value)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select heating energy source" />
               </SelectTrigger>
@@ -106,7 +119,11 @@ export function CarbonTrackerForm() {
                 <SelectItem value="None">None</SelectItem>
               </SelectContent>
             </Select>
-            <Select onValueChange={(value) => handleChange('energy_efficiency', value)}>
+            <Select
+              onValueChange={(value) =>
+                handleChange("energy_efficiency", value)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select energy efficiency" />
               </SelectTrigger>
@@ -120,17 +137,22 @@ export function CarbonTrackerForm() {
               id="how_long_tv_pc_daily_hour"
               type="number"
               placeholder="TV/PC hours per day"
-              onChange={(e) => handleChange('how_long_tv_pc_daily_hour', parseInt(e.target.value))}
+              onChange={(e) =>
+                handleChange(
+                  "how_long_tv_pc_daily_hour",
+                  parseInt(e.target.value)
+                )
+              }
             />
           </>
-        )
+        );
       case "food_diet":
         return (
           <>
             <div className="grid gap-2">
               <Label htmlFor="diet">Details</Label>
             </div>
-            <Select onValueChange={(value) => handleChange('diet', value)}>
+            <Select onValueChange={(value) => handleChange("diet", value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select diet" />
               </SelectTrigger>
@@ -145,10 +167,12 @@ export function CarbonTrackerForm() {
               id="monthly_grocery_bill"
               type="number"
               placeholder="Monthly grocery bill ($)"
-              onChange={(e) => handleChange('monthly_grocery_bill', parseInt(e.target.value))}
-            />  
+              onChange={(e) =>
+                handleChange("monthly_grocery_bill", parseInt(e.target.value))
+              }
+            />
           </>
-        )
+        );
       case "shopping":
         return (
           <>
@@ -159,9 +183,16 @@ export function CarbonTrackerForm() {
               id="how_many_new_clothes_monthly"
               type="number"
               placeholder="New clothes per month"
-              onChange={(e) => handleChange('how_many_new_clothes_monthly', parseInt(e.target.value))}
+              onChange={(e) =>
+                handleChange(
+                  "how_many_new_clothes_monthly",
+                  parseInt(e.target.value)
+                )
+              }
             />
-            <Select onValueChange={(value) => handleChange('waste_bag_size', value)}>
+            <Select
+              onValueChange={(value) => handleChange("waste_bag_size", value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select waste bag size" />
               </SelectTrigger>
@@ -177,7 +208,9 @@ export function CarbonTrackerForm() {
               id="waste_bag_weekly_count"
               type="number"
               placeholder="Waste bag weekly count"
-              onChange={(e) => handleChange('waste_bag_weekly_count', parseInt(e.target.value))}
+              onChange={(e) =>
+                handleChange("waste_bag_weekly_count", parseInt(e.target.value))
+              }
             />
             <div className="grid gap-2">
               <Label htmlFor="recycling">Recycling:</Label>
@@ -199,7 +232,7 @@ export function CarbonTrackerForm() {
               </div>
             ))}
           </>
-        )
+        );
       case "digital_usage":
         return (
           <>
@@ -210,103 +243,111 @@ export function CarbonTrackerForm() {
               id="how_long_internet_daily_hour"
               type="number"
               placeholder="Internet hours per day"
-              onChange={(e) => handleChange('how_long_internet_daily_hour', parseInt(e.target.value))}
-            />  
+              onChange={(e) =>
+                handleChange(
+                  "how_long_internet_daily_hour",
+                  parseInt(e.target.value)
+                )
+              }
+            />
           </>
-        )
+        );
       default:
         return null;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     if (activityType === "transportation") {
       if (formData.vehicle_monthly_distance_km < 0) {
-        toast.error("Distance cannot be negative")
-        setIsLoading(false)
-        return
+        toast.error("Distance cannot be negative");
+        setIsLoading(false);
+        return;
       }
       if (formData.vehicle_type === "None") {
-        toast.error("Vehicle type is required")
-        setIsLoading(false)
-        return
+        toast.error("Vehicle type is required");
+        setIsLoading(false);
+        return;
       }
       if (formData.transport_type === "None") {
-        toast.error("Transport type is required")
-        setIsLoading(false)
-        return
+        toast.error("Transport type is required");
+        setIsLoading(false);
+        return;
       }
       if (formData.frequency_of_traveling_by_air === "None") {
-        toast.error("Frequency of traveling by air is required")
-        setIsLoading(false)
-        return
+        toast.error("Frequency of traveling by air is required");
+        setIsLoading(false);
+        return;
       }
     }
 
     if (activityType === "home_energy") {
       if (formData.heating_energy_source === "None") {
-        toast.error("Heating energy source is required")
-        setIsLoading(false)
-        return
+        toast.error("Heating energy source is required");
+        setIsLoading(false);
+        return;
       }
       if (formData.energy_efficiency === "None") {
-        toast.error("Energy efficiency is required")
-        setIsLoading(false)
-        return
+        toast.error("Energy efficiency is required");
+        setIsLoading(false);
+        return;
       }
       if (formData.how_long_tv_pc_daily_hour < 0) {
-        toast.error("TV/PC hours per day cannot be negative")
-        setIsLoading(false)
-        return
+        toast.error("TV/PC hours per day cannot be negative");
+        setIsLoading(false);
+        return;
       }
     }
 
     if (activityType === "food_diet") {
       if (formData.diet === "None") {
-        toast.error("Diet is required")
-        setIsLoading(false)
-        return
+        toast.error("Diet is required");
+        setIsLoading(false);
+        return;
       }
       if (formData.monthly_grocery_bill < 0) {
-        toast.error("Monthly grocery bill cannot be negative")
-        setIsLoading(false)
-        return
+        toast.error("Monthly grocery bill cannot be negative");
+        setIsLoading(false);
+        return;
       }
     }
 
     if (activityType === "shopping") {
       if (formData.how_many_new_clothes_monthly < 0) {
-        toast.error("New clothes per month cannot be negative")
-        setIsLoading(false)
-        return
+        toast.error("New clothes per month cannot be negative");
+        setIsLoading(false);
+        return;
       }
       if (formData.waste_bag_weekly_count < 0) {
-        toast.error("Waste bag weekly count cannot be negative")
-        setIsLoading(false)
-        return
+        toast.error("Waste bag weekly count cannot be negative");
+        setIsLoading(false);
+        return;
       }
       if (!formData.recycling || formData.recycling.length === 0) {
-        toast.error("Please select at least one recycling option")
-        setIsLoading(false)
-        return
+        toast.error("Please select at least one recycling option");
+        setIsLoading(false);
+        return;
       }
     }
 
     if (activityType === "digital_usage") {
       if (formData.how_long_internet_daily_hour < 0) {
-        toast.error("Internet hours per day cannot be negative")
-        setIsLoading(false)
-        return
+        toast.error("Internet hours per day cannot be negative");
+        setIsLoading(false);
+        return;
       }
     }
 
-    console.log(formData)
+    console.log(formData);
 
     let processedInput = { ...formData };
-    if (activityType === "shopping" && Array.isArray(processedInput.recycling)) {
+    if (
+      activityType === "shopping" &&
+      Array.isArray(processedInput.recycling)
+    ) {
       processedInput.recycling = JSON.stringify(processedInput.recycling);
     }
     // Called API to add activity
@@ -315,26 +356,24 @@ export function CarbonTrackerForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(
-        {
-          activityType : activityType,
-          input : processedInput,
-          notes : formData.notes,
-          date : formData.date
-        }
-      ),
-    })
+      body: JSON.stringify({
+        activityType: activityType,
+        input: processedInput,
+        notes: formData.notes,
+        date: formData.date,
+      }),
+    });
     if (response.ok) {
-      toast.success("Activity added successfully")
+      toast.success("Activity added successfully");
       refreshActivityLogs();
       // Reset form after successful submission
       setActivityType("");
       setFormData({});
     } else {
-      toast.error("Failed to add activity")
+      toast.error("Failed to add activity");
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -358,22 +397,33 @@ export function CarbonTrackerForm() {
         </select>
 
         {renderActivityTypeOptions()}
-
       </div>
 
       <div className="grid gap-2">
         <Label htmlFor="activity-details">Notes</Label>
-        <Input id="activity-details" placeholder="Optional notes" value={formData.notes || ""} 
-        onChange={(e) => handleChange("notes", e.target.value)}/>
+        <Input
+          id="activity-details"
+          placeholder="Optional notes"
+          value={formData.notes || ""}
+          onChange={(e) => handleChange("notes", e.target.value)}
+        />
       </div>
 
       <div className="grid gap-2">
         <Label htmlFor="activity-date">Date</Label>
-        <Input id="activity-date" type="date" value={formData.date || new Date().toISOString().split("T")[0]}
-        onChange={(e) => handleChange("date", e.target.value)} />
+        <Input
+          id="activity-date"
+          type="date"
+          value={formData.date || new Date().toISOString().split("T")[0]}
+          onChange={(e) => handleChange("date", e.target.value)}
+        />
       </div>
 
-      <Button type="submit" disabled={isLoading} className="w-full bg-carbon-red hover:bg-carbon-deep-red">
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-carbon-red hover:bg-carbon-deep-red"
+      >
         {isLoading ? (
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -387,5 +437,5 @@ export function CarbonTrackerForm() {
         )}
       </Button>
     </form>
-  )
+  );
 }

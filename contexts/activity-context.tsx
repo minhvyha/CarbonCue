@@ -19,6 +19,7 @@ interface ActivityLogCategory {
 interface ActivityContextType {
   activityLogs: ActivityLogCategory[];
   isLoading: boolean;
+  isRefreshing: boolean;
   refreshActivityLogs: () => Promise<void>;
   setActivityLogs: (logs: ActivityLogCategory[]) => void;
 }
@@ -31,10 +32,17 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const [activityLogs, setActivityLogs] = useState<ActivityLogCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refreshActivityLogs = useCallback(async () => {
     try {
-      setIsLoading(true);
+      // If already loaded once, show refreshing instead of loading
+      if (activityLogs.length > 0) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+
       const res = await fetch("/api/activity-tracker/categories", {
         method: "GET",
         credentials: "include",
@@ -59,8 +67,9 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       setActivityLogs([]);
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
-  }, []);
+  }, [activityLogs.length]);
 
   // Auto-fetch activity logs when user authentication changes
   useEffect(() => {
@@ -79,6 +88,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       value={{
         activityLogs,
         isLoading,
+        isRefreshing,
         refreshActivityLogs,
         setActivityLogs,
       }}
