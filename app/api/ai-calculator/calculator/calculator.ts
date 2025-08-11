@@ -84,7 +84,7 @@ export default async function calculateCO2(values: CalculateCO2Input): Promise<C
 
 
         const energy = twoDigits((gpus[gpu].watt * hours) / 1000); // kWh
-        const impact = customImpact ?? undefined;
+        const impact = customImpact !== null && customImpact !== undefined ? customImpact / 1000 : undefined;
         if (impact === null || impact === undefined || isNaN(impact)) {
             throw new Error('Impact value is missing or invalid.');
         }
