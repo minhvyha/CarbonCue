@@ -90,7 +90,14 @@ export async function POST(request: NextRequest) {
 
     console.log("Prepared input:", preparedInput);
 
-    const response = await fetch(`${process.env.CARBON_API_URL}/${endpoint}`, {
+    const apiUrl =
+      process.env.CARBON_API_URL ||
+      "https://carboncueapi-production-7a64.up.railway.app/";
+    const fullUrl = `${apiUrl}/${endpoint}`;
+
+    console.log("🌐 ML API URL:", fullUrl);
+
+    const response = await fetch(fullUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(preparedInput),
@@ -99,13 +106,43 @@ export async function POST(request: NextRequest) {
     const text = await response.text();
     console.log("📥 Raw ML API Response:", text);
 
-    const parsed = JSON.parse(text);
+    if (!response.ok) {
+      console.error("❌ ML API Error - Status:", response.status);
+      console.error("❌ ML API Error - Response:", text);
+      return NextResponse.json(
+        {
+          error: "Prediction API failed",
+          details: text,
+          status: response.status,
+        },
+        { status: 500 }
+      );
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (parseError) {
+      console.error("❌ Failed to parse ML API response:", parseError);
+      return NextResponse.json(
+        { error: "Invalid JSON response from ML API", details: text },
+        { status: 500 }
+      );
+    }
+
     const predictedEmission = parsed.predicted_carbon_emission;
 
-    if (!response.ok) {
-      const errData = await response.text();
+    if (predictedEmission === undefined || predictedEmission === null) {
+      console.error(
+        "❌ Missing predicted_carbon_emission in response:",
+        parsed
+      );
       return NextResponse.json(
-        { error: "Prediction API failed", details: errData },
+        {
+          error: "Invalid ML API response format",
+          details: "Missing predicted_carbon_emission field",
+          response: parsed,
+        },
         { status: 500 }
       );
     }
