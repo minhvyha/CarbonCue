@@ -90,9 +90,7 @@ export async function POST(request: NextRequest) {
 
     console.log("Prepared input:", preparedInput);
 
-    const apiUrl =
-      process.env.CARBON_API_URL ||
-      "https://carboncueapi-production-7a64.up.railway.app/";
+    const apiUrl = "https://carboncueapi-production-7a64.up.railway.app/";
     const fullUrl = `${apiUrl}/${endpoint}`;
 
     console.log("🌐 ML API URL:", fullUrl);
