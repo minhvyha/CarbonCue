@@ -92,65 +92,67 @@ export default function CarbonTrackerPage() {
 
           {/* User Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+            <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border-blue-200 dark:border-blue-700">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-300">
                       Carbon Reduced
                     </p>
-                    <p className="text-3xl font-bold text-blue-700">
+                    <p className="text-3xl font-bold text-blue-700 dark:text-blue-200">
                       {isLoadingStats
                         ? "..."
                         : userStats.carbonReduced.toFixed(1)}{" "}
                       kg
                     </p>
-                    <p className="text-xs text-blue-500">CO₂ saved total</p>
+                    <p className="text-xs text-blue-500 dark:text-blue-400">
+                      CO₂ saved total
+                    </p>
                   </div>
-                  <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <TrendingDown className="h-6 w-6 text-blue-600" />
+                  <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-800/50 flex items-center justify-center">
+                    <TrendingDown className="h-6 w-6 text-blue-600 dark:text-blue-300" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200 dark:border-green-700">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-green-600">
+                    <p className="text-sm font-medium text-green-600 dark:text-green-300">
                       Trees Planted
                     </p>
-                    <p className="text-3xl font-bold text-green-700">
+                    <p className="text-3xl font-bold text-green-700 dark:text-green-200">
                       {isLoadingStats ? "..." : userStats.treesPlanted}
                     </p>
-                    <p className="text-xs text-green-500">
+                    <p className="text-xs text-green-500 dark:text-green-400">
                       Virtual trees earned
                     </p>
                   </div>
-                  <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
-                    <TreePine className="h-6 w-6 text-green-600" />
+                  <div className="h-12 w-12 rounded-lg bg-green-100 dark:bg-green-800/50 flex items-center justify-center">
+                    <TreePine className="h-6 w-6 text-green-600 dark:text-green-300" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-orange-200">
+            <Card className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/30 dark:to-red-950/30 border-orange-200 dark:border-orange-700">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-orange-600">
+                    <p className="text-sm font-medium text-orange-600 dark:text-orange-300">
                       Current Activity Streak
                     </p>
-                    <p className="text-3xl font-bold text-orange-700">
+                    <p className="text-3xl font-bold text-orange-700 dark:text-orange-200">
                       {isLoadingStats ? "..." : userStats.streak}
                     </p>
-                    <p className="text-xs text-orange-500">
+                    <p className="text-xs text-orange-500 dark:text-orange-400">
                       Activities completed
                     </p>
                   </div>
-                  <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center">
-                    <Flame className="h-6 w-6 text-orange-600" />
+                  <div className="h-12 w-12 rounded-lg bg-orange-100 dark:bg-orange-800/50 flex items-center justify-center">
+                    <Flame className="h-6 w-6 text-orange-600 dark:text-orange-300" />
                   </div>
                 </div>
               </CardContent>
@@ -191,7 +193,7 @@ export default function CarbonTrackerPage() {
 
               <Card>
                 <CardHeader className="flex gap-2 pb-2">
-                  <CardTitle className="text-green-800 font-semibold flex items-center gap-2">
+                  <CardTitle className="text-bold font-semibold dark:text-white flex items-center gap-2">
                     <Lightbulb className="w-5 h-5 text-green-600" />
                     Green Tip of the Day
                   </CardTitle>

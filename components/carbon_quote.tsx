@@ -27,11 +27,11 @@ export default function CarbonQuote() {
 
   return (
     <div>
-      <div className="rounded-md border-l-4 border-green-500 bg-green-50 p-4 shadow-md">
-        <h2 className="text-lg font-bold text-green-800 mb-1">
+      <div className="rounded-md border-l-4 border-green-500 bg-green-50 p-4 shadow-md dark:bg-green-950/20 dark:border-green-700">
+        <h2 className="text-lg font-bold text-green-800 mb-1 dark:text-green-200">
           🌱 Did you know?
         </h2>
-        <p className="text-sm text-green-700">{tip}</p>
+        <p className="text-sm text-green-700 dark:text-green-300">{tip}</p>
       </div>
     </div>
   );

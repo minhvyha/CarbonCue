@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { updateUserStats, UserStats } from "@/lib/userStatsApi";
 import { useAuth } from "@/contexts/auth-context";
+import { useToast } from "@/components/toast-provider";
 
 // Interface for recommendation from API
 interface RecommendationFromAPI {
@@ -36,11 +37,36 @@ interface RecommendationFromAPI {
 }
 
 const activityTypes = {
-  transportation: { icon: Car, color: "bg-blue-500", factor: 0.25 },
-  homeenergy: { icon: Home, color: "bg-yellow-500", factor: 0.4 },
-  fooddiet: { icon: Utensils, color: "bg-green-500", factor: 0.8 },
-  shopping: { icon: ShoppingBag, color: "bg-purple-500", factor: 0.15 },
-  digitalusage: { icon: Smartphone, color: "bg-indigo-500", factor: 0.05 },
+  transportation: {
+    icon: Car,
+    color: "bg-blue-500",
+    bg: "dark:bg-blue-950/20",
+    factor: 0.25,
+  },
+  homeenergy: {
+    icon: Home,
+    color: "bg-yellow-500",
+    bg: "dark:bg-yellow-950/20",
+    factor: 0.4,
+  },
+  fooddiet: {
+    icon: Utensils,
+    color: "bg-green-500",
+    bg: "dark:bg-green-950/20",
+    factor: 0.8,
+  },
+  shopping: {
+    icon: ShoppingBag,
+    color: "bg-purple-500",
+    bg: "dark:bg-purple-950/20",
+    factor: 0.15,
+  },
+  digitalusage: {
+    icon: Smartphone,
+    color: "bg-indigo-500",
+    bg: "dark:bg-indigo-950/20",
+    factor: 0.05,
+  },
 };
 
 const CarbonTrackerRecommendation = ({
@@ -56,7 +82,7 @@ const CarbonTrackerRecommendation = ({
   >([]);
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
   const [loadingData, setLoadingData] = useState(true);
-
+  const { toast } = useToast();
   // Fetch recommendations on component mount
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -194,6 +220,14 @@ const CarbonTrackerRecommendation = ({
       console.error("Error completing recommendation:", error);
       // Handle error - maybe show a toast notification
     } finally {
+      toast({
+        title: `${
+          userRecommendations.find((r) => r._id === id)?.title
+        } completed successfully`,
+        description: "You've completed this recommendation",
+        variant: "default",
+      });
+
       setLoadingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(id);
@@ -240,7 +274,9 @@ const RecommendationCard = ({
 
   return (
     <div
-      className={`bg-white rounded-xl p-6 border border-gray-200 transition-all duration-200 hover:shadow-md h-full flex flex-col`}
+      className={`${
+        activityTypes[recommendation.category as keyof typeof activityTypes]?.bg
+      } rounded-xl p-6 bg-white border transition-all duration-200 hover:shadow-md h-full flex flex-col`}
     >
       {/* Icon */}
       <div
@@ -249,13 +285,13 @@ const RecommendationCard = ({
             ?.color || "bg-gray-500"
         }`}
       >
-        <Icon className="w-6 h-6 text-white" />
+        <Icon className="w-6 h-6 text-white dark:text-white" />
       </div>
 
       {/* Title and Difficulty */}
       <div className="mb-3">
         <h4
-          className={`font-semibold text-gray-900 mb-2 ${
+          className={`font-semibold text-gray-900 mb-2 dark:text-white dark:font-bold ${
             isCompleted ? "line-through" : ""
           }`}
         >
@@ -264,10 +300,10 @@ const RecommendationCard = ({
         <span
           className={`text-xs px-2 py-1 rounded-full font-medium ${
             recommendation.difficulty === "Easy"
-              ? "bg-green-100 text-green-700"
+              ? "bg-green-100 text-green-700 dark:bg-green-800/50 dark:text-green-300"
               : recommendation.difficulty === "Medium"
-              ? "bg-yellow-100 text-yellow-700"
-              : "bg-red-100 text-red-700"
+              ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-800/50 dark:text-yellow-300"
+              : "bg-red-100 text-red-700 dark:bg-red-800/50 dark:text-red-300"
           }`}
         >
           {recommendation.difficulty}
@@ -275,7 +311,7 @@ const RecommendationCard = ({
       </div>
 
       {/* Description Activity*/}
-      <p className="text-sm text-gray-600 mb-4 flex-grow">
+      <p className="text-sm text-gray-600 mb-4 flex-grow dark:text-gray-300">
         {recommendation.description}
       </p>
 
@@ -283,11 +319,13 @@ const RecommendationCard = ({
       <div className="space-y-2 mb-4">
         <div className="flex items-center space-x-1">
           <TrendingDown className="w-4 h-4 text-gray-400" />
-          <span className="text-sm text-gray-600">{recommendation.impact}</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {recommendation.impact}
+          </span>
         </div>
         <div className="flex items-center space-x-1">
-          <TreePine className="w-4 h-4 text-green-500" />
-          <span className="text-sm text-green-600 font-medium">
+          <TreePine className="w-4 h-4 text-green-500 dark:text-green-300" />
+          <span className="text-sm text-green-600 font-medium dark:text-green-300">
             {recommendation.treesEarned} tree
             {recommendation.treesEarned > 1 ? "s" : ""}
           </span>
@@ -302,7 +340,7 @@ const RecommendationCard = ({
             isLoading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-green-500 hover:bg-green-600"
-          } text-white font-medium py-2 rounded-lg transition-colors flex items-center justify-center space-x-2`}
+          } text-white font-medium py-2 rounded-lg transition-colors flex items-center justify-center space-x-2 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800 `}
         >
           {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
           <span>{isLoading ? "Completing..." : "Complete"}</span>
