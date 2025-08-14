@@ -172,7 +172,7 @@ export default function AICalculatorPage() {
       setData(result);
       toast?.({
         title: "Calculation Successful",
-        description: `Estimated emissions: ${result.emissions} kg CO2`,
+        description: `Estimated emissions: ${result.co2} kg CO2`,
       });
     } catch (error) {
       console.error("Error calculating emissions:", error);
