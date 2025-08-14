@@ -23,6 +23,7 @@ type Listing = {
   remote: boolean;
   dates: string;
   url: string;
+  logo: string;
 };
 
 type Organization = {
@@ -46,6 +47,7 @@ useEffect(() => {
       if (!res.ok) throw new Error("Failed to fetch data");
 
       const { events, organizations } = await res.json();
+      console.log("Fetched events:", events);
       setListings(events);
       setOrganizations(organizations);
       setHasMore(events.length > 0); // If no events, disable Next
@@ -84,8 +86,8 @@ useEffect(() => {
         </div>
 
         <Tabs defaultValue="events" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="events">Upcoming Events</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="events">Events & Opportunities</TabsTrigger>
             <TabsTrigger value="organizations">Organizations</TabsTrigger>
           </TabsList>
 
@@ -103,7 +105,7 @@ useEffect(() => {
                     date={listing.dates}
                     organizer={listing.org}
                     attendees={Math.floor(Math.random() * 100) + 10}
-                    image="/placeholder.svg?height=200&width=400"
+                    image={listing.logo || "/placeholder.svg?height=200&width=400"}
                     url={listing.url}
                   />
                 ))
