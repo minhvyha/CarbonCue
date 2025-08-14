@@ -18,6 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLoading } from "@/contexts/loading-context";
 import { useToast } from "@/components/toast-provider";
 
+import { AiResults } from "@/components/ai-results";
+
 interface ProviderType {
   providerName: string;
   name: string;
@@ -31,6 +33,8 @@ interface RegionType {
 }
 
 export default function AICalculatorPage() {
+  const [data, setData] = useState<any>(null);
+
   const [gpus, setGpus] = useState<string[]>([]);
   const [providers, setProviders] = useState<ProviderType[]>([]);
   const [regions, setRegions] = useState<RegionType[]>([]);
@@ -38,7 +42,7 @@ export default function AICalculatorPage() {
   const [selectedGpu, setSelectedGpu] = useState<string>("");
   const [selectedProvider, setSelectedProvider] = useState<string>("");
   const [selectedRegion, setSelectedRegion] = useState<string>("");
-  const [hours, setHours] = useState<number>(0);
+  const [hours, setHours] = useState<number>(100);
   const [offset, setOffset] = useState<number>(100);
   const [impact, setImpact] = useState<number>(0);
 
@@ -81,8 +85,9 @@ export default function AICalculatorPage() {
         hide();
       }
     };
-
-    init();
+    setTimeout(() => {
+      init();
+    }, 100);
     return () => {
       mounted = false;
     };
@@ -163,6 +168,8 @@ export default function AICalculatorPage() {
       if (!response.ok) throw new Error("Failed to calculate emissions");
 
       const result = await response.json();
+      console.log("Calculation result:", result);
+      setData(result);
       toast?.({
         title: "Calculation Successful",
         description: `Estimated emissions: ${result.emissions} kg CO2`,
@@ -188,14 +195,6 @@ export default function AICalculatorPage() {
             Calculate the carbon footprint of your AI workloads including model training and inference.
           </p>
         </div>
-
-        <Tabs defaultValue="training" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="training">Model Training</TabsTrigger>
-            <TabsTrigger value="inference">Model Inference</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="training">
             <Card>
               <CardHeader>
                 <CardTitle>Model Training Emissions</CardTitle>
@@ -317,50 +316,8 @@ export default function AICalculatorPage() {
                 </form>
               </CardContent>
             </Card>
-          </TabsContent>
+            {data && <AiResults data={data} />}
 
-          <TabsContent value="inference">
-            <Card>
-              <CardHeader>
-                <CardTitle>Model Inference Emissions</CardTitle>
-                <CardDescription>
-                  Calculate the carbon footprint of running inference with your AI models
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent>
-                <div className="grid gap-6">
-                  <div className="grid gap-3">
-                    <Label htmlFor="inference-model">Model Type</Label>
-                    <select id="inference-model" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none">
-                      <option value="gpt-4">GPT-4</option>
-                      <option value="gpt-3.5">GPT-3.5</option>
-                      <option value="llama">LLaMA</option>
-                      <option value="custom">Custom Model</option>
-                    </select>
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="monthly-requests">Monthly Requests</Label>
-                    <Input id="monthly-requests" type="number" placeholder="e.g., 10000" />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="avg-tokens">Average Tokens per Request</Label>
-                    <Input id="avg-tokens" type="number" placeholder="e.g., 1000" />
-                  </div>
-
-                  <div className="grid gap-3">
-                    <Label htmlFor="inference-location">Inference Location</Label>
-                    <Input id="inference-location" placeholder="e.g., US East" />
-                  </div>
-
-                  <Button className="w-full bg-carbon-purple hover:bg-carbon-purple/90">Calculate Inference Emissions</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
 
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Understanding AI Carbon Emissions</h2>

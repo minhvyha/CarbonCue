@@ -308,7 +308,7 @@ export function WebsiteCalculatorResults({
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
                           <span className="text-sm">Adjusted Bytes</span>
-                          <span className="font-medium">
+                          <span className="text-sm">
                             {formatBytes(
                               data.emissionDetails.statistics.adjustedBytes
                             )}

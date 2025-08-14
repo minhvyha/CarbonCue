@@ -45,6 +45,9 @@
 
 import { NextResponse } from 'next/server';
 import calculateCO2 from './calculator';
+import { connectToDatabase } from '@/lib/mongoose';
+import Providers from "@/model/Providers";
+import Gpus from "@/model/Gpus";
 
 
 
@@ -74,24 +77,23 @@ export async function POST(
 ): Promise<ReturnType<typeof NextResponse.json<CalculatorResponse | ErrorResponse>>> {
     try {
         const values: CalculatorRequest = await request.json();
-
+        await connectToDatabase();
+        
         if (values == null || typeof values !== 'object') {
             return NextResponse.json({ error: 'Invalid or missing JSON body.' }, { status: 400 });
         }
-        const { provider, region, customImpact, customOffset } = values;
 
-        const isCustomNull = customImpact == null && customOffset == null;
-        const isProviderNull = provider == null && region == null;
-        const isCustomValid = Number.isFinite(customImpact) && Number.isFinite(customOffset);
-        const isProviderValid = typeof provider === 'string' && typeof region === 'string';
+        const gpu = await Gpus.findOne({ name: values.gpu });
+        const provider = await Providers.findOne({ name: values.provider });
 
-        // Only valid if:
-        // 1. customImpact and customOffset are both null, provider and region must be valid
-        // 2. provider and region are both null, customImpact and customOffset must be numbers
-
+        const data = {
+            gpu: gpu,
+            provider: provider,
+        }
+        console.log(data)
         let result: CalculatorResponse;
         try {
-            result = await calculateCO2(values);
+            result = await calculateCO2(values, data);
             console.log("Calculation result:", result);
         } catch (err: any) {
             return NextResponse.json({ error: err.message }, { status: 400 });

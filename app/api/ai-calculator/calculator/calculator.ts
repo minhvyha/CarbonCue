@@ -34,69 +34,61 @@
  *   });
  */
 
-
-import data from '@/app/api/ai-calculator/data.json'
-
-// Add these helpers to allow runtime string indexing:
-const gpus = data.gpus as Record<string, { watt: number }>;
-const providers = (data.providers as unknown) as Record<
-  string,
-  Record<string, { impact: number; offsetRatio: number }>
->;
 const twoDigits = (n: number): number => Number(Number(n).toFixed(2));
 const toDigits = (n: number, d: number): number => Number(Number(n).toFixed(d));
 
 export interface CalculateCO2Input {
-    gpu: string;
-    hours: number;
-    provider: string | null;
-    region: string | null;
-    customImpact: number | null;
-    customOffset: number | null;
+  gpu: string;
+  hours: number;
+  provider: string | null;
+  region: string | null;
+  customImpact: number | null;
+  customOffset: number | null;
 }
 
 export interface CalculateCO2Result {
-    energy: number;
-    impact: number;
-    co2: number;
-    offset: number;
-    offsetPercents: number;
+  energy: number;
+  impact: number;
+  co2: number;
+  offset: number;
+  offsetPercents: number;
 }
 
-export default async function calculateCO2(values: CalculateCO2Input): Promise<CalculateCO2Result> {
-    const { gpu, hours, provider, region, customImpact, customOffset } = values;
+export default async function calculateCO2(
+  values: CalculateCO2Input,
+  data: any
+): Promise<CalculateCO2Result> {
+  const { hours, region, customImpact, customOffset } = values;
 
+  const gpu = data.gpu;
+  const provider = data.provider;
 
-    // Validate input
-    if (
-        typeof gpu !== 'string' ||
-        typeof hours !== 'number' ||
-        (provider !== null && typeof provider !== 'string') ||
-        (region !== null && typeof region !== 'string')
-    ) {
-        throw new Error('Missing or invalid required fields.');
-    }
+  if (!provider) {
+    throw new Error("Provider not found.");
+  }
+  if (!gpu) {
+    throw new Error("GPU not found.");
+  }
+  const energy = twoDigits((gpu.watt * hours) / 1000); // kWh
+  const impact =
+    customImpact !== null && customImpact !== undefined
+      ? customImpact / 1000
+      : undefined;
+  if (impact === null || impact === undefined || isNaN(impact)) {
+    throw new Error("Impact value is missing or invalid.");
+  }
+  if (
+    customOffset === null ||
+    customOffset === undefined ||
+    isNaN(customOffset)
+  ) {
+    throw new Error("Offset value is missing or invalid.");
+  }
+  const co2 = twoDigits(energy * impact);
+  const offset = twoDigits((co2 * customOffset) / 100);
+  const offsetPercents = twoDigits(customOffset);
 
-    // Validate GPU existence
-    if (!gpus[gpu]) {
-        throw new Error('GPU not found.');
-    }
-
-
-        const energy = twoDigits((gpus[gpu].watt * hours) / 1000); // kWh
-        const impact = customImpact !== null && customImpact !== undefined ? customImpact / 1000 : undefined;
-        if (impact === null || impact === undefined || isNaN(impact)) {
-            throw new Error('Impact value is missing or invalid.');
-        }
-        if (customOffset === null || customOffset === undefined || isNaN(customOffset)) {
-            throw new Error('Offset value is missing or invalid.');
-        }
-        const co2 = twoDigits(energy * impact);
-        const offset = twoDigits((co2 * customOffset) / 100);
-        const offsetPercents = twoDigits(customOffset);
-
-        return { energy, impact, co2, offset, offsetPercents };
-    
+  return { energy, impact, co2, offset, offsetPercents };
 }
 
 // =================================================
@@ -112,4 +104,3 @@ export default async function calculateCO2(values: CalculateCO2Input): Promise<C
 // const data = await response.json();
 // console.log(data.result); // Output: 12
 // ------------------------------------------------
-
