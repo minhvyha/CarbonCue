@@ -12,6 +12,8 @@ import { Heart, Eye, Share2, Calendar, Ruler, Brush, ArrowLeft, ExternalLink } f
 import { useLoading } from "@/contexts/loading-context"
 import Link from "next/link"
 
+import { useAuth } from "@/contexts/auth-context"
+import { useToast } from "@/components/toast-provider"
 
 interface ArtworkPageProps {
   // params is a Promise in Next.js 15+
@@ -34,7 +36,7 @@ interface ArtworkData {
   artistBio: string
   artistAvatar?: string
   views?: number
-  likes?: number
+  likes?: Array<any>
   impact?: string
   type?: string
 }
@@ -42,18 +44,19 @@ interface ArtworkData {
 export default function ArtworkPage({ params }: ArtworkPageProps) {
   // React.use to unwrap the promise-based params in Next.js 15+
   const { name } = React.use(params)
+  const { user } = useAuth()
   const router = useRouter()
+  const { toast } = useToast()
 
-  const [isLiked, setIsLiked] = useState(false)
   const [data, setData] = useState<ArtworkData | null>(null)
 
   const {show, hide} = useLoading()
 
   useEffect(() => {
     // Fetch artwork data based on the name
-      show()
-
+    
     const fetchArtwork = async () => {
+      show()
       try {
         const response = await fetch(`/api/resources/artgallery/${name}`)
 
@@ -81,10 +84,96 @@ export default function ArtworkPage({ params }: ArtworkPageProps) {
   }, [name, router])
 
 
-
-  const handleLike = () => {
-    setIsLiked(!isLiked)
+const handleLike = async () => {
+  if (!user) {
+    toast({
+      title: "Login required",
+      description: "You must be logged in to like artwork.",
+      variant: "destructive",
+    });
+    return;
   }
+
+  // pick the field that actually identifies the art piece in your DB
+  const title = data?.title ;
+  if (!title) {
+    console.error("Missing artwork identifier on client (title/slug)");
+    toast({
+      title: "Missing artwork identifier",
+      description: "Can't call like API: missing title/slug.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  console.log("handleLike start:", { title, userId: user._id, currentLikes: data?.likes });
+
+  const prevLikes = Array.isArray(data?.likes) ? data.likes : [];
+
+  // If already liked -> unlike
+  if (prevLikes.includes(user._id)) {
+    const optimistic = prevLikes.filter((id: string) => id !== user._id);
+    setData((prev) => (prev ? { ...prev, likes: optimistic } : null));
+
+    try {
+      // If your server doesn't implement unlike yet, see server snippet below
+      const res = await fetch(`/api/resources/artgallery${encodeURIComponent(title)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user._id, action: "remove" }),
+      });
+
+      const body = await res.json().catch(() => null);
+      console.log("Unlike response:", res.status, body);
+
+      if (!res.ok) {
+        throw body || new Error(`HTTP ${res.status}`);
+      }
+
+      // use canonical likes from server if returned
+      if (body?.likes) {
+        setData((prev) => (prev ? { ...prev, likes: body.likes } : null));
+      }
+    } catch (err) {
+      console.error("Unlike failed — reverting optimistic update:", err);
+      setData((prev) => (prev ? { ...prev, likes: prevLikes } : null));
+ 
+    }
+
+    return;
+  }
+
+  // If not liked -> like (POST)
+  const optimisticLikes = [...prevLikes, user._id];
+  setData((prev) => (prev ? { ...prev, likes: optimisticLikes } : null));
+
+  try {
+    const res = await fetch(`/api/resources/artgallery/${encodeURIComponent(title)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: user._id, action: "add" }), // action optional, server can default to add
+    });
+
+    const body = await res.json().catch(() => null);
+    console.log("Like response:", res.status, body);
+
+    if (!res.ok) {
+      throw body || new Error(`HTTP ${res.status}`);
+    }
+
+    if (body?.likes) {
+      setData((prev) => (prev ? { ...prev, likes: body.likes } : null));
+    } else {
+      // fallback: keep optimistic state
+      setData((prev) => (prev ? { ...prev, likes: optimisticLikes } : null));
+    }
+  } catch (err) {
+    console.error("Like request failed — reverting optimistic update:", err);
+    setData((prev) => (prev ? { ...prev, likes: prevLikes } : null));
+
+  }
+};
+
 
   const handleShare = () => {
     if (typeof window === 'undefined' || !data) return
@@ -140,13 +229,13 @@ export default function ArtworkPage({ params }: ArtworkPageProps) {
               </span>
               <span className="flex items-center">
                 <Heart className="h-5 w-5 mr-2" />
-                {data.likes ?? 0} likes
+                {data.likes?.length ?? 0} likes
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant={isLiked ? 'default' : 'outline'} size="sm" onClick={handleLike}>
-                <Heart className={`h-4 w-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
-                {isLiked ? 'Liked' : 'Like'}
+              <Button variant={data.likes?.includes(user?._id) ? 'default' : 'outline'} size="sm" onClick={handleLike}>
+                <Heart className={`h-4 w-4 mr-2 ${data.likes?.includes(user?._id) ? 'fill-current' : ''}`} />
+                {data.likes?.includes(user?._id) ? 'Liked' : 'Like'}
               </Button>
               <Button variant="outline" size="sm" onClick={handleShare}>
                 <Share2 className="h-4 w-4 mr-2" />
