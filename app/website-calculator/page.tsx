@@ -104,6 +104,30 @@ export default function WebsiteCalculatorPage() {
               </CardHeader>
             </Card>
           </div>
+          <div className="mt-4 text-sm text-gray-500">
+    <span className="block">
+ Estimating Digital Emissions —{' '}
+      <a
+        href="https://sustainablewebdesign.org/estimating-digital-emissions/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline"
+      >
+        sustainablewebdesign.org/estimating-digital-emissions
+      </a>
+      ; and Website Carbon —{' '}
+      <a
+        href="https://websitecarbon.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline"
+      >
+        websitecarbon.com
+      </a>
+      .
+    </span>
+  </div>
+
         </div>
       </div>
     </div>

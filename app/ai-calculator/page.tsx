@@ -319,50 +319,76 @@ export default function AICalculatorPage() {
 
 
         <div className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">Understanding AI Carbon Emissions</h2>
+  <h2 className="text-2xl font-bold mb-6">Understanding AI Carbon Emissions</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <Cpu className="h-8 w-8 text-carbon-purple mb-2" />
-                <CardTitle>Computational Resources</CardTitle>
-                <CardDescription>
-                  AI models, especially large ones, require significant computational resources that consume energy and produce carbon emissions.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <Card>
+      <CardHeader>
+        <Cpu className="h-8 w-8 text-carbon-purple mb-2" />
+        <CardTitle>Energy Grid Carbon Intensity</CardTitle>
+        <CardDescription>
+          The carbon intensity of the electricity used matters a lot — it can vary by orders of
+          magnitude between locations. Training the same model in a low-carbon region can produce
+          dramatically less CO₂e than training in a fossil-heavy grid.
+        </CardDescription>
+      </CardHeader>
+    </Card>
 
-            <Card>
-              <CardHeader>
-                <Server className="h-8 w-8 text-carbon-red mb-2" />
-                <CardTitle>Data Center Impact</CardTitle>
-                <CardDescription>
-                  The location and energy mix of data centers where models are trained and deployed significantly affects carbon footprint.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+    <Card>
+      <CardHeader>
+        <Server className="h-8 w-8 text-carbon-red mb-2" />
+        <CardTitle>Data Center Efficiency & Location</CardTitle>
+        <CardDescription>
+          Choose data center regions consciously: local grid mix and data center efficiency (PUE)
+          influence total emissions. Providers also use offsets/RECs — region selection still changes
+          direct emissions significantly.
+        </CardDescription>
+      </CardHeader>
+    </Card>
 
-            <Card>
-              <CardHeader>
-                <Database className="h-8 w-8 text-carbon-deep-red mb-2" />
-                <CardTitle>Model Size Matters</CardTitle>
-                <CardDescription>
-                  Larger models with more parameters require more energy for both training and inference operations.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+    <Card>
+      <CardHeader>
+        <Database className="h-8 w-8 text-carbon-deep-red mb-2" />
+        <CardTitle>Compute, Model Size & Training Time</CardTitle>
+        <CardDescription>
+          Model size, hardware choice and total training time are primary drivers of energy use.
+          Larger models or long runs on many GPUs produce far more CO₂e — using efficient hardware
+          or fine-tuning pre-trained models can greatly reduce footprint.
+        </CardDescription>
+      </CardHeader>
+    </Card>
 
-            <Card>
-              <CardHeader>
-                <LineChart className="h-8 w-8 text-carbon-magenta mb-2" />
-                <CardTitle>Efficiency Improvements</CardTitle>
-                <CardDescription>
-                  Techniques like model distillation, quantization, and pruning can significantly reduce the carbon footprint of AI systems.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
+    <Card>
+      <CardHeader>
+        <LineChart className="h-8 w-8 text-carbon-magenta mb-2" />
+        <CardTitle>Reduce & Measure — Practical Steps</CardTitle>
+        <CardDescription>
+          Measure CO₂e (use calculators/tools), prefer low-carbon regions, pick efficient hardware
+          (higher TFLOPS/W), reduce wasted experiments (fewer failed runs), and apply model compression
+          (distillation, quantization, pruning) to lower inference and training costs.
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  </div>
+
+  {/* Credit / source line */}
+  <div className="mt-4 text-sm text-gray-500">
+    <span className="block">
+      Sources: Lacoste et al., <em>Quantifying the Carbon Emissions of Machine Learning</em>, and the
+      ML CO₂ dataset/impact page —{' '}
+      <a
+        href="https://mlco2.github.io/impact/#learn"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline"
+      >
+        mlco2.github.io/impact/#learn
+      </a>
+      .
+    </span>
+  </div>
+</div>
+
       </div>
     </div>
   );

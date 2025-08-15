@@ -135,7 +135,7 @@ export default function VolunteerHubPage() {
           </TabsContent>
         </Tabs>
 
-        <div className="mt-16">
+        {/* <div className="mt-16">
           <Card>
             <CardHeader>
               <CardTitle>Your Volunteer Dashboard</CardTitle>
@@ -162,7 +162,7 @@ export default function VolunteerHubPage() {
               </Button>
             </CardFooter>
           </Card>
-        </div>
+        </div> */}
       </div>
     </div>
   );

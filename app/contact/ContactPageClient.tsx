@@ -26,7 +26,7 @@ export function ContactPageClient() {
       </section>
 
       {/* Contact Methods */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24" id="contact-form">
         <div className="container">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -70,7 +70,7 @@ export function ContactPageClient() {
             </div>
 
             {/* Contact Form and Info */}
-            <div className="grid grid-cols-1 gap-8">
+            <div className="grid grid-cols-1 gap-8" >
               {/* Contact Form */}
               <div className="lg:col-span-2">
                 <Card>
@@ -92,52 +92,54 @@ export function ContactPageClient() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24 bg-muted/50">
-  <div className="container">
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-        <p className="text-lg text-muted-foreground">
-          Quick answers to common questions about CarbonCue
-        </p>
-      </div>
+<section className="py-16 md:py-24 bg-muted/50">
+      <div className="container">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-muted-foreground">Quick answers to common questions about CarbonCue</p>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <FAQCard
-          question="What is the Website Carbon Emission Calculator?"
-          answer="Our Website Calculator estimates a site’s carbon footprint by analyzing total file size, server location, and visitor geography. You can submit either a URL or upload your site files for a detailed breakdown."
-        />
-        <FAQCard
-          question="How does the AI Carbon Emission Calculator work?"
-          answer="We integrate with cloud provider APIs (AWS, Google Cloud, etc.) to measure energy use during model training and inference, and translate that into carbon emissions. You’ll get per-epoch and per-query emission benchmarks."
-        />
-        <FAQCard
-          question="Can I track my personal carbon footprint?"
-          answer="Yes—our Daily Carbon Footprint Tracker lets you log energy use, transportation choices, and other activities. View interactive charts of your day-to-day and monthly trends, plus get actionable tips to lower your impact."
-        />
-        <FAQCard
-          question="How can I join the Volunteer & Resource Hub?"
-          answer="Head over to our Volunteer Hub to browse local and global climate events, register for volunteer opportunities, earn badges, and connect with nonprofits. All listings are filtered by date, location, and cause."
-        />
-        <FAQCard
-          question="Do you offer API access?"
-          answer="Absolutely. Developers and organizations can integrate our calculators via RESTful APIs. Email us at minhvy.ha@mq.edu.au for documentation and keys."
-        />
-        <FAQCard
-          question="Where can I get help or provide feedback?"
-          answer="Join our Discord community (minhvha) for real-time support, or send us a message via the contact form below. We welcome contributions to our open-source GitHub repo and suggestions for new features!"
-        />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <FAQCard
+              question="What is CarbonCue?"
+              answer={`CarbonCue is a non-profit educational website and hub for everything related to UNSDG 13 (Climate Action). It brings together tools and resources in one place — including a website carbon emissions calculator, an AI training emissions calculator, a personal carbon tracker, a Volunteer & Resource Hub, and a resources page with guides and educational content.`}
+            />
 
-      <div className="text-center mt-12">
-        <p className="text-muted-foreground mb-4">Still have questions?</p>
-        <Button asChild className="bg-carbon-red hover:bg-carbon-deep-red">
-          <Link href="#contact-form">Ask Us Directly</Link>
-        </Button>
+            <FAQCard
+              question="Can I track my personal carbon footprint?"
+              answer={`Yes — our Daily Carbon Footprint Tracker lets you log energy use, transportation choices, food and shopping habits, digital usage, and other activities. You can view interactive charts for daily and monthly trends, and receive actionable tips to help lower your impact.`}
+            />
+
+               <FAQCard
+              question="How do you calculate my carbon footprint?"
+              answer={`We use the We-Bears Carbon Footprint dataset, grouping your activities into five categories: Transportation, Home Energy, Food & Diet, Shopping, and Digital Usage. A hybrid method blends fixed ratios from studies with machine learning models, giving a balanced, accurate estimate of each category’s share of your total emissions.`}
+            />
+            <FAQCard
+              question="How can I join the Volunteer & Resource Hub?"
+              answer={`Visit the Volunteer Hub to browse local and global climate events. You can register for volunteer opportunities, earn badges for participation, and connect with nonprofits. Listings are filterable by date, location, and cause.`}
+            />
+
+            <FAQCard
+              question="Do you offer API access?"
+              answer={`No — we do not offer API access at the moment. CarbonCue is a non-profit educational website, and we currently do not provide a public API.`}
+            />
+
+            <FAQCard
+              question="Where can I get help or provide feedback?"
+              answer={`Email us at minhvy.ha@mq.edu.au, send a message using the contact form on the site (it will come straight to our team), or reach out on Discord: minhvha.`}
+            />
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-muted-foreground mb-4">Still have questions?</p>
+            <Button asChild className="bg-carbon-red hover:bg-carbon-deep-red">
+              <Link href="#contact-form">Ask Us Directly</Link>
+            </Button>
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
-</section>
+    </section>
 
 
       {/* CTA Section */}
