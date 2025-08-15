@@ -26,11 +26,10 @@ export async function GET(request: Request) {
     }
 
     const json = await externalRes.json();
-    const results = Array.isArray(json.results) ? json.results : [];
+    let results = Array.isArray(json.results) ? json.results : [];
 
     // pick and sanitize fields
-    const shuffled = results.slice().sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 6).map((r: any) => ({
+    results = results.slice(0, 6).map((r: any) => ({
       id: r.id,
       title: r.title,
       org: r.organization?.name ?? null,
@@ -45,7 +44,6 @@ export async function GET(request: Request) {
       logo: r.organization.logo ? (r.organization.logo.startsWith("//") ? `https:${r.organization.logo}` : r.organization.logo) : null,
     }));
 
-    console.log("Selected events:", shuffled);
     const orgMap = new Map<string, any>();
     results.forEach((r: any) => {
       const org = r.organization;
@@ -55,7 +53,7 @@ export async function GET(request: Request) {
       }
     });
 
-    return NextResponse.json({ events: selected, organizations: Array.from(orgMap.values()) });
+    return NextResponse.json({ events: results, organizations: Array.from(orgMap.values()) });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

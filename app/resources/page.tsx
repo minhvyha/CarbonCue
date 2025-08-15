@@ -2,9 +2,10 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FileText } from "lucide-react";
+import { FileText, ExternalLink } from "lucide-react";
 import { useLoading } from "@/contexts/loading-context";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -18,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 type Resource = {
   title: string;
   description: string;
-  type: "guide" | "course" | "video" | "research";
+  type: "guide" | "course" | "video" | "research" | "art";
   level?: string;
   duration?: string;
   numberOfLesson?: number;
@@ -30,6 +31,9 @@ type Resource = {
   authors: string[];
   year?: number;
   keywords?: string[];
+  artist?: string;
+  image?: string;
+  medium?: string;
 };
 
 export default function ResourcesPage() {
@@ -38,32 +42,34 @@ export default function ResourcesPage() {
     courses: [],
     videos: [],
     research: [],
+    artGallery: [],
   });
   const { show, hide } = useLoading();
 
   useEffect(() => {
     setTimeout(() => {
       show();
-          fetch("/api/resources")
-      .then((response) => response.json())
-      .then((data) => {
-        const groupedResources = {
-          guides: data.filter((item: Resource) => item.type === "guide"),
-          courses: data.filter((item: Resource) => item.type === "course"),
-          videos: data.filter((item: Resource) => item.type === "video"),
-          research: data.filter((item: Resource) => item.type === "research"),
-        };
-        setResources(groupedResources);
-      }).finally(() => {
-        hide();
-      });
+      fetch("/api/resources")
+        .then((response) => response.json())
+        .then((data) => {
+          const groupedResources = {
+            guides: data.filter((item: Resource) => item.type === "guide"),
+            courses: data.filter((item: Resource) => item.type === "course"),
+            videos: data.filter((item: Resource) => item.type === "video"),
+            research: data.filter((item: Resource) => item.type === "research"),
+            artGallery: data.filter((item: Resource) => item.type === "art"),
+          };
+          setResources(groupedResources);
+          console.log(groupedResources);
+        })
+        .finally(() => {
+          hide();
+        });
     }, 300);
-
   }, []);
 
   return (
     <div className="container py-10">
-
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-4">Educational Resources</h1>
@@ -79,8 +85,7 @@ export default function ResourcesPage() {
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="videos">Videos</TabsTrigger>
             <TabsTrigger value="research">Research</TabsTrigger>
-            <TabsTrigger value="Art Gallery">Art Gallery</TabsTrigger>
-
+            <TabsTrigger value="art">Art Gallery</TabsTrigger>
           </TabsList>
 
           <TabsContent value="guides">
@@ -151,6 +156,22 @@ export default function ResourcesPage() {
               ))}
             </div>
           </TabsContent>
+
+          <TabsContent value="art">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {resources.artGallery.map((art: Resource) => (
+                <ArtworkCard
+                  key={art.title}
+                  title={art.title}
+                  artist={art.artist || "Unknown Artist"}
+                  year={art.year || new Date().getFullYear()}
+                  description={art.description}
+                  image={art.image || "/placeholder.svg"}
+                  medium={art.medium || "Unknown Medium"}
+                />
+              ))}
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
@@ -200,11 +221,7 @@ function ResourceGuideCard({
       </CardContent>
       <CardFooter>
         <Button asChild variant="default" className="w-full">
-          <Link
-            href={`/resources/guide/${slug}`}
-          >
-            Read Guide
-          </Link>
+          <Link href={`/resources/guide/${slug}`}>Read Guide</Link>
         </Button>
       </CardFooter>
     </Card>
@@ -253,11 +270,7 @@ function CourseCard({
           asChild
           className="w-full bg-carbon-purple hover:bg-carbon-purple/90"
         >
-          <Link
-            href={`/resources/course/${slug}`}
-          >
-            Enroll Now
-          </Link>
+          <Link href={`/resources/course/${slug}`}>Enroll Now</Link>
         </Button>
       </CardFooter>
     </Card>
@@ -270,7 +283,7 @@ function VideoCard({
   duration,
   uploadDate,
   videoLink,
-  authors
+  authors,
 }: {
   title: string;
   description: string;
@@ -279,7 +292,7 @@ function VideoCard({
   videoLink?: string;
   authors?: string[];
 }) {
-  console.log(authors)
+  console.log(authors);
   return (
     <Card>
       <CardHeader>
@@ -287,7 +300,9 @@ function VideoCard({
         <CardDescription className="line-clamp-3">
           Authors: {authors ? authors.join(", ") : "Unknown"}
         </CardDescription>
-        <CardDescription className="line-clamp-3">{description}</CardDescription>
+        <CardDescription className="line-clamp-3">
+          {description}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-64 bg-muted rounded-md flex items-center justify-center mb-4">
@@ -368,6 +383,60 @@ function ResearchCard({
           </Link>
         </Button>
       </CardFooter>
+    </Card>
+  );
+}
+
+function ArtworkCard({
+  title,
+  artist,
+  medium,
+  year,
+  description,
+  image,
+}: {
+  title: string;
+  artist: string;
+  medium: string;
+  year: number;
+  description: string;
+  image: string;
+}) {
+  return (
+    <Card key={title} className="hover:shadow-lg transition-shadow group">
+      <div className="relative overflow-hidden">
+        <img
+          src={`/painting/${image}` || "/placeholder.svg"}
+          alt={title}
+          className="w-full h-64 object-cover transition-transform group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center justify-between text-sm">
+            {/* <span>{views}</span>
+            <span>{artwork.likes}</span> */}
+          </div>
+        </div>
+      </div>
+      <CardHeader>
+        <div className="flex justify-between items-start mb-2">
+          <Badge variant="secondary">{medium}</Badge>
+          <span className="text-sm text-muted-foreground">{year}</span>
+        </div>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardDescription>by {artist}</CardDescription>
+        <p className="text-sm text-muted-foreground mt-2">
+          {description}
+        </p>
+      </CardHeader>
+      <CardContent>
+        <Link href={`/art/${title}`}>
+          <Button size="sm" className="w-full">
+            View Artwork
+            <ExternalLink className="h-4 w-4 ml-1" />
+          </Button>
+        </Link>
+      </CardContent>
     </Card>
   );
 }

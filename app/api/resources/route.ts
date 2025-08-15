@@ -8,14 +8,12 @@ import Course from "@/model/Course";
 import Guides from "@/model/Guide";
 import Videos from "@/model/Videos";
 import Researchs from "@/model/Researchs";
-
+import ArtPieces from "@/model/ArtPieces";
 
 export async function GET(_req: Request) {
-    
   // 1) connect to MongoDB
   const conn = await connectToDatabase();
   console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
-
 
   // 2) find the course by slug
   const allCourses = await Course.find(
@@ -73,12 +71,28 @@ export async function GET(_req: Request) {
       keywords: 1,
       year: 1,
       _id: 0,
-
     }
   ).lean();
 
-  let returnGuides = [...allCourses, ...allGuides, ...allVideos, ...allResearchs];
-
+  const allArtPieces = await ArtPieces.find(
+    {},
+    {
+      title: 1,
+      artist: 1,
+      year: 1,
+      description: 1,
+      image: 1,
+      type: 1,
+      medium: 1
+    }
+  );
+  let returnGuides = [
+    ...allCourses,
+    ...allGuides,
+    ...allVideos,
+    ...allResearchs,
+    ...allArtPieces
+  ];
 
   // 4) return the found course and guide
   return NextResponse.json(returnGuides);
