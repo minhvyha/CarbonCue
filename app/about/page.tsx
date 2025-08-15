@@ -5,7 +5,7 @@ import {
   ArrowRight,
   Leaf,
   Target,
-  Users,
+  Users,Eye, Shield, Lightbulb, HandHeart
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -160,21 +160,27 @@ export default function AboutPage() {
                 title="Transparency"
                 description="We believe in open, honest communication about climate data, methodologies, and the challenges we face. Our calculations and recommendations are based on peer-reviewed research and industry best practices."
                 color="bg-carbon-red"
+                icon={<Eye className="h-6 w-6 text-white" />}
+
               />
               <ValueCard
                 title="Accessibility"
                 description="Climate action shouldn't be limited to experts. We design our tools to be intuitive and accessible to everyone, regardless of their technical background or environmental knowledge."
                 color="bg-carbon-purple"
+                icon={<Shield className="h-6 w-6 text-white" />}
               />
               <ValueCard
                 title="Innovation"
                 description="We continuously explore new technologies and methodologies to improve carbon tracking accuracy and user experience. Innovation drives our ability to make a meaningful impact."
                 color="bg-carbon-deep-red"
+                icon={<Lightbulb className="h-6 w-6 text-white" />}
+
               />
               <ValueCard
                 title="Community"
                 description="Individual action is powerful, but collective action is transformative. We foster communities that support, educate, and inspire each other toward sustainable practices."
                 color="bg-carbon-magenta"
+                icon={<HandHeart className="h-6 w-6 text-white" />}
               />
             </div>
           </div>
@@ -195,43 +201,49 @@ export default function AboutPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <TeamMember
-                name="Salvio Ha"
-                role="Lead Developer"
-                bio="Lead Developer with 3 years in UI, database, and core web development, passionate about green tech and climate action."
-                image="/team/minh.jpg?height=300&width=300"
-              />
-              <TeamMember
-                name="Khoi Nguyen Vu"
-                role="Co-Founder & CTO"
-                bio="Full-stack engineer passionate about using technology to solve environmental challenges."
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <TeamMember
-                name="Thanh Tra Tran"
-                role="Head of Sustainability"
-                bio="Climate policy expert and former UN advisor on sustainable development goals."
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <TeamMember
-                name="Khoi Nguyen"
-                role="Co-Founder & CTO"
-                bio="Full-stack engineer passionate about using technology to solve environmental challenges."
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <TeamMember
-                name="Rozil Nguyen"
-                role="Head of Sustainability"
-                bio="Climate policy expert and former UN advisor on sustainable development goals."
-                image="/placeholder.svg?height=300&width=300"
-              />
-              <TeamMember
-                name="Jessica Mei Phillips"
-                role="Head of Sustainability"
-                bio="Climate policy expert and former UN advisor on sustainable development goals."
-                image="/placeholder.svg?height=300&width=300"
-              />
-            </div>
+  <TeamMember
+    name="Salvio Ha"
+    role="Lead Developer"
+    bio="Lead Developer with 3 years in UI, database, and core web development, passionate about green tech and climate action."
+    image="/team/minh.jpg?height=300&width=300"
+  />
+
+  <TeamMember
+    name="Khoi Nguyen Vu"
+    role="Software Developer — AI Training"
+    bio="Researches AI training emission calculation and implements backend systems for the AI training emissions feature."
+    image="/placeholder.svg?height=300&width=300"
+  />
+
+  <TeamMember
+    name="Thanh Tra Tran"
+    role="Software Developer — Volunteer Hub"
+    bio="Researches volunteer platform APIs and implements the Volunteer Hub page and integrations."
+    image="/placeholder.svg?height=300&width=300"
+  />
+
+  <TeamMember
+    name="Khoi Nguyen"
+    role="Software Developer — Carbon Tracker"
+    bio="Leads development of the Carbon Tracker: researches and trains models for everyday activity emissions and builds both frontend and backend."
+    image="/placeholder.svg?height=300&width=300"
+  />
+
+  <TeamMember
+    name="Rozil Nguyen"
+    role="Educational Content Creator"
+    bio="Creates approachable guides and educational content for CarbonCue, offering fresh perspectives on sustainability topics."
+    image="/placeholder.svg?height=300&width=300"
+  />
+
+  <TeamMember
+    name="Jessica Mei Phillips"
+    role="Artist"
+    bio="Produces original paintings and visual assets for the project to communicate how everyday actions impact the environment."
+    image="/placeholder.svg?height=300&width=300"
+  />
+</div>
+
           </div>
         </div>
       </section>
@@ -359,28 +371,20 @@ function ValueCard({
   title,
   description,
   color,
-}: {
-  title: string;
-  description: string;
-  color: string;
-}) {
+  icon,
+}: { title: string; description: string; color: string; icon: React.ReactNode }) {
   return (
     <Card>
       <CardHeader>
-        <div
-          className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}
-        >
-          <div className="w-6 h-6 bg-white rounded-full" />
-        </div>
+        <div className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center mb-4`}>{icon}</div>
         <CardTitle className="text-xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <CardDescription>{description}</CardDescription>
       </CardContent>
     </Card>
-  );
+  )
 }
-
 function TeamMember({
   name,
   role,
