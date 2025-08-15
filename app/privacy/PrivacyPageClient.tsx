@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 
 export function PrivacyPageClient() {
-  const lastUpdated = "August 2, 2024"
+  const lastUpdated = "August 15, 2025"
 
   return (
     <div className="flex flex-col">
@@ -22,8 +22,8 @@ export function PrivacyPageClient() {
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight gradient-text mb-6">Privacy Policy</h1>
             <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
-              Your privacy is fundamental to our mission. Learn how we collect, use, and protect your personal
-              information while helping you track and reduce your carbon footprint.
+              Your privacy matters. This policy explains how CarbonCue ("we", "our" or "us"), a non-profit educational
+              service, collects, uses and protects personal information in accordance with Australian law.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -43,28 +43,28 @@ export function PrivacyPageClient() {
             <Card className="bg-carbon-red/5 border-carbon-red/20">
               <CardHeader>
                 <CardTitle className="text-xl">Privacy at a Glance</CardTitle>
-                <CardDescription>Key points about how we handle your data</CardDescription>
+                <CardDescription>Key points about how we handle your data under Australian law</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <Shield className="h-8 w-8 text-carbon-red mx-auto mb-2" />
-                    <h3 className="font-semibold mb-1">Data Protection</h3>
+                    <h3 className="font-semibold mb-1">Australian law</h3>
                     <p className="text-sm text-muted-foreground">
-                      We encrypt all data and never sell your personal information
+                      We comply with the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs).
                     </p>
                   </div>
                   <div className="text-center">
                     <Mail className="h-8 w-8 text-carbon-purple mx-auto mb-2" />
-                    <h3 className="font-semibold mb-1">Your Control</h3>
+                    <h3 className="font-semibold mb-1">Your rights</h3>
                     <p className="text-sm text-muted-foreground">
-                      You can access, modify, or delete your data at any time
+                      Access, correct or request deletion of your personal data; make a complaint to us or the OAIC.
                     </p>
                   </div>
                   <div className="text-center">
                     <Calendar className="h-8 w-8 text-carbon-magenta mx-auto mb-2" />
-                    <h3 className="font-semibold mb-1">Transparency</h3>
-                    <p className="text-sm text-muted-foreground">We're clear about what data we collect and why</p>
+                    <h3 className="font-semibold mb-1">Notifiable breaches</h3>
+                    <p className="text-sm text-muted-foreground">We will notify affected individuals and the OAIC if a serious data breach occurs.</p>
                   </div>
                 </div>
               </CardContent>
@@ -85,39 +85,17 @@ export function PrivacyPageClient() {
                 </CardHeader>
                 <CardContent>
                   <nav className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <a href="#introduction" className="text-sm hover:text-primary transition-colors">
-                      1. Introduction
-                    </a>
-                    <a href="#information-we-collect" className="text-sm hover:text-primary transition-colors">
-                      2. Information We Collect
-                    </a>
-                    <a href="#how-we-use-information" className="text-sm hover:text-primary transition-colors">
-                      3. How We Use Your Information
-                    </a>
-                    <a href="#information-sharing" className="text-sm hover:text-primary transition-colors">
-                      4. Information Sharing
-                    </a>
-                    <a href="#data-security" className="text-sm hover:text-primary transition-colors">
-                      5. Data Security
-                    </a>
-                    <a href="#your-rights" className="text-sm hover:text-primary transition-colors">
-                      6. Your Rights and Choices
-                    </a>
-                    <a href="#cookies" className="text-sm hover:text-primary transition-colors">
-                      7. Cookies and Tracking
-                    </a>
-                    <a href="#international-transfers" className="text-sm hover:text-primary transition-colors">
-                      8. International Data Transfers
-                    </a>
-                    <a href="#children-privacy" className="text-sm hover:text-primary transition-colors">
-                      9. Children's Privacy
-                    </a>
-                    <a href="#changes" className="text-sm hover:text-primary transition-colors">
-                      10. Changes to This Policy
-                    </a>
-                    <a href="#contact" className="text-sm hover:text-primary transition-colors">
-                      11. Contact Information
-                    </a>
+                    <a href="#introduction" className="text-sm hover:text-primary transition-colors">1. Introduction</a>
+                    <a href="#information-we-collect" className="text-sm hover:text-primary transition-colors">2. Information We Collect</a>
+                    <a href="#how-we-use-information" className="text-sm hover:text-primary transition-colors">3. How We Use Your Information</a>
+                    <a href="#information-sharing" className="text-sm hover:text-primary transition-colors">4. Information Sharing</a>
+                    <a href="#data-security" className="text-sm hover:text-primary transition-colors">5. Data Security</a>
+                    <a href="#your-rights" className="text-sm hover:text-primary transition-colors">6. Your Rights and Choices</a>
+                    <a href="#cookies" className="text-sm hover:text-primary transition-colors">7. Cookies and Tracking</a>
+                    <a href="#international-transfers" className="text-sm hover:text-primary transition-colors">8. International Data Transfers</a>
+                    <a href="#children-privacy" className="text-sm hover:text-primary transition-colors">9. Children's Privacy</a>
+                    <a href="#changes" className="text-sm hover:text-primary transition-colors">10. Changes to This Policy</a>
+                    <a href="#contact" className="text-sm hover:text-primary transition-colors">11. Contact Information</a>
                   </nav>
                 </CardContent>
               </Card>
@@ -126,18 +104,13 @@ export function PrivacyPageClient() {
               <section id="introduction" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">1. Introduction</h2>
                 <p className="mb-4">
-                  Welcome to CarbonCue ("we," "our," or "us"). We are committed to protecting your privacy and ensuring
-                  the security of your personal information. This Privacy Policy explains how we collect, use, disclose,
-                  and safeguard your information when you use our sustainability platform and related services.
+                  CarbonCue ("we", "our", "us") is a non-profit educational website based in Australia that helps individuals and organisations measure and reduce their carbon footprint. This Privacy Policy explains how we collect, hold, use and disclose personal information in accordance with the Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs).
                 </p>
                 <p className="mb-4">
-                  CarbonCue provides tools and services to help individuals and organizations track, understand, and
-                  reduce their carbon footprint. This includes website carbon calculators, AI emission calculators,
-                  personal carbon tracking, and volunteer opportunity matching.
+                  Our platform offers tools such as a website carbon emissions calculator, AI training emissions calculator, personal carbon tracker and a Volunteer & Resource Hub.
                 </p>
                 <p>
-                  By using our services, you agree to the collection and use of information in accordance with this
-                  Privacy Policy. If you do not agree with our policies and practices, please do not use our services.
+                  By using our services you consent to the practices described in this policy. If you do not agree, please do not use our services.
                 </p>
               </section>
 
@@ -149,60 +122,26 @@ export function PrivacyPageClient() {
 
                 <h3 className="text-xl font-semibold mb-4">2.1 Information You Provide Directly</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>
-                    <strong>Account Information:</strong> Name, email address, password, and profile information when
-                    you create an account
-                  </li>
-                  <li>
-                    <strong>Carbon Tracking Data:</strong> Information about your activities, transportation, energy
-                    usage, and other data you input for carbon footprint calculations
-                  </li>
-                  <li>
-                    <strong>Website Analysis Data:</strong> URLs and website information you submit for carbon emission
-                    analysis
-                  </li>
-                  <li>
-                    <strong>Communication Data:</strong> Messages, feedback, and other communications you send to us
-                  </li>
-                  <li>
-                    <strong>Volunteer Information:</strong> Preferences, availability, and participation data for
-                    volunteer opportunities
-                  </li>
+                  <li><strong>Account Information:</strong> name, email, password (hashed), and profile details.</li>
+                  <li><strong>Carbon Tracking Data:</strong> activities you log (transport, energy, diet, purchases, digital use) to calculate emissions.</li>
+                  <li><strong>Website Analysis Data:</strong> URLs, site files or related metadata you submit for our website calculator.</li>
+                  <li><strong>Volunteer Preferences:</strong> location, availability and interests you provide for the Volunteer Hub.</li>
+                  <li><strong>Communications:</strong> messages, feedback and survey responses you send to us.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">2.2 Information We Collect Automatically</h3>
+                <h3 className="text-xl font-semibold mb-4">2.2 Information Collected Automatically</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>
-                    <strong>Usage Data:</strong> How you interact with our platform, features used, time spent, and
-                    navigation patterns
-                  </li>
-                  <li>
-                    <strong>Device Information:</strong> IP address, browser type, operating system, device identifiers,
-                    and mobile network information
-                  </li>
-                  <li>
-                    <strong>Location Data:</strong> General location information based on IP address (not precise
-                    location unless explicitly provided)
-                  </li>
-                  <li>
-                    <strong>Performance Data:</strong> Information about how our services perform on your device
-                  </li>
+                  <li><strong>Usage Data:</strong> interaction events, feature usage and session times.</li>
+                  <li><strong>Device & Network:</strong> IP address (anonymised where possible), browser, operating system and device identifiers.</li>
+                  <li><strong>Location:</strong> approximate location derived from IP address unless you provide precise location data.</li>
+                  <li><strong>Performance:</strong> error logs and performance metrics to improve our service.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">2.3 Information from Third Parties</h3>
+                <h3 className="text-xl font-semibold mb-4">2.3 Third-Party Sources</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>
-                    <strong>Social Media:</strong> Information from social media platforms when you connect your
-                    accounts or share content
-                  </li>
-                  <li>
-                    <strong>Partner Organizations:</strong> Information from volunteer organizations and sustainability
-                    partners (with your consent)
-                  </li>
-                  <li>
-                    <strong>Public Sources:</strong> Publicly available information about carbon emission factors and
-                    environmental data
-                  </li>
+                  <li><strong>Service Integrations:</strong> information from services you connect (e.g. social login) with your consent.</li>
+                  <li><strong>Partners:</strong> volunteer organisations and sustainability partners who provide event or program data with your consent.</li>
+                  <li><strong>Public Data:</strong> emission factors and environmental datasets from public sources.</li>
                 </ul>
               </section>
 
@@ -211,39 +150,30 @@ export function PrivacyPageClient() {
               {/* How We Use Information */}
               <section id="how-we-use-information" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">3. How We Use Your Information</h2>
-                <p className="mb-4">We use the information we collect for the following purposes:</p>
+                <p className="mb-4">We use personal information to provide and improve our services, communicate with you, and meet legal obligations.</p>
 
                 <h3 className="text-xl font-semibold mb-4">3.1 Core Services</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Calculate and track your carbon footprint</li>
-                  <li>Analyze website and AI system carbon emissions</li>
-                  <li>Provide personalized sustainability recommendations</li>
-                  <li>Match you with relevant volunteer opportunities</li>
-                  <li>Generate reports and insights about your environmental impact</li>
+                  <li>Provide carbon calculations and personalised sustainability recommendations.</li>
+                  <li>Power the Volunteer Hub and match users with opportunities.</li>
+                  <li>Generate anonymised reports and research insights.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">3.2 Platform Improvement</h3>
+                <h3 className="text-xl font-semibold mb-4">3.2 Improvements & Research</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Improve our algorithms and calculation accuracy</li>
-                  <li>Develop new features and services</li>
-                  <li>Analyze usage patterns to enhance user experience</li>
-                  <li>Conduct research on sustainability trends and behaviors</li>
+                  <li>Improve algorithms, fix bugs and test features.</li>
+                  <li>Conduct aggregated research on sustainability behaviours (data will be anonymised).</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">3.3 Communication</h3>
+                <h3 className="text-xl font-semibold mb-4">3.3 Communications</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Send you account-related notifications and updates</li>
-                  <li>Provide customer support and respond to inquiries</li>
-                  <li>Share sustainability tips and educational content (with your consent)</li>
-                  <li>Notify you about volunteer opportunities and community events</li>
+                  <li>Send service messages, updates and, with consent, educational content and event notifications.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">3.4 Legal and Security</h3>
+                <h3 className="text-xl font-semibold mb-4">3.4 Legal & Safety</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Comply with legal obligations and regulatory requirements</li>
-                  <li>Protect against fraud, abuse, and security threats</li>
-                  <li>Enforce our terms of service and policies</li>
-                  <li>Resolve disputes and investigate violations</li>
+                  <li>Comply with legal obligations and respond to law enforcement requests.</li>
+                  <li>Detect and prevent fraud, abuse and security incidents.</li>
                 </ul>
               </section>
 
@@ -252,49 +182,22 @@ export function PrivacyPageClient() {
               {/* Information Sharing */}
               <section id="information-sharing" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">4. Information Sharing and Disclosure</h2>
-                <p className="mb-4">
-                  We do not sell, trade, or rent your personal information to third parties. We may share your
-                  information only in the following circumstances:
-                </p>
+                <p className="mb-4">We will not sell your personal information. We may share data only as described below or with your consent.</p>
 
                 <h3 className="text-xl font-semibold mb-4">4.1 With Your Consent</h3>
-                <p className="mb-4">
-                  We may share your information when you explicitly consent, such as when connecting with volunteer
-                  organizations or sharing achievements on social media.
-                </p>
+                <p className="mb-4">Examples include connecting to third-party volunteer platforms or sharing achievements on social media.</p>
 
                 <h3 className="text-xl font-semibold mb-4">4.2 Service Providers</h3>
-                <p className="mb-4">
-                  We work with trusted third-party service providers who help us operate our platform, including:
-                </p>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Cloud hosting and data storage providers</li>
-                  <li>Analytics and performance monitoring services</li>
-                  <li>Email and communication services</li>
-                  <li>Payment processing services</li>
-                  <li>Customer support platforms</li>
-                </ul>
+                <p className="mb-4">We use trusted third-party providers to operate our service (hosting, analytics, email, payments). These providers are contractually required to protect your data and may only process it for the purposes we specify.</p>
 
-                <h3 className="text-xl font-semibold mb-4">4.3 Aggregated and Anonymized Data</h3>
-                <p className="mb-4">
-                  We may share aggregated, anonymized data that cannot identify you personally for research,
-                  sustainability reporting, and industry insights.
-                </p>
+                <h3 className="text-xl font-semibold mb-4">4.3 Aggregated & Anonymised Data</h3>
+                <p className="mb-4">We may publish aggregated, de-identified data for research or reporting; this cannot reasonably be used to identify individuals.</p>
 
-                <h3 className="text-xl font-semibold mb-4">4.4 Legal Requirements</h3>
-                <p className="mb-4">We may disclose your information when required by law or to:</p>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Comply with legal processes, court orders, or government requests</li>
-                  <li>Protect our rights, property, or safety, or that of our users</li>
-                  <li>Investigate potential violations of our terms of service</li>
-                  <li>Prevent fraud or other illegal activities</li>
-                </ul>
+                <h3 className="text-xl font-semibold mb-4">4.4 Legal Requests & Safety</h3>
+                <p className="mb-4">We may disclose information to comply with legal processes, protect our rights, or to investigate misuse.</p>
 
                 <h3 className="text-xl font-semibold mb-4">4.5 Business Transfers</h3>
-                <p className="mb-4">
-                  In the event of a merger, acquisition, or sale of assets, your information may be transferred as part
-                  of the transaction, subject to the same privacy protections.
-                </p>
+                <p className="mb-4">If CarbonCue merges or transfers assets, user data may be transferred with appropriate protections.</p>
               </section>
 
               <Separator className="my-8" />
@@ -302,38 +205,24 @@ export function PrivacyPageClient() {
               {/* Data Security */}
               <section id="data-security" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">5. Data Security</h2>
-                <p className="mb-4">
-                  We implement comprehensive security measures to protect your personal information:
-                </p>
+                <p className="mb-4">We take reasonable steps to protect personal information from misuse, interference and loss, and from unauthorised access, modification or disclosure.</p>
 
-                <h3 className="text-xl font-semibold mb-4">5.1 Technical Safeguards</h3>
+                <h3 className="text-xl font-semibold mb-4">5.1 Technical Measures</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>End-to-end encryption for data transmission and storage</li>
-                  <li>Secure servers with regular security updates and monitoring</li>
-                  <li>Multi-factor authentication for account access</li>
-                  <li>Regular security audits and penetration testing</li>
-                  <li>Automated backup and disaster recovery systems</li>
+                  <li>Encryption in transit (TLS) and at rest where feasible</li>
+                  <li>Secure hosting with regular updates and monitoring</li>
+                  <li>Access controls and multi-factor authentication for staff</li>
+                  <li>Regular security testing and backups</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">5.2 Administrative Safeguards</h3>
+                <h3 className="text-xl font-semibold mb-4">5.2 Administrative & Physical Safeguards</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Limited access to personal data on a need-to-know basis</li>
-                  <li>Employee training on data protection and privacy practices</li>
-                  <li>Confidentiality agreements with all staff and contractors</li>
-                  <li>Regular review and update of security policies</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold mb-4">5.3 Physical Safeguards</h3>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Secure data centers with restricted physical access</li>
-                  <li>Environmental controls and monitoring systems</li>
+                  <li>Staff training and confidentiality agreements</li>
+                  <li>Least-privilege access to systems holding personal data</li>
                   <li>Secure disposal of hardware and storage media</li>
                 </ul>
 
-                <p className="mb-4">
-                  While we implement strong security measures, no system is completely secure. We encourage you to use
-                  strong passwords and keep your account information confidential.
-                </p>
+                <p className="mb-4">No system is completely secure. If a data breach is likely to result in serious harm, we will follow the OAIC's Notifiable Data Breach scheme and notify affected individuals and the OAIC without undue delay.</p>
               </section>
 
               <Separator className="my-8" />
@@ -341,43 +230,22 @@ export function PrivacyPageClient() {
               {/* Your Rights */}
               <section id="your-rights" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">6. Your Rights and Choices</h2>
-                <p className="mb-4">You have several rights regarding your personal information:</p>
+                <p className="mb-4">Under the Privacy Act and the APPs you have rights including to access, correct and lodge a complaint about your personal information.</p>
 
-                <h3 className="text-xl font-semibold mb-4">6.1 Access and Portability</h3>
+                <h3 className="text-xl font-semibold mb-4">6.1 Access & Portability</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Request a copy of all personal information we have about you</li>
-                  <li>Download your data in a portable format</li>
-                  <li>View your account information and activity history</li>
+                  <li>Request a copy of the personal information we hold about you.</li>
+                  <li>Receive data in a commonly used, portable format where practicable.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">6.2 Correction and Updates</h3>
+                <h3 className="text-xl font-semibold mb-4">6.2 Correction & Deletion</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Update your profile and account information at any time</li>
-                  <li>Correct inaccurate or incomplete data</li>
-                  <li>Modify your privacy preferences and communication settings</li>
+                  <li>Ask us to correct inaccurate information.</li>
+                  <li>Request deletion of your account and personal data, subject to legal retention obligations.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">6.3 Deletion</h3>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Delete your account and associated data</li>
-                  <li>Request removal of specific information</li>
-                  <li>Opt out of data collection for certain features</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold mb-4">6.4 Communication Preferences</h3>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Unsubscribe from marketing emails and newsletters</li>
-                  <li>Adjust notification settings for different types of communications</li>
-                  <li>Choose how we contact you about account-related matters</li>
-                </ul>
-
-                <p className="mb-4">
-                  To exercise these rights, please contact us at{" "}
-                  <a href="mailto:privacy@carboncue.com" className="text-primary hover:underline">
-                    privacy@carboncue.com
-                  </a>{" "}
-                  or use the privacy controls in your account settings.
-                </p>
+                <h3 className="text-xl font-semibold mb-4">6.3 How to Exercise Your Rights</h3>
+                <p className="mb-4">To make a request, contact us at the address below. We will respond within a reasonable period (typically 30 days). If you remain dissatisfied, you may make a complaint to the Office of the Australian Information Commissioner (OAIC).</p>
               </section>
 
               <Separator className="my-8" />
@@ -385,38 +253,17 @@ export function PrivacyPageClient() {
               {/* Cookies */}
               <section id="cookies" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">7. Cookies and Tracking Technologies</h2>
-                <p className="mb-4">
-                  We use cookies and similar technologies to enhance your experience and understand how you use our
-                  services.
-                </p>
+                <p className="mb-4">We use cookies and similar technologies to provide and improve our services. You can manage preferences via your browser or our cookie centre.</p>
 
-                <h3 className="text-xl font-semibold mb-4">7.1 Types of Cookies We Use</h3>
+                <h3 className="text-xl font-semibold mb-4">7.1 Types of Cookies</h3>
                 <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>
-                    <strong>Essential Cookies:</strong> Required for basic functionality and security
-                  </li>
-                  <li>
-                    <strong>Performance Cookies:</strong> Help us understand how you use our platform
-                  </li>
-                  <li>
-                    <strong>Functional Cookies:</strong> Remember your preferences and settings
-                  </li>
-                  <li>
-                    <strong>Analytics Cookies:</strong> Provide insights into usage patterns and improvements
-                  </li>
+                  <li><strong>Essential:</strong> Required for basic functionality.</li>
+                  <li><strong>Performance & Analytics:</strong> Help us understand usage (IP is anonymised where possible).</li>
+                  <li><strong>Functional:</strong> Remember preferences.</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mb-4">7.2 Managing Cookies</h3>
-                <p className="mb-4">
-                  You can control cookies through your browser settings and our cookie preference center. Note that
-                  disabling certain cookies may affect platform functionality.
-                </p>
-
-                <h3 className="text-xl font-semibold mb-4">7.3 Third-Party Analytics</h3>
-                <p className="mb-4">
-                  We use analytics services like Google Analytics to understand user behavior. These services may use
-                  cookies and collect information according to their own privacy policies.
-                </p>
+                <h3 className="text-xl font-semibold mb-4">7.2 Third-Party Analytics</h3>
+                <p className="mb-4">We use analytics providers to understand platform use; these providers maintain their own privacy policies. We work to minimise the personal data they receive and anonymise data where practicable.</p>
               </section>
 
               <Separator className="my-8" />
@@ -424,16 +271,7 @@ export function PrivacyPageClient() {
               {/* International Transfers */}
               <section id="international-transfers" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">8. International Data Transfers</h2>
-                <p className="mb-4">
-                  CarbonCue operates globally, and your information may be transferred to and processed in countries
-                  other than your own. We ensure appropriate safeguards are in place:
-                </p>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>Standard contractual clauses approved by relevant authorities</li>
-                  <li>Adequacy decisions for countries with equivalent privacy protections</li>
-                  <li>Certification schemes and codes of conduct</li>
-                  <li>Regular assessment of transfer mechanisms and protections</li>
-                </ul>
+                <p className="mb-4">Some of our service providers or partners may be located overseas. When we transfer personal information internationally we put in place appropriate safeguards (contracts, assessments and security controls) to protect your data in line with the APPs.</p>
               </section>
 
               <Separator className="my-8" />
@@ -441,15 +279,8 @@ export function PrivacyPageClient() {
               {/* Children's Privacy */}
               <section id="children-privacy" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">9. Children's Privacy</h2>
-                <p className="mb-4">
-                  Our services are not intended for children under 13 years of age. We do not knowingly collect personal
-                  information from children under 13. If we become aware that we have collected information from a child
-                  under 13, we will take steps to delete such information promptly.
-                </p>
-                <p className="mb-4">
-                  For users between 13 and 18, we recommend parental guidance when using our services and sharing
-                  personal information.
-                </p>
+                <p className="mb-4">Our services are not intended for children under 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected personal information from a child under 13 we will take steps to delete it promptly.</p>
+                <p className="mb-4">If you are a parent or guardian and you believe your child has provided us with personal information, please contact us.</p>
               </section>
 
               <Separator className="my-8" />
@@ -457,20 +288,7 @@ export function PrivacyPageClient() {
               {/* Changes */}
               <section id="changes" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">10. Changes to This Privacy Policy</h2>
-                <p className="mb-4">
-                  We may update this Privacy Policy from time to time to reflect changes in our practices, technology,
-                  legal requirements, or other factors. When we make changes:
-                </p>
-                <ul className="list-disc pl-6 mb-6 space-y-2">
-                  <li>We will update the "Last Updated" date at the top of this policy</li>
-                  <li>We will notify you of significant changes via email or platform notification</li>
-                  <li>We will provide a summary of key changes when appropriate</li>
-                  <li>We will maintain previous versions for your reference</li>
-                </ul>
-                <p className="mb-4">
-                  Your continued use of our services after changes become effective constitutes acceptance of the
-                  updated Privacy Policy.
-                </p>
+                <p className="mb-4">We may update this policy to reflect changes in law, technology or our practices. We will update the "Last updated" date and, for significant changes, notify users by email or on the platform.</p>
               </section>
 
               <Separator className="my-8" />
@@ -478,48 +296,27 @@ export function PrivacyPageClient() {
               {/* Contact */}
               <section id="contact" className="mb-12">
                 <h2 className="text-3xl font-bold mb-6">11. Contact Information</h2>
-                <p className="mb-4">
-                  If you have questions, concerns, or requests regarding this Privacy Policy or our data practices,
-                  please contact us:
-                </p>
+                <p className="mb-4">If you have questions, requests or complaints regarding this policy or our handling of personal information, please contact:</p>
 
                 <div className="bg-muted/50 p-6 rounded-lg">
                   <h3 className="font-semibold mb-4">Privacy Team</h3>
                   <div className="space-y-2">
                     <p>
                       <strong>Email:</strong>{" "}
-                      <a href="mailto:privacy@carboncue.com" className="text-primary hover:underline">
-                        privacy@carboncue.com
-                      </a>
+                      <a href="mailto:minhvy.ha@mq.edu.au" className="text-primary hover:underline">minhvy.ha@mq.edu.au</a>
                     </p>
-                    <p>
-                      <strong>Mail:</strong>
-                      <br />
-                      CarbonCue Privacy Team
-                      <br />
-                      123 Climate Street
-                      <br />
-                      San Francisco, CA 94105
-                      <br />
-                      United States
-                    </p>
+      
                     <p>
                       <strong>Response Time:</strong> We aim to respond to privacy inquiries within 30 days.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      If you remain dissatisfied after contacting us you may make a complaint to the Office of the Australian
+                      Information Commissioner (OAIC).
                     </p>
                   </div>
                 </div>
 
-                <p className="mt-6">
-                  For general questions about our services, please visit our{" "}
-                  <Link href="/contact" className="text-primary hover:underline">
-                    Contact Page
-                  </Link>{" "}
-                  or email{" "}
-                  <a href="mailto:hello@carboncue.com" className="text-primary hover:underline">
-                    hello@carboncue.com
-                  </a>
-                  .
-                </p>
+                <p className="mt-6">For general enquiries about CarbonCue, visit our <Link href="/contact" className="text-primary hover:underline">Contact Page</Link>.</p>
               </section>
             </div>
           </div>
@@ -531,9 +328,7 @@ export function PrivacyPageClient() {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Questions About Your Privacy?</h2>
-            <p className="text-lg mb-8">
-              Our privacy team is here to help. Contact us with any questions or concerns about how we handle your data.
-            </p>
+            <p className="text-lg mb-8">Our privacy team is here to help. Contact us with any questions or concerns about how we handle your data.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button asChild size="lg" className="bg-carbon-red hover:bg-carbon-deep-red">
                 <Link href="/contact">Contact Privacy Team</Link>
