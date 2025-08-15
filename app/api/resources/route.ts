@@ -83,6 +83,8 @@ export async function GET(_req: Request) {
       description: 1,
       image: 1,
       type: 1,
+      views: 1,
+      likes: 1,
       medium: 1
     }
   );

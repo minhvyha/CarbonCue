@@ -13,6 +13,8 @@ export interface IArtPiece extends Document {
   inspiration: string;
   artistBio: string;
   type: string;
+  views: number;
+  likes: Array<any>;
 }
 
 const artPieceSchema = new Schema<IArtPiece>({
@@ -27,6 +29,8 @@ const artPieceSchema = new Schema<IArtPiece>({
   inspiration: { type: String, required: true },
   artistBio: { type: String, required: true },
   type: { type: String, required: true, default: 'art' }, // Default type for art pieces
+  views: { type: Number, required: true, default: 0 },
+  likes: { type: [String], required: true, default: [] },
 });
 
 // Use existing model if already compiled

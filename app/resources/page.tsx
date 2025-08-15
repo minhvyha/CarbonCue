@@ -34,6 +34,8 @@ type Resource = {
   artist?: string;
   image?: string;
   medium?: string;
+  views?: number;
+  likes?: Array<any>;
 };
 
 export default function ResourcesPage() {
@@ -168,6 +170,8 @@ export default function ResourcesPage() {
                   description={art.description}
                   image={art.image || "/placeholder.svg"}
                   medium={art.medium || "Unknown Medium"}
+                  views={art.views || 0}
+                  likes={art.likes?.length || 0}
                 />
               ))}
             </div>
@@ -392,6 +396,8 @@ function ArtworkCard({
   artist,
   medium,
   year,
+  views,
+  likes,
   description,
   image,
 }: {
@@ -399,6 +405,8 @@ function ArtworkCard({
   artist: string;
   medium: string;
   year: number;
+  views: number;
+  likes: number;
   description: string;
   image: string;
 }) {
@@ -413,8 +421,8 @@ function ArtworkCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="flex items-center justify-between text-sm">
-            {/* <span>{views}</span>
-            <span>{artwork.likes}</span> */}
+            <span>{views} views</span>
+            <span>{likes} likes</span>
           </div>
         </div>
       </div>
@@ -430,7 +438,7 @@ function ArtworkCard({
         </p>
       </CardHeader>
       <CardContent>
-        <Link href={`/art/${title}`}>
+        <Link href={`/resources/art/${title}`}>
           <Button size="sm" className="w-full">
             View Artwork
             <ExternalLink className="h-4 w-4 ml-1" />

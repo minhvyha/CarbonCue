@@ -1,27 +1,47 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-// app/api/resources/[slug]/route.ts
 
-import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongoose';
-import ArtPieces from '@/model/ArtPieces';
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongoose";
+import ArtPieces from "@/model/ArtPieces";
+
 export async function GET(
   _req: Request,
-  { params }: { params: { name: string } }
+  { params }: { params: { name: string } } // route param name is [name]
 ) {
-  // 1) connect to MongoDB
-  const conn = await connectToDatabase();
-  console.log('Mongo readyState:', conn.connection.readyState); // 1 = connected
+  try {
+    // 1) connect to MongoDB
+    const conn = await connectToDatabase();
+    console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
 
-  // 2) find the guide by slug
-  const { name } = await params;
-  const artpiece = await ArtPieces.findOne({ title: name }).lean();
+    // 2) get and decode the name
+    const { name } = params;
 
-  if (!artpiece) {
-    return NextResponse.json({ error: 'Art piece not found' }, { status: 404 });
+    // 3) find the art piece and return it
+     const artpiece = await ArtPieces.findOneAndUpdate(
+      { title: name },
+      { $inc: { views: 1 } },
+      {
+        new: true,         // return the updated document
+        lean: true,        // return plain JS object (faster)
+        writeConcern: { w: 1 } // ensure the server acknowledges the write
+      }
+    );
+
+    if (!artpiece) {
+      return NextResponse.json(
+        { error: "Art piece not found" },
+        { status: 404 }
+      );
+    }
+
+    // 4) return the updated art piece
+    return NextResponse.json(artpiece);
+  } catch (error) {
+    console.error("GET /api/resources/[slug] error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
-
-  // 3) return the found guide
-  return NextResponse.json(artpiece);
 }
-
