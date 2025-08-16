@@ -226,14 +226,14 @@ export default function AboutPage() {
     name="Khoi Nguyen"
     role="Software Developer — Carbon Tracker"
     bio="Leads development of the Carbon Tracker: researches and trains models for everyday activity emissions and builds both frontend and backend."
-    image="/placeholder.svg?height=300&width=300"
+    image="/team/khoinguyennguyen.jpg?height=300&width=300"
   />
 
   <TeamMember
     name="Rozil Nguyen"
     role="Educational Content Creator"
     bio="Creates approachable guides and educational content for CarbonCue, offering fresh perspectives on sustainability topics."
-    image="/placeholder.svg?height=300&width=300"
+    image="/team/rozil.jpg?height=300&width=300"
   />
 
   <TeamMember
