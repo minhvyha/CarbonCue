@@ -303,10 +303,6 @@ const handleLike = async () => {
               <p className="text-muted-foreground">{data.inspiration}</p>
             </div>
 
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Impact</h3>
-              <p className="text-muted-foreground">{data.impact}</p>
-            </div>
           </div>
 
           <Separator />
