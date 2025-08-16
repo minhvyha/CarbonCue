@@ -427,13 +427,13 @@ function ArtworkCard({
         </div>
       </div>
       <CardHeader>
-        <div className="flex justify-between items-start mb-2">
-          <Badge variant="secondary">{medium}</Badge>
+        <div className="flex justify-between items-start mb-2 gap-8">
+          <Badge variant="secondary" className="line-clamp-1">{medium}</Badge>
           <span className="text-sm text-muted-foreground">{year}</span>
         </div>
         <CardTitle className="text-lg">{title}</CardTitle>
         <CardDescription>by {artist}</CardDescription>
-        <p className="text-sm text-muted-foreground mt-2">
+        <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
           {description}
         </p>
       </CardHeader>

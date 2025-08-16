@@ -249,15 +249,15 @@ const handleLike = async () => {
         <div className="space-y-8">
           {/* Basic Info */}
           <div>
-            <div className="flex items-center justify-between mb-4 gap-8">
-              <Badge variant="secondary" className="text-sm line-clamp-1">
+            <div className="flex items-center justify-between mb-4">
+              <Badge variant="secondary" className="text-sm">
                 {data.medium}
               </Badge>
               <span className="text-muted-foreground">{data.year}</span>
             </div>
             <h1 className="text-4xl font-bold mb-2">{data.title}</h1>
             <p className="text-xl text-muted-foreground mb-4">by {data.artist}</p>
-            <p className="text-lg leading-relaxed line-clamp-3">{data.description}</p>
+            <p className="text-lg leading-relaxed">{data.description}</p>
           </div>
 
           <Separator />
