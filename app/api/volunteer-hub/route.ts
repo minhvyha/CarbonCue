@@ -41,6 +41,7 @@ export async function GET(request: Request) {
       remote: !!r.remote_or_online,
       dates: r.dates ?? null,
       url: r.url ?? null,
+      organization: r.organization,
       logo: r.organization.logo ? (r.organization.logo.startsWith("//") ? `https:${r.organization.logo}` : r.organization.logo) : null,
     }));
 

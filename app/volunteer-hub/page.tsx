@@ -48,11 +48,13 @@ export default function VolunteerHubPage() {
         const res = await fetch(`/api/volunteer-hub?page=${page}`);
         if (!res.ok) throw new Error("Failed to fetch data");
 
-        const { events, organizations } = await res.json();
-        console.log("Fetched events:", events);
-        setListings(events);
-        setOrganizations(organizations);
-        setHasMore(events.length > 0); // If no events, disable Next
+        const result = await res.json();
+        console.log("API response:", result);
+        console.log("Fetched events:", result.events);
+        setListings(result.events);
+        console.log("Fetched organizations:", result.organizations);
+        setOrganizations(result.organizations);
+        setHasMore(result.events.length > 0); // If no events, disable Next
       } catch (err) {
         console.error(err);
       } finally {
