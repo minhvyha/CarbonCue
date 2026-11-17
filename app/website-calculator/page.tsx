@@ -1,135 +1,34 @@
 "use client";
-import { Cloud, FileText, Globe, Server } from "lucide-react";
 import { useState } from "react";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { WebsiteCalculatorForm } from "@/components/website-calculator-form";
 import { WebsiteCalculatorResults } from "@/components/website-calculator-results";
+import type { WebsiteCalculation } from "@/lib/website-emissions";
 
 export default function WebsiteCalculatorPage() {
-  const [data, setData] = useState<any>(null);
-  const [monthlyVisitors, setMonthlyVisitors] = useState("10000");
-  
-  return (
-    <div className="container py-10">
-      <div className="mx-auto max-w-4xl">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-4">
-            Website Carbon Emission Calculator
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Calculate the carbon footprint of your website based on file size,
-            server location, and client location.
-          </p>
+  const [data, setData] = useState<WebsiteCalculation | null>(null);
+  const [monthlyPageviews, setMonthlyPageviews] = useState("10000");
+  return <div className="container py-10">
+    <div className="mx-auto max-w-4xl space-y-8">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold mb-4">Website Carbon Emission Calculator</h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Estimate a page load's carbon footprint from transferred data using Sustainable Web Design Model v4.</p>
+      </div>
+      <Card>
+        <CardHeader><CardTitle>Choose how to measure the page</CardTitle><CardDescription>Scan an accessible URL, privately import a browser capture, or enter a transferred size. Browser capture works with pages you can open normally, including protected sites.</CardDescription></CardHeader>
+        <CardContent><WebsiteCalculatorForm setData={setData} monthlyPageviews={monthlyPageviews} setMonthlyPageviews={setMonthlyPageviews} /></CardContent>
+      </Card>
+      {data && <WebsiteCalculatorResults data={data} monthlyPageviews={monthlyPageviews} />}
+      <div className="pt-6 space-y-5">
+        <h2 className="text-2xl font-bold">How the estimate works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card><CardHeader><CardTitle className="text-lg">Measured data, estimated emissions</CardTitle><CardDescription>Transferred bytes are the model input. SWDM v4 estimates data-centre, network and device operations, plus allocated embodied emissions. It does not measure a website's actual electricity use.</CardDescription></CardHeader></Card>
+          <Card><CardHeader><CardTitle className="text-lg">Your capture stays local</CardTitle><CardDescription>HAR files are processed in a browser worker and discarded after a minimal summary is created. Private headers, content, URL paths and query strings are neither displayed nor uploaded.</CardDescription></CardHeader></Card>
+          <Card><CardHeader><CardTitle className="text-lg">Keep scenarios comparable</CardTitle><CardDescription>A cold load, cached load and video session can transfer very different amounts. The calculator uses your supplied bytes without applying another caching discount.</CardDescription></CardHeader></Card>
+          <Card><CardHeader><CardTitle className="text-lg">Explicit assumptions</CardTitle><CardDescription>Unknown locations use the model's global grid defaults. Green hosting is a user declaration affecting data-centre operations only. The results show the model version and assumptions.</CardDescription></CardHeader></Card>
         </div>
-
-        <Card>
-          <CardHeader className="pb-[1rem]">
-            <CardTitle>Calculate by URL or Manual Input</CardTitle>
-            <CardDescription>
-              Provide your website URL or manually input the total byte size to
-              estimate its carbon emissions.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <WebsiteCalculatorForm
-              setData={setData}
-              monthlyVisitors={monthlyVisitors}
-              setMonthlyVisitors={setMonthlyVisitors}
-            />
-          </CardContent>
-        </Card>
-
-        {data && (
-          <WebsiteCalculatorResults
-            data={data}
-            monthlyVisitors={monthlyVisitors}
-          />
-        )}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">How It Works</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <FileText className="h-8 w-8 text-carbon-red mb-2" />
-                <CardTitle>File Size (Data Transfer)</CardTitle>
-                <CardDescription>
-                  Your total bytes → gigabytes (GB) is the “Data transfer” input
-                  in the model (GB). It drives all emissions:
-                  <em>gCO₂e/GB = (OPDC + OPN + OPUD + EMDC + EMN + EMUD)</em>.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <Server className="h-8 w-8 text-carbon-purple mb-2" />
-                <CardTitle>Server Location & Hosting</CardTitle>
-                <CardDescription>
-                  Determines your <strong>Green Hosting Factor</strong> and grid
-                  carbon intensity. In the formula you subtract green-powered
-                  share (OPDC×(1–GHF)) and multiply by local gCO₂e/kWh.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <Globe className="h-8 w-8 text-carbon-deep-red mb-2" />
-                <CardTitle>Network Segment</CardTitle>
-                <CardDescription>
-                  Represents the “OPN + EMN” terms: energy to transmit your
-                  bytes across the internet. That is GB × network kWh/GB × grid
-                  carbon intensity.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <Cloud className="h-8 w-8 text-carbon-magenta mb-2" />
-                <CardTitle>Energy Mix</CardTitle>
-                <CardDescription>
-                  We apply two carbon-intensity factors: “grid” (average
-                  gCO₂e/kWh) and “renewable” (if hosted on 100% green). Each
-                  multiplies your total kWh to yield grams & litres of CO₂.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-          <div className="mt-4 text-sm text-gray-500">
-    <span className="block">
- Estimating Digital Emissions —{' '}
-      <a
-        href="https://sustainablewebdesign.org/estimating-digital-emissions/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline"
-      >
-        sustainablewebdesign.org/estimating-digital-emissions
-      </a>
-      ; and Website Carbon —{' '}
-      <a
-        href="https://websitecarbon.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline"
-      >
-        websitecarbon.com
-      </a>
-      .
-    </span>
-  </div>
-
-        </div>
+        <p className="text-sm text-muted-foreground">Methodology: <a href="https://developers.thegreenwebfoundation.org/co2js/models/overview/" target="_blank" rel="noreferrer" className="underline">Green Web Foundation CO2.js</a> and <a href="https://sustainablewebdesign.org/estimating-digital-emissions/" target="_blank" rel="noreferrer" className="underline">Sustainable Web Design Model v4</a>.</p>
       </div>
     </div>
-  );
+  </div>;
 }

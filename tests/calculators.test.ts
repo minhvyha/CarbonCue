@@ -1,25 +1,32 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import calculateCO2 from '../app/api/ai-calculator/calculator/calculator';
-import { calculateEmissions, kilobytesToBytes, normalizeWebsiteUrl } from '../lib/website-emissions';
+import { calculateEmissions, sizeToBytes, normalizeWebsiteUrl } from '../lib/website-emissions';
 import { GET as analyzeWebsite } from '../app/api/emissioncalculator/[url]/route';
 
 const values = { gpu: 'AGX Xavier', hours: 100, provider: 'gcp', region: 'asia-east1', customImpact: null, customOffset: null };
 const data = { gpu: { watt: 30 }, provider: { regions: new Map([['asia-east1', { impact: 557, offsetRatio: '0' }]]) } };
 
-test('manual page sizes are converted from KB to bytes, including decimals', () => {
-  assert.equal(kilobytesToBytes('2400'), 2457600);
-  assert.equal(kilobytesToBytes('1.5'), 1536);
-  for (const value of ['0', '-1', '', 'NaN', 'Infinity']) assert.throws(() => kilobytesToBytes(value));
+test('manual sizes have explicit decimal and binary units and one integer-byte conversion', () => {
+  assert.equal(sizeToBytes('2400', 'kB'), 2400000);
+  assert.equal(sizeToBytes('2400', 'KiB'), 2457600);
+  assert.equal(sizeToBytes('1.5', 'KiB'), 1536);
+  assert.equal(sizeToBytes('1.5', 'MB'), 1500000);
+  assert.equal(sizeToBytes('1.5', 'MiB'), 1572864);
+  assert.equal(sizeToBytes('10.4', 'bytes'), 10);
+  assert.equal(sizeToBytes('0', 'bytes'), 0);
+  for (const value of ['-1', '', 'NaN', 'Infinity', '1000000000001']) assert.throws(() => sizeToBytes(value, 'bytes'));
 });
 
 test('website emissions use the byte quantity and preserve the selected energy source', () => {
   const small = calculateEmissions({ totalBytes: 1024 }, false)!;
-  const large = calculateEmissions({ totalBytes: 1024 * 1024 }, true)!;
-  assert.equal(large.statistics.co2.grid.grams / small.statistics.co2.grid.grams, 1024);
-  assert.equal(large.green, true);
-  assert.ok(large.statistics.co2.renewable.grams < large.statistics.co2.grid.grams);
-  for (const totalBytes of [0, -1, NaN, Infinity]) assert.equal(calculateEmissions({ totalBytes }, false), null);
+  const large = calculateEmissions({ totalBytes: 1024 * 1024 }, false)!;
+  const green = calculateEmissions({ totalBytes: large.bytes }, true)!;
+  assert.equal(large.grams / small.grams, 1024);
+  assert.equal(green.assumptions.greenHosting, true);
+  assert.ok(green.grams < large.grams);
+  assert.equal(calculateEmissions({ totalBytes: 0 })!.grams, 0);
+  for (const totalBytes of [-1, NaN, Infinity, 1.5]) assert.equal(calculateEmissions({ totalBytes }, false), null);
 });
 
 test('website URL handling adds HTTPS and preserves percent escapes', () => {

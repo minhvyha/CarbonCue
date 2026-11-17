@@ -25,6 +25,14 @@ Vehicle specification estimates run in a browser worker using a versioned XGBoos
 
 See [model card](ml/MODEL_CARD.md), [training code](ml/train_vehicle.py), `/methodology`, and the bundled manifest for evaluation and limitations. Training is an offline development step, not a hosted service. A compact tree evaluator was chosen after verifying agreement with ONNX, to avoid requiring a large browser runtime for a small model.
 
+## Website calculator
+
+All three methods use pinned CO2.js 0.19.0, Sustainable Web Design Model v4, and `perByteTrace`. Choose a limited automatic URL scan, a local browser HAR capture, or a manual transferred size with explicit byte/kB/MB/KiB/MiB units. Results show the byte basis, scenario, six emissions segments, model assumptions and pageview projections. No additional caching reduction is applied to captured bytes.
+
+For protected pages such as MQ, open the real page normally first. In Chrome DevTools > Network, clear previous requests, turn off Preserve log, choose the cache scenario, reload once, wait for the intended content, then export HAR (sanitized). Import it, select one navigation and confirm the intended page loaded. A standard comparison records ten seconds without scrolling or video; different interactions are separate scenarios.
+
+HAR import runs entirely in a browser worker, requires no account, and uploads or saves none of the raw archive. Limits are 50 MiB, 100,000 requests and 1,000 navigations. It retains only byte aggregates and an origin, never private headers, content, paths or queries. Zero-byte cache hits stay zero; unknown sizes produce a partial known subtotal. Challenge or unsuccessful main documents cannot be calculated as the requested page. See [implementation and verification notes](docs/website-carbon-calculation-plan.md).
+
 ## Verify
 
 ```sh

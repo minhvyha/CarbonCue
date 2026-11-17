@@ -1,77 +1,72 @@
-// --- Constants & Thresholds ---
-const ADJUSTMENT_FACTOR = 0.7554; // network/header/etc overhead
-const ENERGY_INTENSITY_GB = 0.7545; // kWh per GB transferred
-const GRID_CARBON_INTENSITY = 351; // g CO₂ per kWh (grid avg)
-const RENEWABLE_INTENSITY = 288; // g CO₂ per kWh (renewables)
-const CO2_GAS_DENSITY = 1.8; // g CO₂ per litre CO₂
-const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+import { co2, type ByteTraceOptions } from "@tgwf/co2";
+import type { WebsiteMeasurement } from "./website-measurement";
 
-// Rating thresholds in bytes
-const RATING_THRESHOLDS: { limit: number; label: string }[] = [
-  { limit: 500 * 1024, label: "A+" },
-  { limit: 1 * 1024 * 1024, label: "A" },
-  { limit: 1.5 * 1024 * 1024, label: "A-" },
-  { limit: 2 * 1024 * 1024, label: "B" },
-  { limit: 3 * 1024 * 1024, label: "C" },
-  { limit: 4 * 1024 * 1024, label: "D" },
-];
+export const WEBSITE_MODEL = { name: "Sustainable Web Design Model", version: 4, package: "@tgwf/co2", packageVersion: "0.19.0" } as const;
+const model = new co2({ model: "swd", version: 4, results: "segment" });
 
-interface EmissionData {
-  url?: string;
-  totalBytes?: number;
+export interface WebsiteAssumptions {
+  greenHosting: boolean;
+  gridIntensity?: ByteTraceOptions["gridIntensity"];
+  provenance?: string;
 }
 
-// --- Utility: Compute all emissions stats ---
-export function calculateEmissions(data: EmissionData, green: boolean) {
-  const bytes = data.totalBytes || 0;
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return null;
+export function calculateEmissions(data: { totalBytes?: number }, assumptions: WebsiteAssumptions | boolean = false) {
+  const bytes = data.totalBytes;
+  if (bytes === undefined || !Number.isSafeInteger(bytes) || bytes < 0) return null;
+  const options = typeof assumptions === "boolean" ? { greenHosting: assumptions } : assumptions;
+  const customValues = Object.values(options.gridIntensity || {});
+  if (customValues.some(value => !Number.isFinite(value) || value < 0 || value > 5000)) {
+    throw new Error("Grid intensities must be between 0 and 5,000 g CO2e/kWh.");
   }
-
-  // 1) adjust bytes
-  const adjustedBytes = bytes * ADJUSTMENT_FACTOR;
-
-  // 2) convert to GB & compute energy
-  const GB = adjustedBytes / 1e9;
-  const energy = GB * ENERGY_INTENSITY_GB; // kWh
-
-  // 3) compute CO₂ in grams
-  const co2Grid_g = energy * GRID_CARBON_INTENSITY;
-  const co2Renewable_g = energy * RENEWABLE_INTENSITY;
-
-  // 4) convert grams → litres
-  const litresGrid = co2Grid_g / CO2_GAS_DENSITY;
-  const litresRenewable = co2Renewable_g / CO2_GAS_DENSITY;
-
-  // 5) determine rating
-  const rating = RATING_THRESHOLDS.find((t) => bytes < t.limit)?.label ?? "F";
-
-  // Relative page-size score, not a measured percentile.
-  let cleanerThan = Math.max(0, (MAX_BYTES - bytes) / MAX_BYTES);
-  cleanerThan = Math.round(cleanerThan * 100) / 100;
-
+  if (customValues.length && !options.provenance?.trim()) throw new Error("Describe the source of your custom grid intensities.");
+  const trace = model.perByteTrace(bytes, options.greenHosting, { gridIntensity: options.gridIntensity });
+  const raw = trace.co2;
+  // CO2.js 0.19.0 returns unadjusted segment fields alongside its hosting-adjusted
+  // total. Apply its hosting factor to the data-centre operational field only.
+  const segments = {
+    dataCenterOperational: typeof raw === "number" ? 0 : raw.dataCenterOperationalCO2e * (1 - trace.variables.greenHostingFactor),
+    networkOperational: typeof raw === "number" ? 0 : raw.networkOperationalCO2e,
+    deviceOperational: typeof raw === "number" ? 0 : raw.consumerDeviceOperationalCO2e,
+    dataCenterEmbodied: typeof raw === "number" ? 0 : raw.dataCenterEmbodiedCO2e,
+    networkEmbodied: typeof raw === "number" ? 0 : raw.networkEmbodiedCO2e,
+    deviceEmbodied: typeof raw === "number" ? 0 : raw.consumerDeviceEmbodiedCO2e,
+  };
   return {
-    url: data.url || null,
-    green,
+    grams: typeof raw === "number" ? raw : raw.total,
     bytes,
-    cleanerThan,
-    rating,
-    statistics: {
-      adjustedBytes,
-      energy,
-      co2: {
-        grid: { grams: co2Grid_g, litres: litresGrid },
-        renewable: { grams: co2Renewable_g, litres: litresRenewable },
+    segments,
+    model: WEBSITE_MODEL,
+    assumptions: {
+      greenHosting: options.greenHosting,
+      gridIntensity: {
+        dataCenter: trace.variables.gridIntensity.dataCenter.value,
+        network: trace.variables.gridIntensity.network.value,
+        device: trace.variables.gridIntensity.device.value,
       },
+      provenance: customValues.length ? options.provenance!.trim().slice(0, 180) : "CO2.js SWDM v4 global defaults; locations unknown.",
+      caching: "Uses perByteTrace on the supplied bytes. No additional cache or repeat-visitor reduction.",
     },
-    timestamp: Math.floor(Date.now() / 1000),
   };
 }
 
-export function kilobytesToBytes(kilobytes: string): number {
-  const size = Number(kilobytes);
-  if (!Number.isFinite(size) || size <= 0) throw new Error("Enter a positive page size in KB.");
-  return size * 1024;
+export type WebsiteEmissions = NonNullable<ReturnType<typeof calculateEmissions>>;
+export interface WebsiteCalculation { measurement: WebsiteMeasurement; emissions: WebsiteEmissions }
+
+export function projectPageviews(grams: number, monthlyPageviews: string) {
+  const count = Number(monthlyPageviews);
+  if (!monthlyPageviews.trim() || !Number.isFinite(count) || count < 0 || !Number.isSafeInteger(count)) return null;
+  return { monthlyKg: grams * count / 1000, annualKg: grams * count * 12 / 1000, count };
+}
+
+export const BYTE_UNITS = { bytes: 1, kB: 1000, MB: 1e6, KiB: 1024, MiB: 1024 ** 2 } as const;
+export type ByteUnit = keyof typeof BYTE_UNITS;
+export function sizeToBytes(input: string, unit: ByteUnit): number {
+  const value = Number(input);
+  const bytes = Math.round(value * BYTE_UNITS[unit]);
+  if (!input.trim() || !Number.isFinite(value) || value < 0 || !Number.isSafeInteger(bytes) || bytes > 1e12) {
+    throw new Error("Enter a data size between 0 bytes and 1 TB.");
+  }
+  return bytes;
 }
 
 export function normalizeWebsiteUrl(input: string): string {

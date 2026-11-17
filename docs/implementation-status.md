@@ -12,7 +12,8 @@ Prepared 17 November 2026.
 - Built a browser worker for on-device calculations and vehicle ML. Saving recalculates the estimate in the application runtime. No Railway, hosted Python, or AI vendor inference call remains.
 - Replaced monthly inputs in the daily tracker with explicit daily quantities, dates, electricity regions, methods, and provenance.
 - Preserved public resources and fixed artwork URL encoding, image paths, like/unlike, course ordering, and resource failure handling.
-- Fixed website KB conversion, URL parsing/async route params, renewable selection, and result handling. Connected volunteer keyword/remote filters and correct pagination; removed random attendee counts.
+- Replaced the website calculator's bespoke formula with pinned CO2.js 0.19.0 / SWDM v4. Added local HAR import, explicit decimal/binary byte units, privacy filtering, navigation/scenario selection, sourced grid overrides, six emissions segments, and pageview projections. The URL scanner consistently counts compressed response bodies and labels static coverage as partial. Security-block errors offer capture import and manual entry.
+- Connected volunteer keyword/remote filters and correct pagination; removed random attendee counts.
 - Updated Next.js within version 15 to 15.5.29 and enabled build-time TypeScript checking.
 
 ## Model and scope
@@ -25,17 +26,18 @@ This model estimates vehicle tailpipe CO2. It does not cover upstream fuel or ma
 
 ## Verification
 
-- 17 regression tests cover calculators, input validation, volunteer mapping, activity units, and model/runtime parity.
+- 37 regression tests cover calculators, input validation, volunteer mapping, activity units, model/runtime parity, HAR parsing/privacy, compression, SWDM v4 parity and pageview projection units.
 - Production build and TypeScript checks pass.
 - Real Supabase Data API checks with two disposable accounts passed: public reference reads, denied reference writes, anonymous private-data denial, two-user isolation, owner spoof rejection, duplicate completion prevention, and like-count updates.
 - Authenticated HTTP integration checks passed: login cookies, user lookup, all feature pages, calculators, resources and their APIs, locally recomputed ML activity saves, rejected trust in forged client predictions, daily/monthly reports, and logout.
 - Browser checks confirmed local worker inference, Supabase login, saved activity feedback, refreshed daily/monthly totals, the AI workload calculator with zero offsets, and repaired artwork navigation. A 390 px mobile check returned content width 390 px with no horizontal overflow.
 - Disposable Auth users, their sessions, and their private test records were removed after verification.
 - The initial source of the artwork failure was a client route parameter that retained percent encoding. Encoding it again produced a different resource name. The page now decodes the route parameter once before constructing API requests.
+- Website calculator browser checks passed for all three methods, protected MQ URL fallback, multiple navigations, zero-byte caching, challenge rejection, and a 390 px layout with no horizontal overflow. The importer matched a real sanitized Chrome export's 24 HTTP requests, 904,533 transferred bytes and 1,385,523 decoded body bytes. Three failed local subrequests were correctly flagged as partial. Only minimal anonymized fields from that capture are kept as a regression fixture.
 
 ## Deployment and production configuration still required
 
-Vercel is not connected to this chat, so no production deployment has been made. Source changes remain in the workspace. The live site continues serving its previous deployment until the new source and environment configuration are deployed.
+This run did not deploy the new website calculator. Those source changes remain in the workspace. Chrome showed the existing Vercel production deployment at commit `b777122` on 17 November; it does not contain the new HAR importer or SWDM v4 replacement. The configuration requirements below apply when deploying this source; verify existing settings before changing them.
 
 Set these Vercel variables:
 

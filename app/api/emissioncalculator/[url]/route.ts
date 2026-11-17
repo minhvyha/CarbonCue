@@ -3,6 +3,9 @@ import { lookup } from "dns/promises";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { URL } from "url";
+import { websiteFetchFailure } from "@/lib/website-fetch-error";
+import { classifyAsset, emptyBreakdown, safeOrigin, type WebsiteMeasurement } from "@/lib/website-measurement";
+import { decodeResponseBody, MAX_RESPONSE_BYTES } from "@/lib/website-response";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +17,7 @@ export async function GET(
   let parsedUrl: URL;
   try {
     parsedUrl = new URL(url);
-    if (!["http:", "https:"].includes(parsedUrl.protocol)) throw new Error();
+    if (!["http:", "https:"].includes(parsedUrl.protocol) || parsedUrl.username || parsedUrl.password) throw new Error();
   } catch {
     return NextResponse.json({ error: "Enter a valid HTTP or HTTPS website URL." }, { status: 400 });
   }
@@ -32,36 +35,29 @@ export async function GET(
   }
 
   // 2) FETCH HTML
-  const assets: Record<string, number> = {
-    html: 0,
-    css: 0,
-    js: 0,
-    image: 0,
-    font: 0,
-    other: 0,
-  };
+  const assets = emptyBreakdown();
 
   let html = "";
-  let serverHeader = "Unknown";
+  let finalUrl = targetUrl;
   try {
-    const res = await axios.get(targetUrl, { timeout: 10000, responseType: "text", maxContentLength: 10 * 1024 * 1024 });
-    html = res.data;
-    serverHeader = res.headers.server || "Unknown";
-    assets.html += Buffer.byteLength(html);
-  } catch (err: any) {
-    return NextResponse.json(
-      {
-        error: `Unable to fetch HTML: ${targetUrl}`,
-        code: "URL_UNREACHABLE",
-        details: err.message,
-      },
-      { status: 502 }
-    );
+    const res = await axios.get(targetUrl, { timeout: 10000, responseType: "arraybuffer", decompress: false, maxContentLength: MAX_RESPONSE_BYTES, maxRedirects: 5 });
+    // A challenge page is not the requested website, even if returned with HTTP 200.
+    if (res.headers["cf-mitigated"] === "challenge") {
+      const failure = websiteFetchFailure(new axios.AxiosError("Website security challenge", undefined, undefined, undefined, res));
+      return NextResponse.json(failure.body, { status: failure.status });
+    }
+    const body = Buffer.from(res.data);
+    html = decodeResponseBody(body, String(res.headers["content-encoding"] || ""));
+    assets.html += body.length;
+    finalUrl = res.request?.res?.responseUrl || targetUrl;
+  } catch (error) {
+    const failure = websiteFetchFailure(error);
+    return NextResponse.json(failure.body, { status: failure.status });
   }
 
   // load cheerio and prepare URL collector
   const $ = cheerio.load(html);
-  const baseUrl = new URL(targetUrl);
+  const baseUrl = new URL(finalUrl);
   const resourceUrls = new Set<string>();
   const collectUrl = (raw: string) => {
     try {
@@ -113,16 +109,6 @@ export async function GET(
   });
 
   // 4) FETCH & PROCESS QUEUE
-  const classify = (ct?: string) => {
-    ct = ct?.toLowerCase() || '';
-    if (ct.includes('html')) return 'html';
-    if (ct.includes('css')) return 'css';
-    if (ct.includes('javascript')) return 'js';
-    if (ct.startsWith('image/')) return 'image';
-    if (ct.startsWith('font/')) return 'font';
-    return 'other';
-  };
-
   const queue = Array.from(resourceUrls).slice(0, 40);
   const deadline = Date.now() + 15000;
   let processed = 0;
@@ -131,23 +117,26 @@ export async function GET(
     const url = queue.shift()!;
     processed++;
     try {
-      const res = await axios.get(url, { responseType: 'arraybuffer', timeout: Math.min(3000, deadline - Date.now()), maxContentLength: 10 * 1024 * 1024 });
-      const size = res.data.length;
-      const type = classify(res.headers['content-type']);
+      const res = await axios.get(url, { responseType: 'arraybuffer', decompress: false, timeout: Math.max(1, Math.min(3000, deadline - Date.now())), maxContentLength: MAX_RESPONSE_BYTES, maxRedirects: 5 });
+      if (res.headers['cf-mitigated'] === 'challenge') { failedAssets++; continue; }
+      const body = Buffer.from(res.data);
+      const size = body.length;
+      const type = classifyAsset(String(res.headers['content-type'] || ''));
       assets[type] = (assets[type] || 0) + size;
 
       // parse CSS for deeper imports
       if (type === 'css') {
-        const text = res.data.toString('utf8');
+        const text = decodeResponseBody(body, String(res.headers['content-encoding'] || ''));
+        const cssBaseUrl = res.request?.res?.responseUrl || url;
         const urlRegex = /url\(\s*['"]?([^)'"\s]+)['"]?\s*\)/g;
         const importRegex = /@import\s+['"]([^'"]+)['"]/g;
         for (const m of text.matchAll(urlRegex)) {
-          const full = new URL(m[1], url).href;
-          if (!resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
+          const full = new URL(m[1], cssBaseUrl).href;
+          if (["http:", "https:"].includes(new URL(full).protocol) && !resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
         }
         for (const m of text.matchAll(importRegex)) {
-          const full = new URL(m[1], url).href;
-          if (!resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
+          const full = new URL(m[1], cssBaseUrl).href;
+          if (["http:", "https:"].includes(new URL(full).protocol) && !resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
         }
       }
     } catch { failedAssets++; }
@@ -155,22 +144,17 @@ export async function GET(
 
   const totalBytes = Object.values(assets).reduce((a, b) => a + b, 0);
 
-  // 5) DNS & SERVER INFO
-  let ip: string;
-  try {
-    ip = (await lookup(hostname)).address;
-  } catch {
-    return NextResponse.json(
-      { error: `DNS lookup failed for: ${hostname}`, code: "DNS_LOOKUP_FAILED" },
-      { status: 502 }
-    );
-  }
-
-  return NextResponse.json({
-    url: targetUrl,
-    serverInfo: { ip, server: serverHeader },
-    totalBytes,
-    breakdown: assets,
-    partial: queue.length > 0 || resourceUrls.size > processed || failedAssets > 0,
-  });
+  const warnings = [
+    "Partial static scan: JavaScript is not executed. Responsive alternatives and lazy media can differ from a real browser load.",
+    "Counts compressed response bodies only. Response headers and redirect bodies are excluded; import a browser capture for recorded transfer totals.",
+  ];
+  if (queue.length || resourceUrls.size > processed) warnings.push("The scan reached its 40-resource or time limit. Some resources were not fetched.");
+  if (failedAssets) warnings.push(`${failedAssets} resource(s) could not be measured.`);
+  const measurement: WebsiteMeasurement = {
+    source: "url", origin: safeOrigin(finalUrl), totalBytes, breakdown: assets,
+    requestCount: processed + 1, unknownSizeCount: failedAssets, partial: true, warnings,
+    byteBasis: "Compressed response body bytes; headers and redirect bodies excluded",
+    scenario: "Limited static scan; no browser cache or JavaScript execution",
+  };
+  return NextResponse.json({ measurement });
 }

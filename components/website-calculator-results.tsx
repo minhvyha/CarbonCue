@@ -1,675 +1,86 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Zap, Tv, Home, Plane, Lightbulb, Droplets } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { projectPageviews, type WebsiteCalculation } from "@/lib/website-emissions";
+import { ASSET_TYPES, formatBytes } from "@/lib/website-measurement";
 
-// This is a placeholder component - in a real app, you would receive actual data
-export function WebsiteCalculatorResults({
-  data,
-  monthlyVisitors,
-}: {
-  data: any;
-  monthlyVisitors: string;
-}) {
-  // Placeholder state - would be populated from API response
+const number = (value: number) => value.toLocaleString(undefined, { maximumSignificantDigits: 4 });
+const SOURCE_NAMES = { har: "Local browser capture", url: "Automatic static scan", manual: "Manual transferred size" };
+const SEGMENT_LABELS = {
+  dataCenterOperational: "Data centre operations",
+  networkOperational: "Network operations",
+  deviceOperational: "Device operations",
+  dataCenterEmbodied: "Data centre embodied",
+  networkEmbodied: "Network embodied",
+  deviceEmbodied: "Device embodied",
+};
 
-  if (!data?.emissionDetails) return null;
-  console.log("WebsiteCalculatorResults data:", data);
-  // Inside WebsiteCalculatorResults(), just before the `return(...)`:
-  let totalCO2g = 0;
-  if(data.emissionDetails.green){
-
-     totalCO2g =
-      data.emissionDetails.statistics.co2.renewable.grams *
-      Math.max(0, Number(monthlyVisitors) || 0);
-  }
-  else{
-      totalCO2g =
-        data.emissionDetails.statistics.co2.grid.grams *
-        Math.max(0, Number(monthlyVisitors) || 0);
-  }
-
-  // Define per-unit CO₂ rates (all in grams):
-  const rates = {
-    microwave: 400, // g per use
-    tv: 170, // g per hour
-    household: 42000, // g per day (42 kg/day)
-    flight: 160, // g per km
-    bulb: 6.1, // g per hour (10 W)
-    waterHeater: 16.2, // g per litre (0.0162 kg/L)
-  };
-
-  const funFacts = [
-    {
-      icon: <Zap className="h-6 w-6 text-orange-600" />,
-      title: "Microwave Uses",
-      // number of uses = totalCO2g ÷ rate
-      value: `${(totalCO2g / rates.microwave).toFixed(1)}`,
-      unit: "uses",
-      description: "Full-power microwave cycles",
-      bg: "bg-orange-50 dark:bg-orange-950/20",
-    },
-    {
-      icon: <Tv className="h-6 w-6 text-indigo-600" />,
-      title: "TV Watching",
-      value: `${(totalCO2g / rates.tv).toFixed(1)}`,
-      unit: "hours",
-      description: "Watching a 50″ LED TV",
-      bg: "bg-indigo-50 dark:bg-indigo-950/20",
-    },
-    {
-      icon: <Home className="h-6 w-6 text-emerald-600" />,
-      title: "Household Days",
-      // convert CO₂ to days: divide by g/day
-      value: `${(totalCO2g / rates.household).toFixed(2)}`,
-      unit: "days",
-      description: "Avg. Australian household footprint",
-      bg: "bg-emerald-50 dark:bg-emerald-950/20",
-    },
-    {
-      icon: <Plane className="h-6 w-6 text-sky-600" />,
-      title: "Flight Distance",
-      value: `${(totalCO2g / rates.flight).toFixed(0)}`,
-      unit: "km",
-      description: "Economy-class air travel",
-      bg: "bg-sky-50 dark:bg-sky-950/20",
-    },
-    {
-      icon: <Lightbulb className="h-6 w-6 text-yellow-600" />,
-      title: "LED Bulb Hours",
-      value: `${(totalCO2g / rates.bulb).toFixed(0)}`,
-      unit: "hours",
-      description: "10 W LED bulb runtime",
-      bg: "bg-yellow-50 dark:bg-yellow-950/20",
-    },
-    {
-      icon: <Droplets className="h-6 w-6 text-cyan-600" />,
-      title: "Water Heating",
-      value: `${(totalCO2g / rates.waterHeater).toFixed(1)}`,
-      unit: "L",
-      description: "Water heated from cold to boiling",
-      bg: "bg-cyan-50 dark:bg-cyan-950/20",
-    },
-  ];
-  return (
-    <div className="mt-10">
-      <Card>
+export function WebsiteCalculatorResults({ data, monthlyPageviews }: { data: WebsiteCalculation; monthlyPageviews: string }) {
+  const { measurement, emissions } = data;
+  const projection = projectPageviews(emissions.grams, monthlyPageviews);
+  const unit = measurement.source === "har" ? "captured page load" : measurement.source === "url" ? "static scan" : "supplied page load";
+  return <section className="mt-8 space-y-6" aria-label="Website emissions results" aria-live="polite">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <Card className="sm:col-span-2 border-carbon-red/30">
         <CardHeader>
-          <CardTitle className="text-2xl">Carbon Emission Results</CardTitle>
-          <CardDescription>
-            Analysis for{" "}
-            <a href={data.url || "#"} target="_blank" rel="noopener noreferrer">
-              {data.url || data.totalBytes + " bytes"}
-            </a>
-          </CardDescription>
+          <CardDescription>Estimated emissions per {unit}</CardDescription>
+          <CardTitle className="text-3xl">{number(emissions.grams)} <span className="text-lg">g CO2e</span></CardTitle>
         </CardHeader>
-        <CardContent>
-          {data.partial && <p role="status" className="mb-4 text-sm text-muted-foreground">This estimate covers the assets collected within the analysis limit. The full page may be larger.</p>}
-          <Tabs defaultValue="summary">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="summary">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* let rating: string;
-  if      (bytes < 100 * 1024)           rating = "A+";
-  else if (bytes < 250 * 1024)           rating = "A";
-  else if (bytes < 500 * 1024)           rating = "A-";
-  else if (bytes < 1   * 1024 * 1024)    rating = "B";
-  else if (bytes < 2   * 1024 * 1024)    rating = "C";
-  else if (bytes < 3   * 1024 * 1024)    rating = "D";
-  else                                   rating = "F"; */}
-                <EmissionMetric
-                  label="Carbon per Page View"
-                  value={
-                    parseFloat(
-                      (data.emissionDetails.green
-                        ? data.emissionDetails.statistics.co2.renewable.grams
-                        : data.emissionDetails.statistics.co2.grid.grams).toFixed(3)
-                    ) + "g"
-                  }
-                  description="CO₂ equivalent per page view"
-                  rating={
-                    data.totalBytes < 1 * 1024 * 1024
-                      ? "Great"
-                      : data.totalBytes < 2 * 1024 * 1024
-                      ? "Good"
-                      : data.totalBytes < 3 * 1024 * 1024
-                      ? "Average"
-                      : "Poor"
-                  }
-                  color={
-                    data.totalBytes < 1 * 1024 * 1024
-                      ? "green"
-                      : data.totalBytes < 2 * 1024 * 1024
-                      ? "amber"
-                      : data.totalBytes < 3 * 1024 * 1024
-                      ? "amber"
-                      : "red"
-                  }
-                />
-                <EmissionMetric
-                  label="Page size score"
-                  value={
-                    parseFloat(data.emissionDetails.cleanerThan) * 100 + "%"
-                  }
-                  description="Relative to a 5 MB reference page"
-                  rating={
-                    data.emissionDetails.cleanerThan > 0.75
-                      ? "Great"
-                      : data.emissionDetails.cleanerThan > 0.5
-                      ? "Average"
-                      : "Poor"
-                  }
-                  color={
-                    data.emissionDetails.cleanerThan > 0.75
-                      ? "green"
-                      : data.emissionDetails.cleanerThan > 0.5
-                      ? "amber"
-                      : "red"
-                  }
-                />
-                <EmissionMetric
-                  label="Website Rating"
-                  value={data.emissionDetails.rating}
-                  description="Overall environmental impact"
-                  rating={
-                    data.emissionDetails.rating === "A+"
-                      ? "Excellent"
-                      : data.emissionDetails.rating === "A"
-                      ? "Very Good"
-                      : data.emissionDetails.rating === "A-"
-                      ? "Good"
-                      : data.emissionDetails.rating === "B"
-                      ? "Fair"
-                      : data.emissionDetails.rating === "C"
-                      ? "Poor"
-                      : data.emissionDetails.rating === "D"
-                      ? "Very Poor"
-                      : "Fail"
-                  }
-                  color={
-                    data.emissionDetails.rating === "A+"
-                      ? "green"
-                      : data.emissionDetails.rating === "A"
-                      ? "green"
-                      : data.emissionDetails.rating === "A-"
-                      ? "green"
-                      : data.emissionDetails.rating === "B"
-                      ? "amber"
-                      : data.emissionDetails.rating === "C"
-                      ? "amber"
-                      : data.emissionDetails.rating === "D"
-                      ? "red"
-                      : "red"
-                  }
-                />
-              </div>
-
-              {data.emissionDetails.url && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-medium mb-2">
-                    Detailed Analysis
-                  </h3>
-                  <p className="text-muted-foreground mb-2">
-                    Total page size: {formatBytes(data.emissionDetails.bytes)}
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">
-                          Asset Breakdown
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2 text-sm">
-                          {data.breakdown &&
-                            Object.entries(data.breakdown).map(
-                              ([type, size]) => (
-                                <li key={type} className="flex justify-between">
-                                  <span>{type.toUpperCase()}</span>
-                                  <span className="font-medium">
-                                    {formatBytes(
-                                      typeof size === "number"
-                                        ? size.toString()
-                                        : String(size)
-                                    )}
-                                  </span>
-                                </li>
-                              )
-                            )}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">
-                          Server Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2 text-sm">
-                          <li className="flex justify-between">
-                            <span>URL</span>
-                            <span className="font-medium">
-                              {data.emissionDetails.url}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Page Weight</span>
-                            <span className="font-medium">
-                              {formatBytes(data.totalBytes)}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Server</span>
-                            <span className="font-medium">
-                              {data.serverInfo.server}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>IP Address</span>
-                            <span className="font-medium">
-                              {data.serverInfo.ip}
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span>Sustainable Hosting</span>
-                            <span className="font-medium">
-                              {data.emissionDetails.green ? "Yes" : "No"}
-                            </span>
-                          </li>
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              )}
-
-              <div className="mt-8">
-                <h3 className="text-lg font-medium mb-4">
-                  CO₂ Emission Analysis
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">
-                        Energy Source Analysis
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">Adjusted Bytes</span>
-                          <span className="text-sm">
-                            {formatBytes(
-                              data.emissionDetails.statistics.adjustedBytes
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">Green Hosting</span>
-                          <span
-                            className={`font-medium ${
-                              data.emissionDetails.green
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {data.emissionDetails.green ? "Yes" : "No"}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">
-                        Grid Energy Emissions
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>CO₂ from Grid Energy</span>
-                          <span
-                            className={`font-medium ${
-                              data.emissionDetails.green ? "" : "text-red-600"
-                            }`}
-                          >
-                            {formatWeight(
-                              data.emissionDetails.statistics.co2.grid.grams
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Equivalent in Liters</span>
-                          <span
-                            className={`font-medium ${
-                              data.emissionDetails.green ? "" : "text-red-600"
-                            }`}
-                          >
-                            {formatLitres(
-                              data.emissionDetails.statistics.co2.grid.litres
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">
-                        Green Energy Emissions
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>CO₂ from Green Energy</span>
-                          <span
-                            className={`font-medium ${
-                              data.emissionDetails.green ? "text-green-600" : ""
-                            }`}
-                          >
-                            {formatWeight(
-                              data.emissionDetails.statistics.co2.renewable
-                                .grams
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Equivalent in Liters</span>
-                          <span
-                            className={`font-medium ${
-                              data.emissionDetails.green ? "text-green-600" : ""
-                            }`}
-                          >
-                            {formatLitres(
-                              data.emissionDetails.statistics.co2.renewable
-                                .litres
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base">
-                        Emission Projections
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>
-                            Monthly ({monthlyVisitors.toLocaleString()}{" "}
-                            visitors)
-                          </span>
-                          <span className="font-medium">
-                            {data.emissionDetails.green
-                              ? formatWeight(
-                                  data.emissionDetails.statistics.co2.renewable
-                                    .grams * (Math.max(0, Number(monthlyVisitors) || 0))
-                                )
-                              : formatWeight(
-                                  data.emissionDetails.statistics.co2.grid
-                                    .grams * (Math.max(0, Number(monthlyVisitors) || 0))
-                                )}{" "}
-                            CO₂
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>
-                            Yearly ({monthlyVisitors.toLocaleString()}{" "}
-                            visitors/month)
-                          </span>
-                          <span className="font-medium">
-                            {data.emissionDetails.green
-                              ? formatWeight(
-                                  data.emissionDetails.statistics.co2.renewable
-                                    .grams *
-                                    (Math.max(0, Number(monthlyVisitors) || 0)) *
-                                    12
-                                )
-                              : formatWeight(
-                                  data.emissionDetails.statistics.co2.grid
-                                    .grams *
-                                    (Math.max(0, Number(monthlyVisitors) || 0)) *
-                                    12
-                                )}{" "}
-                            CO₂
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                <div className="mt-8">
-                  <h3 className="text-lg font-medium mb-2">
-                    Fun Facts About Your Carbon Footprint
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-6">
-                  These fun facts are calculated from your website’s total carbon emissions over one month of visits.
-                </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {funFacts.map(
-                      ({ icon, title, value, unit, description, bg }) => (
-                        <FunFactCard
-                          key={title}
-                          icon={icon}
-                          title={title}
-                          value={`${value} ${unit}`}
-                          description={description}
-                          bgColor={bg}
-                        />
-                      )
-                    )}
-                  </div>
-
-                  <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 rounded-lg border border-green-200 dark:border-green-800">
-  <div className="flex items-start gap-3">
-    <Zap className="h-8 w-8 text-green-600 mt-1 flex-shrink-0" />
-    <div>
-      <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">
-        Energy Impact Perspective
-      </h4>
-      <p className="text-sm text-green-700 dark:text-green-300 leading-relaxed">
-        Your site’s monthly carbon footprint of{' '}
-        <strong>{(totalCO2g / 1000).toFixed(2)} kg CO₂</strong> is equivalent to running a
-        microwave for{' '}
-        <strong>{(totalCO2g / rates.microwave).toFixed(1)} minutes</strong> or watching TV for{' '}
-        <strong>{(totalCO2g / rates.tv).toFixed(1)} hours</strong>. Small optimizations can make a big difference!
-      </p>
-    </div>
-  </div>
-</div>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="recommendations">
-              <div className="space-y-4">
-                <RecommendationItem
-                  title="Optimize Images"
-                  description="Compress and properly size images to reduce page weight by up to 60%."
-                  impact="High"
-                />
-                <RecommendationItem
-                  title="Minify JavaScript and CSS"
-                  description="Remove unnecessary code and whitespace to reduce file sizes."
-                  impact="Medium"
-                />
-                <RecommendationItem
-                  title="Use a Green Hosting Provider"
-                  description="Switch to a hosting provider that uses renewable energy."
-                  impact="High"
-                />
-                <RecommendationItem
-                  title="Implement Lazy Loading"
-                  description="Only load images and content when they're needed."
-                  impact="Medium"
-                />
-                <RecommendationItem
-                  title="Reduce Third-party Scripts"
-                  description="Evaluate and remove unnecessary third-party scripts."
-                  impact="Medium"
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
+        <CardContent className="text-sm text-muted-foreground">SWDM v4 estimates emissions from data transfer. This is not a direct electricity or emissions measurement.</CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardDescription>{measurement.partial ? "Known data subtotal" : "Transferred data input"}</CardDescription><CardTitle className="text-2xl">{formatBytes(measurement.totalBytes)}</CardTitle></CardHeader>
+        <CardContent className="text-sm text-muted-foreground">{measurement.totalBytes.toLocaleString()} bytes{measurement.requestCount !== undefined && ` · ${measurement.requestCount.toLocaleString()} requests`}</CardContent>
       </Card>
     </div>
-  );
-}
-
-function EmissionMetric({
-  label,
-  value,
-  description,
-  rating,
-  color,
-}: {
-  label: string;
-  value: string;
-  description: string;
-  rating: string;
-  color: "green" | "amber" | "red";
-}) {
-  const colorMap = {
-    green: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-    amber: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
-    red: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-  };
-
-  return (
-    <div className="p-4 border rounded-lg">
-      <div className="text-sm text-muted-foreground mb-1">{label}</div>
-      <div className="text-3xl font-bold mb-1">{value}</div>
-      <div className="text-xs text-muted-foreground mb-2">{description}</div>
-      <div
-        className={`text-xs font-medium px-2 py-1 rounded-full inline-block ${colorMap[color]}`}
-      >
-        {rating}
-      </div>
-    </div>
-  );
-}
-
-function RecommendationItem({
-  title,
-  description,
-  impact,
-}: {
-  title: string;
-  description: string;
-  impact: "Low" | "Medium" | "High";
-}) {
-  const impactColors = {
-    Low: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-    Medium: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
-    High: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-  };
-
-  return (
     <Card>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-base">{title}</CardTitle>
-          <span
-            className={`text-xs font-medium px-2 py-1 rounded-full ${impactColors[impact]}`}
-          >
-            {impact} Impact
-          </span>
-        </div>
-      </CardHeader>
+      <CardHeader><CardTitle>Measurement details</CardTitle><CardDescription>{SOURCE_NAMES[measurement.source]}{measurement.partial ? " · Partial result" : ""}</CardDescription></CardHeader>
+      <CardContent className="space-y-4 text-sm">
+        <dl className="space-y-3">
+          {measurement.origin && <div><dt className="font-medium">Page origin</dt><dd className="break-all text-muted-foreground">{measurement.origin}</dd></div>}
+          <div><dt className="font-medium">Scenario</dt><dd className="text-muted-foreground">{measurement.scenario}</dd></div>
+          <div><dt className="font-medium">Byte basis</dt><dd className="text-muted-foreground break-words">{measurement.byteBasis}</dd></div>
+          {measurement.durationSeconds !== undefined && <div><dt className="font-medium">Recorded request span</dt><dd className="text-muted-foreground">{number(measurement.durationSeconds)} seconds; not necessarily the full observation window.</dd></div>}
+          {measurement.decodedBodyBytes !== undefined && <div><dt className="font-medium">Known decoded bodies</dt><dd className="text-muted-foreground">{formatBytes(measurement.decodedBodyBytes)}. Shown separately; not added to transferred bytes.</dd></div>}
+        </dl>
+        {measurement.warnings.length > 0 && <div className="rounded-md bg-muted/50 p-4"><ul className="list-disc pl-4 space-y-2">{measurement.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul></div>}
+        {measurement.totalBytes === 0 && <p className="rounded-md border p-3">The supplied transfer is zero. The model scales with bytes, so its estimate is zero; a cached page can still consume device energy. This does not establish zero real-world emissions.</p>}
+        {measurement.breakdown && <div className="space-y-3">
+          <h3 className="font-medium">Transferred bytes by resource type</h3>
+          {ASSET_TYPES.filter(type => measurement.breakdown![type] > 0).map(type => <div key={type}>
+            <div className="flex justify-between gap-3 mb-1"><span className="capitalize">{type === "js" ? "JavaScript" : type === "css" ? "CSS" : type === "html" ? "HTML" : type}</span><span>{formatBytes(measurement.breakdown![type])}</span></div>
+            <div className="h-2 rounded bg-muted"><div className="h-2 rounded bg-carbon-red" style={{ width: `${measurement.totalBytes ? measurement.breakdown![type] / measurement.totalBytes * 100 : 0}%` }} /></div>
+          </div>)}
+        </div>}
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader><CardTitle>Pageview projections</CardTitle><CardDescription>Assumes every pageview resembles this {unit} and its cache scenario. Visitors can generate multiple pageviews.</CardDescription></CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        {projection ? <dl className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div><dt className="text-sm text-muted-foreground">{projection.count.toLocaleString()} pageviews per month</dt><dd className="mt-1 text-2xl font-semibold">{number(projection.monthlyKg)} kg CO2e</dd></div>
+          <div><dt className="text-sm text-muted-foreground">12 equivalent months</dt><dd className="mt-1 text-2xl font-semibold">{number(projection.annualKg)} kg CO2e</dd></div>
+        </dl> : <p className="text-sm">Enter a non-negative whole number of monthly pageviews.</p>}
       </CardContent>
     </Card>
-  );
-}
-
-function FunFactCard({
-  icon,
-  title,
-  value,
-  description,
-  bgColor,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  description: string;
-  bgColor: string;
-}) {
-  return (
-    <Card className={`${bgColor} border-0`}>
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0">{icon}</div>
-          <div className="min-w-0 flex-1">
-            <h4 className="font-semibold text-sm mb-1">{title}</h4>
-            <div className="text-2xl font-bold mb-1">{value}</div>
-            <p className="text-xs text-muted-foreground leading-tight">
-              {description}
-            </p>
-          </div>
-        </div>
+    <Card>
+      <CardHeader><CardTitle>Model breakdown and assumptions</CardTitle><CardDescription>{emissions.model.name} v{emissions.model.version} · {emissions.model.package} {emissions.model.packageVersion}</CardDescription></CardHeader>
+      <CardContent className="text-sm space-y-5">
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">{Object.entries(emissions.segments).map(([key, grams]) => <div key={key} className="flex justify-between gap-4 rounded-md bg-muted/40 p-3"><dt>{SEGMENT_LABELS[key as keyof typeof SEGMENT_LABELS]}</dt><dd className="shrink-0">{number(grams)} g</dd></div>)}</dl>
+        <p className="text-muted-foreground">Embodied emissions allocate manufacturing and infrastructure impacts to the supplied data. They are modelled allocations.</p>
+        <dl className="space-y-2">
+          <div><dt className="font-medium">Operational grid intensities (g CO2e/kWh)</dt><dd className="text-muted-foreground">Data centre: {number(emissions.assumptions.gridIntensity.dataCenter)} · Network: {number(emissions.assumptions.gridIntensity.network)} · Device: {number(emissions.assumptions.gridIntensity.device)}</dd></div>
+          <div><dt className="font-medium">Assumption source</dt><dd className="text-muted-foreground break-words">{emissions.assumptions.provenance}</dd></div>
+          <div><dt className="font-medium">Hosting</dt><dd className="text-muted-foreground">{emissions.assumptions.greenHosting ? "User-declared 100% green hosting; data-centre operational reduction only. This has not been independently verified." : "Unknown hosting energy mix; no green-hosting reduction applied."}</dd></div>
+          <div><dt className="font-medium">Caching</dt><dd className="text-muted-foreground">{emissions.assumptions.caching}</dd></div>
+        </dl>
+        <p className="text-muted-foreground">Results depend on the capture, grid assumptions and model boundaries. No accuracy percentage or website ranking is inferred.</p>
+        <a className="underline" href="https://developers.thegreenwebfoundation.org/co2js/models/overview/" target="_blank" rel="noreferrer">Read the CO2.js methodology</a>
       </CardContent>
     </Card>
-  );
-}
-function formatBytes(bytesString: string) {
-  const bytes = parseInt(bytesString, 10);
-  if (isNaN(bytes)) return "Invalid input";
-
-  const units = ["bytes", "KB", "MB", "GB", "TB"];
-  let size = bytes;
-  let unitIndex = 0;
-
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex++;
-  }
-
-  return `${size.toFixed(1)} ${units[unitIndex]}`;
-}
-function formatWeight(grams: number) {
-  const units = ["g", "kg", "t"];
-  let size = grams;
-  let unitIndex = 0;
-
-  while (size >= 1000 && unitIndex < units.length - 1) {
-    size /= 1000;
-    unitIndex++;
-  }
-
-  return `${size.toFixed(3)} ${units[unitIndex]}`;
-}
-function formatLitres(litres: number) {
-  const units = ["L", "mL"];
-  let size = litres;
-  let unitIndex = 0;
-
-  while (size >= 1000 && unitIndex < units.length - 1) {
-    size /= 1000;
-    unitIndex++;
-  }
-
-  return `${size.toFixed(3)} ${units[unitIndex]}`;
+    <Card>
+      <CardHeader><CardTitle>Reduce transfer and repeat the same scenario</CardTitle></CardHeader>
+      <CardContent className="text-sm text-muted-foreground"><ul className="list-disc pl-5 space-y-2"><li>Resize and compress images, defer offscreen media, and avoid unnecessary autoplay.</li><li>Remove unused JavaScript, CSS and third-party requests.</li><li>Use compression and cache static assets. Compare cold and cached loads separately.</li><li>Record the same observation window and interactions before and after changes.</li></ul></CardContent>
+    </Card>
+  </section>;
 }
