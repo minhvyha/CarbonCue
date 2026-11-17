@@ -37,13 +37,15 @@ interface ArtworkData {
   artistAvatar?: string
   views?: number
   likes?: Array<any>
+  likesCount?: number
   impact?: string
   type?: string
 }
 
 export default function ArtworkPage({ params }: ArtworkPageProps) {
   // React.use to unwrap the promise-based params in Next.js 15+
-  const { name } = React.use(params)
+  const { name: encodedName } = React.use(params)
+  const name = decodeURIComponent(encodedName)
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
@@ -58,7 +60,7 @@ export default function ArtworkPage({ params }: ArtworkPageProps) {
     const fetchArtwork = async () => {
       show()
       try {
-        const response = await fetch(`/api/resources/artgallery/${name}`)
+        const response = await fetch(`/api/resources/artgallery/${encodeURIComponent(name)}`)
 
         if (!response.ok) {
           // send the user to the 404 page when the API returns non-OK
@@ -117,7 +119,7 @@ const handleLike = async () => {
 
     try {
       // If your server doesn't implement unlike yet, see server snippet below
-      const res = await fetch(`/api/resources/artgallery${encodeURIComponent(title)}`, {
+      const res = await fetch(`/api/resources/artgallery/${encodeURIComponent(title)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user._id, action: "remove" }),
@@ -132,7 +134,7 @@ const handleLike = async () => {
 
       // use canonical likes from server if returned
       if (body?.likes) {
-        setData((prev) => (prev ? { ...prev, likes: body.likes } : null));
+        setData((prev) => (prev ? { ...prev, likes: body.likes, likesCount: body.likesCount } : null));
       }
     } catch (err) {
       console.error("Unlike failed — reverting optimistic update:", err);
@@ -162,7 +164,7 @@ const handleLike = async () => {
     }
 
     if (body?.likes) {
-      setData((prev) => (prev ? { ...prev, likes: body.likes } : null));
+      setData((prev) => (prev ? { ...prev, likes: body.likes, likesCount: body.likesCount } : null));
     } else {
       // fallback: keep optimistic state
       setData((prev) => (prev ? { ...prev, likes: optimisticLikes } : null));
@@ -214,7 +216,7 @@ const handleLike = async () => {
         <div className="space-y-6">
           <div className="relative">
             <img
-              src={`/painting/${data.image}` || '/placeholder.svg'}
+              src={data.image?.startsWith('/painting/') || /^https?:\/\//.test(data.image || '') ? data.image : `/painting/${(data.image || '').replace(/^\/+/, '')}`}
               alt={data.title}
               className="w-full rounded-lg shadow-lg"
             />
@@ -229,7 +231,7 @@ const handleLike = async () => {
               </span>
               <span className="flex items-center">
                 <Heart className="h-5 w-5 mr-2" />
-                {data.likes?.length ?? 0} likes
+                {data.likesCount || 0} likes
               </span>
             </div>
             <div className="flex items-center space-x-2">

@@ -1,0 +1,113 @@
+{
+  "version": "epa-vehicle-v1",
+  "selected_model": "xgboost",
+  "path": "/models/vehicle-v1.onnx",
+  "features": [
+    "year",
+    "engineLitres",
+    "cylinders",
+    "diesel",
+    "hybrid",
+    "awd",
+    "automatic",
+    "suv",
+    "truck",
+    "van"
+  ],
+  "output_unit": "g CO2 per km",
+  "boundary": "Tailpipe CO2 only; excludes upstream fuel, vehicle manufacturing, and non-CO2 greenhouse gases.",
+  "population": "US EPA certification records for model years 2013-2026; Australian on-road performance may differ.",
+  "source": "https://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip",
+  "dataset_sha256": "1d553896a77898f6cf47128281337af268df053c90dc1365891c7c8abff82c82",
+  "model_sha256": "c6224ebcbbbdc40b47724f50876fb716f2a11560d65158f7038a88662cd7dcd4",
+  "model_bytes": 708759,
+  "runtime_path": "/models/vehicle-runtime.json",
+  "runtime_bytes": 388233,
+  "runtime_sha256": "377868ad5a0edce837fdd5651cf3e3d462673b740309352941ed0b6228598815",
+  "rows": 15796,
+  "test_baselines": {
+    "fuel_median": {
+      "mae_g_per_km": 46.65432747190794,
+      "rmse_g_per_km": 58.709128874597326
+    },
+    "linear": {
+      "mae_g_per_km": 21.962240731457292,
+      "rmse_g_per_km": 28.446965237311602
+    },
+    "xgboost": {
+      "mae_g_per_km": 20.11267489516956,
+      "rmse_g_per_km": 26.34077282704268
+    },
+    "catboost": {
+      "mae_g_per_km": 20.2964938905933,
+      "rmse_g_per_km": 26.70073801473886
+    },
+    "neural": {
+      "mae_g_per_km": 22.137081975398313,
+      "rmse_g_per_km": 28.816641369268446
+    }
+  },
+  "split": {
+    "train": 7713,
+    "validation": 1901,
+    "calibration": 2646,
+    "test": 3536,
+    "group": "make + model family; fixed seeds 42/43/44"
+  },
+  "validation": {
+    "fuel_median": {
+      "mae_g_per_km": 47.03299433046934,
+      "rmse_g_per_km": 56.819722265766316,
+      "training_seconds": 0.001
+    },
+    "linear": {
+      "mae_g_per_km": 21.43984215019109,
+      "rmse_g_per_km": 26.217586742568173,
+      "training_seconds": 0.005
+    },
+    "xgboost": {
+      "mae_g_per_km": 16.26509093854789,
+      "rmse_g_per_km": 20.481732864808695,
+      "training_seconds": 0.076
+    },
+    "catboost": {
+      "mae_g_per_km": 16.630223515932098,
+      "rmse_g_per_km": 20.867730630886676,
+      "training_seconds": 0.448
+    },
+    "neural": {
+      "mae_g_per_km": 19.12915847489141,
+      "rmse_g_per_km": 23.87941568095378,
+      "training_seconds": 1.029
+    }
+  },
+  "test": {
+    "mae_g_per_km": 20.11267489516956,
+    "rmse_g_per_km": 26.34077282704268,
+    "bias_g_per_km": 0.39192511200218866,
+    "interval_half_width_g_per_km": 37.43404809613034,
+    "empirical_interval_coverage": 0.8701923076923077,
+    "nominal_interval_coverage": 0.9
+  },
+  "native_export_max_abs_error": 0.000396728515625,
+  "ranges": {
+    "year": [
+      2013,
+      2026
+    ],
+    "engineLitres": [
+      0.9,
+      8.4
+    ],
+    "cylinders": [
+      3,
+      16
+    ]
+  },
+  "limitations": [
+    "Certification-based estimates are not measurements of a user driving their vehicle.",
+    "Calibration groups are separate; intervals assume exchangeability and may not cover Australian or out-of-domain driving.",
+    "No synthetic lifestyle footprint labels are used.",
+    "TabPFN was not included: deployment of that runtime was not established for this browser target."
+  ]
+}

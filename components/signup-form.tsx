@@ -10,7 +10,6 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { triggerNavigationStart } from "@/lib/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
@@ -27,7 +26,7 @@ export function SignupForm() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
-  const { login } = useAuth();
+  const { refreshUser } = useAuth();
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -99,20 +98,22 @@ export function SignupForm() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("User created successfully");
+        toast.success(data.message || "Account created");
+        if (data.requiresConfirmation) { router.push("/login"); return; }
+        await refreshUser();
         triggerNavigationStart();
         router.push("/");
         console.log("User created:", data);
       } else if (response.status === 400) {
         if (data.errors && typeof data.errors === "object") {
           setErrors(data.errors);
-        } else if (data.message) {
-          if (data.message.toLowerCase().includes("email")) {
-            setErrors({ email: data.message });
-          } else if (data.message.toLowerCase().includes("password")) {
-            setErrors({ password: data.message });
+        } else if ((data.error || data.message)) {
+          if ((data.error || data.message).toLowerCase().includes("email")) {
+            setErrors({ email: data.error || data.message });
+          } else if ((data.error || data.message).toLowerCase().includes("password")) {
+            setErrors({ password: data.error || data.message });
           } else {
-            toast.error(data.message);
+            toast.error((data.error || data.message));
           }
         } else {
           toast.error("Registration failed");
@@ -272,25 +273,6 @@ export function SignupForm() {
           </Button>
         </div>
       </form>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-500" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-      <Button
-        variant="outline"
-        type="button"
-        className="border-gray-400 hover:bg-carbon-charcoal"
-        disabled={isLoading}
-      >
-        Google
-      </Button>
 
       <div className="text-center">
         <p className="text-sm text-muted-foreground">

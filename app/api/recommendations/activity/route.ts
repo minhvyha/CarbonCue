@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
-import RecommendationActivity from "@/model/RecommendationActivity";
-import { connectToDatabase } from "@/lib/mongoose";
-
+import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
+import { requireUser } from '@/lib/getCurrentUser';
+import { apiError } from '@/lib/api';
 export async function GET() {
-  await connectToDatabase();
-  const activities = await RecommendationActivity.find({});
-  return NextResponse.json(activities);
+  try {
+    await requireUser();
+    const supabase = await createClient();
+    const { data, error } = await supabase.from('recommendation_completions').select('*').order('completed_at', { ascending: false });
+    if (error) throw error;
+    return NextResponse.json(data);
+  } catch (error) { return apiError(error); }
 }

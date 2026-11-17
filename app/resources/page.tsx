@@ -36,10 +36,11 @@ type Resource = {
   medium?: string;
   views?: number;
   likes?: Array<any>;
+  likesCount?: number;
 };
 
 export default function ResourcesPage() {
-  const [resources, setResources] = useState({
+  const [resources, setResources] = useState<Record<"guides" | "courses" | "videos" | "research" | "artGallery", Resource[]>>({
     guides: [],
     courses: [],
     videos: [],
@@ -47,27 +48,32 @@ export default function ResourcesPage() {
     artGallery: [],
   });
   const { show, hide } = useLoading();
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    setTimeout(() => {
+    let active = true;
+    async function load() {
       show();
-      fetch("/api/resources")
-        .then((response) => response.json())
-        .then((data) => {
-          const groupedResources = {
-            guides: data.filter((item: Resource) => item.type === "guide"),
-            courses: data.filter((item: Resource) => item.type === "course"),
-            videos: data.filter((item: Resource) => item.type === "video"),
-            research: data.filter((item: Resource) => item.type === "research"),
-            artGallery: data.filter((item: Resource) => item.type === "art"),
-          };
-          setResources(groupedResources);
-          console.log(groupedResources);
-        })
-        .finally(() => {
-          hide();
+      try {
+        const response = await fetch("/api/resources");
+        if (!response.ok) throw new Error("Resources are temporarily unavailable. Please try again later.");
+        const data = await response.json();
+        if (!Array.isArray(data)) throw new Error("The resources response was invalid.");
+        if (active) setResources({
+          guides: data.filter((item: Resource) => item.type === "guide"),
+          courses: data.filter((item: Resource) => item.type === "course"),
+          videos: data.filter((item: Resource) => item.type === "video"),
+          research: data.filter((item: Resource) => item.type === "research"),
+          artGallery: data.filter((item: Resource) => item.type === "art"),
         });
-    }, 300);
+      } catch (error) {
+        if (active) setError(error instanceof Error ? error.message : "Could not load resources.");
+      } finally {
+        hide();
+      }
+    }
+    load();
+    return () => { active = false; };
   }, []);
 
   return (
@@ -80,6 +86,8 @@ export default function ResourcesPage() {
             difference.
           </p>
         </div>
+
+        {error && <p role="alert" className="mb-6 text-destructive">{error}</p>}
 
         <Tabs defaultValue="guides" className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-8">
@@ -149,7 +157,7 @@ export default function ResourcesPage() {
                 <ResearchCard
                   key={research.title}
                   title={research.title}
-                  authors={research.authors.join(", ")}
+                  authors={(research.authors || []).join(", ")}
                   year={research.year || new Date().getFullYear()}
                   abstract={research.abstract}
                   keywords={research.keywords || []}
@@ -171,7 +179,7 @@ export default function ResourcesPage() {
                   image={art.image || "/placeholder.svg"}
                   medium={art.medium || "Unknown Medium"}
                   views={art.views || 0}
-                  likes={art.likes?.length || 0}
+                  likes={art.likesCount || 0}
                 />
               ))}
             </div>
@@ -438,7 +446,7 @@ function ArtworkCard({
         </p>
       </CardHeader>
       <CardContent>
-        <Link href={`/resources/art/${title}`}>
+        <Link href={`/resources/art/${encodeURIComponent(title)}`}>
           <Button size="sm" className="w-full">
             View Artwork
             <ExternalLink className="h-4 w-4 ml-1" />

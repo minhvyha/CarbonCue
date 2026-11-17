@@ -22,7 +22,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CarbonTrackerForm } from "@/components/carbon-tracker-form";
-import { getCurrentUser } from "@/lib/getCurrentUser";
 import CarbonTrackerDaily from "@/components/carbon-tracker-daily";
 import { ActivityProvider } from "@/contexts/activity-context";
 import { ChartLineLabel } from "@/components/line-charts";
@@ -159,6 +158,18 @@ export default function CarbonTrackerPage() {
             </Card>
           </div>
 
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>Log Activity</CardTitle>
+                  <CardDescription>
+                    Add your daily activities to track emissions
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CarbonTrackerForm />
+                </CardContent>
+              </Card>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <CarbonTrackerDaily />
@@ -179,17 +190,7 @@ export default function CarbonTrackerPage() {
             </div>
 
             <div>
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle>Log Activity</CardTitle>
-                  <CardDescription>
-                    Add your daily activities to track emissions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <CarbonTrackerForm />
-                </CardContent>
-              </Card>
+
 
               <Card>
                 <CardHeader className="flex gap-2 pb-2">

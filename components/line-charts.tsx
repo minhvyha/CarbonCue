@@ -37,41 +37,32 @@ const chartConfig = {
 
 export function ChartLineLabel() {
   const { user, loading } = useAuth();
-  if (!user && !loading) {
-    return null;
-  }
 
-  const [chartData, setChartData] = useState([]);
-  const { activityLogs, refreshActivityLogs } = useActivity();
+  const [chartData, setChartData] = useState<{ month: string; totalEmissions: number | null }[]>([]);
+  const { activityLogs } = useActivity();
 
   useEffect(() => {
+    if (loading || !user) return;
+    let active = true;
     async function fetchData() {
-      const response = await fetch("/api/activity-tracker/trends");
-      const data = await response.json();
-      console.log(data);
-
-      // Step 1: Create a map from API
-      const emissionMap = new Map(
-        data.totalEmissions.map((item: any) => [
-          item.month,
-          item.totalEmissions,
-        ])
-      );
-
-      // Step 2: Build full data with missing months as null
-      const fullData = Array.from({ length: 12 }, (_, i) => {
-        const monthIndex = i + 1;
-        return {
-          month: monthNames[i],
-          totalEmissions: emissionMap.get(monthIndex) ?? null, // use null if missing
-        };
-      });
-      console.log("📈 Final chart data:", fullData);
-
-      setChartData(fullData);
+      try {
+        const response = await fetch(`/api/activity-tracker/trends?year=${new Date().getFullYear()}`);
+        if (!response.ok) throw new Error("Could not load monthly trends.");
+        const data = await response.json();
+        const emissionMap = new Map<number, number>(
+          (data.totalEmissions || []).map((item: { month: number; totalEmissions: number }) => [item.month, item.totalEmissions])
+        );
+        if (active) setChartData(monthNames.map((month, i) => ({ month, totalEmissions: emissionMap.get(i + 1) ?? null })));
+      } catch (error) {
+        console.error(error);
+        if (active) setChartData([]);
+      }
     }
     fetchData();
-  }, [activityLogs]);
+    return () => { active = false; };
+  }, [activityLogs, user, loading]);
+
+  if (!user) return <p className="p-4 text-sm">Sign in to view your monthly trends.</p>;
 
   return (
     <ChartContainer

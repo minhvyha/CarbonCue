@@ -40,32 +40,43 @@ export default function VolunteerHubPage() {
   const [hasMore, setHasMore] = useState(true);
 
   const { show, hide } = useLoading();
+  const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [remoteOnly, setRemoteOnly] = useState(false);
+  const [error, setError] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
+    let active = true;
     async function load() {
       show();
+      setIsFetching(true);
+      setError("");
       try {
-        const res = await fetch(`/api/volunteer-hub?page=${page}`);
-        if (!res.ok) throw new Error("Failed to fetch data");
-
+        const query = new URLSearchParams({ page: String(page), search: appliedSearch, remote: String(remoteOnly) });
+        const res = await fetch(`/api/volunteer-hub?${query}`);
         const result = await res.json();
-        console.log("API response:", result);
-        console.log("Fetched events:", result.events);
-        setListings(result.events);
-        console.log("Fetched organizations:", result.organizations);
-        setOrganizations(result.organizations);
-        setHasMore(result.events.length > 0); // If no events, disable Next
+        if (!res.ok) throw new Error(result.error || "Failed to fetch opportunities.");
+        if (!active) return;
+        setListings(result.events || []);
+        setOrganizations(result.organizations || []);
+        setHasMore(result.hasMore === true);
       } catch (err) {
-        console.error(err);
+        if (active) {
+          setError(err instanceof Error ? err.message : "Could not load opportunities.");
+          setListings([]);
+          setOrganizations([]);
+          setHasMore(false);
+        }
       } finally {
+        if (active) setIsFetching(false);
         hide();
       }
     }
-    setTimeout(() => {
-
-      load();
-    }, 100);
-  }, [page]);
+    load();
+    return () => { active = false; };
+  }, [page, appliedSearch, remoteOnly]);
 
   return (
     <div className="container py-10">
@@ -73,29 +84,34 @@ export default function VolunteerHubPage() {
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold mb-4">Volunteer & Resource Hub</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Connect with local and global climate events, track your volunteer
-            hours, and access resources.
+            Browse volunteer opportunities from VolunteerConnector, including remote roles. Check each listing for location and eligibility.
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 mb-10">
+        <form onSubmit={(e) => { e.preventDefault(); setPage(1); setAppliedSearch(search.trim()); }} className="flex flex-col md:flex-row gap-6 mb-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search for events, organizations, or resources..."
+                aria-label="Search volunteer opportunities"
+                placeholder="Search volunteer opportunities..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="pl-10"
               />
             </div>
           </div>
-          <Button variant="outline" className="flex gap-2">
+          <Button type="button" variant="outline" className="flex gap-2" aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>
             <Filter className="h-4 w-4" />
             <span>Filters</span>
           </Button>
-          <Button className="bg-carbon-purple hover:bg-carbon-purple/90">
+          <Button type="submit" disabled={isFetching} className="bg-carbon-purple hover:bg-carbon-purple/90">
             Find Events
           </Button>
-        </div>
+        </form>
+        {showFilters && <label className="flex gap-2 mb-4"><input type="checkbox" checked={remoteOnly} onChange={(e) => { setPage(1); setRemoteOnly(e.target.checked); }} />Remote opportunities only</label>}
+        {error && <p role="alert" className="mb-4 text-destructive">{error}</p>}
+        {!isFetching && !error && listings.length === 0 && <p role="status" className="mb-4">No opportunities match your search.</p>}
 
         <Tabs defaultValue="events" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
@@ -111,7 +127,7 @@ export default function VolunteerHubPage() {
                   title={listing.title}
                   date={listing.dates}
                   organizer={listing.org}
-                  attendees={Math.floor(Math.random() * 100) + 10}
+                  remote={listing.remote}
                   image={
                     listing.logo || "/placeholder.svg?height=200&width=400"
                   }
@@ -124,7 +140,7 @@ export default function VolunteerHubPage() {
             <Pagination
               currentPage={page}
               onPageChange={setPage}
-              disableNext={!hasMore}
+              disableNext={!hasMore || isFetching}
             />
           </TabsContent>
 
@@ -174,14 +190,14 @@ function EventCard({
   title,
   date,
   organizer,
-  attendees,
+  remote,
   image,
   url,
 }: {
   title: string;
   date: string;
   organizer: string;
-  attendees: number;
+  remote: boolean;
   image: string;
   url: string;
 }) {
@@ -206,7 +222,7 @@ function EventCard({
           </div>
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
-            <span>{attendees} attending</span>
+            <span>{remote ? "Remote / online" : "In person"}</span>
           </div>
         </div>
       </CardContent>

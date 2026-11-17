@@ -1,0 +1,1878 @@
+{
+  "gpus": [
+    {
+      "name": "A100 PCIe 40/80GB",
+      "watt": 250
+    },
+    {
+      "name": "A100 SXM4 80 GB",
+      "watt": 400
+    },
+    {
+      "name": "AGX Xavier",
+      "watt": 30
+    },
+    {
+      "name": "AMD RX480",
+      "watt": 150
+    },
+    {
+      "name": "GIGABYTE GTX 1660 OC",
+      "watt": 120
+    },
+    {
+      "name": "GTX 1080 Ti",
+      "watt": 250
+    },
+    {
+      "name": "GTX 1080",
+      "watt": 180
+    },
+    {
+      "name": "GTX 750",
+      "watt": 250
+    },
+    {
+      "name": "GTX TITAN X",
+      "watt": 250
+    },
+    {
+      "name": "Quadro K6000",
+      "watt": 225
+    },
+    {
+      "name": "Quadro P6000",
+      "watt": 250
+    },
+    {
+      "name": "RTX 2080 Ti",
+      "watt": 250
+    },
+    {
+      "name": "RTX 2080",
+      "watt": 215
+    },
+    {
+      "name": "RTX 8000",
+      "watt": 260
+    },
+    {
+      "name": "T4",
+      "watt": 70
+    },
+    {
+      "name": "Tesla K40c",
+      "watt": 245
+    },
+    {
+      "name": "Tesla K80",
+      "watt": 300
+    },
+    {
+      "name": "Tesla M40 24GB",
+      "watt": 250
+    },
+    {
+      "name": "Tesla P100",
+      "watt": 250
+    },
+    {
+      "name": "Tesla P40",
+      "watt": 250
+    },
+    {
+      "name": "Tesla V100-PCIE-16GB",
+      "watt": 300
+    },
+    {
+      "name": "Tesla V100-SXM2-16GB",
+      "watt": 250
+    },
+    {
+      "name": "Tesla V100-SXM2-32GB",
+      "watt": 300
+    },
+    {
+      "name": "Titan RTX",
+      "watt": 280
+    },
+    {
+      "name": "Titan V",
+      "watt": 250
+    },
+    {
+      "name": "TITAN X Pascal",
+      "watt": 250
+    },
+    {
+      "name": "Titan Xp",
+      "watt": 250
+    },
+    {
+      "name": "TPUv2 Chip",
+      "watt": 221
+    },
+    {
+      "name": "TPUv3 Chip",
+      "watt": 283
+    },
+    {
+      "name": "RTX 3080",
+      "watt": 320
+    },
+    {
+      "name": "RTX 3080 TI",
+      "watt": 350
+    },
+    {
+      "name": "RTX 3090",
+      "watt": 350
+    },
+    {
+      "name": "RTX 4090",
+      "watt": 300
+    },
+    {
+      "name": "RTX A4000",
+      "watt": 140
+    },
+    {
+      "name": "RTX A5000",
+      "watt": 230
+    },
+    {
+      "name": "RTX A6000",
+      "watt": 300
+    },
+    {
+      "name": "Intel Xeon E5-2699",
+      "watt": 145
+    },
+    {
+      "name": "Intel Xeon E5-2630v4",
+      "watt": 85
+    },
+    {
+      "name": "Intel Xeon E5-2650",
+      "watt": 105
+    },
+    {
+      "name": "Intel Xeon Gold 5220",
+      "watt": 125
+    },
+    {
+      "name": "Intel Xeon Gold 6148",
+      "watt": 150
+    },
+    {
+      "name": "L4",
+      "watt": 72
+    },
+    {
+      "name": "AMD EPYC 7763",
+      "watt": 280
+    },
+    {
+      "name": "AMD EPYC 7282",
+      "watt": 120
+    },
+    {
+      "name": "AMD EPYC 7702",
+      "watt": 200
+    }
+  ],
+  "providers": [
+    {
+      "name": "gcp",
+      "provider_name": "Google Cloud Platform"
+    },
+    {
+      "name": "aws",
+      "provider_name": "Amazon Web Services"
+    },
+    {
+      "name": "azure",
+      "provider_name": "Microsoft Azure"
+    },
+    {
+      "name": "ovh",
+      "provider_name": "OVHcloud"
+    },
+    {
+      "name": "scaleway",
+      "provider_name": "Scaleway"
+    },
+    {
+      "name": "coreweave",
+      "provider_name": "CoreWeave"
+    },
+    {
+      "name": "seeweb",
+      "provider_name": "Seeweb"
+    }
+  ],
+  "provider_regions": [
+    {
+      "provider_name": "gcp",
+      "region_name": "asia-east1",
+      "country": "Taiwan",
+      "impact": 557,
+      "offset_ratio": 100,
+      "source": "measured on  July 2, 2019 between 8 and 9 PM, EST on www.electricitymap.org"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "asia-east2",
+      "country": "China",
+      "impact": 702,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "asia-northeast1",
+      "country": "Japan",
+      "impact": 516,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "asia-northeast2",
+      "country": "Japan",
+      "impact": 516,
+      "offset_ratio": 100,
+      "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "asia-south1",
+      "country": "India",
+      "impact": 920,
+      "offset_ratio": 100,
+      "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "asia-southeast1",
+      "country": "Singapore",
+      "impact": 419,
+      "offset_ratio": 100,
+      "source": "https://www.ema.gov.sg/cmsmedia/Publications_and_Statistics/Publications/SES18/Publication_Singapore_Energy_Statistics_2018.pdf"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "australia-southeast1",
+      "country": "Australia",
+      "impact": 802,
+      "offset_ratio": 100,
+      "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "europe-north1",
+      "country": "Finland",
+      "impact": 211,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "europe-west1",
+      "country": "Belgium",
+      "impact": 267,
+      "offset_ratio": 100,
+      "source": "https://blog.google/around-the-globe/google-europe/time-shine-new-solar-facility-and-additional-data-center-belgium/"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "europe-west2",
+      "country": "United Kingdom",
+      "impact": 623,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "europe-west3",
+      "country": "Germany",
+      "impact": 615,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "europe-west4",
+      "country": "Netherlands",
+      "impact": 569,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "europe-west6",
+      "country": "Switzerland",
+      "impact": 16,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "northamerica-northeast1",
+      "country": "Canada",
+      "impact": 34,
+      "offset_ratio": 100,
+      "source": "Hydro-Québec (https://www.sciencedirect.com/science/article/pii/S1364032120307206)"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "southamerica-east1",
+      "country": "Brazil",
+      "impact": 205,
+      "offset_ratio": 100,
+      "source": "https://pdfs.semanticscholar.org/bd2a/69da81529a0f8dd16573dfd38e9d7468637e.pdf"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "us-central1",
+      "country": "USA",
+      "impact": 566,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "us-east1",
+      "country": "USA",
+      "impact": 367,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "us-east4",
+      "country": "USA",
+      "impact": 367,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "us-west1",
+      "country": "USA",
+      "impact": 297,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "us-west2",
+      "country": "USA",
+      "impact": 240,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "gcp",
+      "region_name": "us-west3",
+      "country": "USA",
+      "impact": 272,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "US East (Ohio)",
+      "country": "USA",
+      "impact": 568,
+      "offset_ratio": 0,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "US East (N. Virginia)",
+      "country": "USA",
+      "impact": 367,
+      "offset_ratio": 0,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "US West (N. California)",
+      "country": "USA",
+      "impact": 240,
+      "offset_ratio": 0,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "US West (Oregon)",
+      "country": "USA",
+      "impact": 297,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Hong Kong)",
+      "country": "China",
+      "impact": 702,
+      "offset_ratio": 0,
+      "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Mumbai)",
+      "country": "India",
+      "impact": 920,
+      "offset_ratio": 0,
+      "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Osaka-Local)",
+      "country": "Japan",
+      "impact": 516,
+      "offset_ratio": 0,
+      "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Seoul)",
+      "country": "South Korea",
+      "impact": 517,
+      "offset_ratio": 0,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Singapore)",
+      "country": "Singapore",
+      "impact": 419,
+      "offset_ratio": 0,
+      "source": "https://www.ema.gov.sg/cmsmedia/Publications_and_Statistics/Publications/SES18/Publication_Singapore_Energy_Statistics_2018.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Sydney)",
+      "country": "Australia",
+      "impact": 802,
+      "offset_ratio": 0,
+      "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Asia Pacific (Tokyo)",
+      "country": "Japan",
+      "impact": 516,
+      "offset_ratio": 0,
+      "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "Canada (Central)",
+      "country": "Canada",
+      "impact": 20,
+      "offset_ratio": 100,
+      "source": "Hydro-Québec"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "China (Beijing)",
+      "country": "China",
+      "impact": 680,
+      "offset_ratio": 0,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "China (Ningxia)",
+      "country": "China",
+      "impact": 680,
+      "offset_ratio": 0,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "EU (Frankfurt)",
+      "country": "Germany",
+      "impact": 615,
+      "offset_ratio": 100,
+      "source": "measured on  July 2, 2019 between 8 and 9 PM, EST on www.electricitymap.org"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "EU (Ireland)",
+      "country": "Ireland",
+      "impact": 617,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "EU (London)",
+      "country": "United Kingdom",
+      "impact": 623,
+      "offset_ratio": 0,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "EU (Paris)",
+      "country": "France",
+      "impact": 105,
+      "offset_ratio": 0,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "EU (Stockholm)",
+      "country": "Sweden",
+      "impact": 47,
+      "offset_ratio": 0,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "South America (São Paulo)",
+      "country": "Brazil",
+      "impact": 205,
+      "offset_ratio": 0,
+      "source": "https://pdfs.semanticscholar.org/bd2a/69da81529a0f8dd16573dfd38e9d7468637e.pdf"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "AWS GovCloud (US-East)",
+      "country": "USA",
+      "impact": 568,
+      "offset_ratio": 0,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "aws",
+      "region_name": "AWS GovCloud (US)",
+      "country": "USA",
+      "impact": 297,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "East Asia",
+      "country": "Hong Kong",
+      "impact": 702,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S095965261731627X"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Southeast Asia",
+      "country": "Singapore",
+      "impact": 419,
+      "offset_ratio": 100,
+      "source": "https://www.ema.gov.sg/cmsmedia/Publications_and_Statistics/Publications/SES18/Publication_Singapore_Energy_Statistics_2018.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Central US",
+      "country": "USA",
+      "impact": 736,
+      "offset_ratio": 100,
+      "source": "eGRID (seem to be in the SRMW grid)"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "East US",
+      "country": "USA",
+      "impact": 367,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "East US 2",
+      "country": "USA",
+      "impact": 367,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "West US",
+      "country": "USA",
+      "impact": 240,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "North Central US",
+      "country": "USA",
+      "impact": 568,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "South Central US",
+      "country": "USA",
+      "impact": 460,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "North Europe",
+      "country": "Ireland",
+      "impact": 617,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "West Europe",
+      "country": "Netherlands",
+      "impact": 569,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Japan West",
+      "country": "Japan",
+      "impact": 516,
+      "offset_ratio": 100,
+      "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Japan East",
+      "country": "Japan",
+      "impact": 516,
+      "offset_ratio": 100,
+      "source": "https://www.fepc.or.jp/library/pamphlet/pdf/04_electricity.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Brazil South",
+      "country": "Brazil",
+      "impact": 205,
+      "offset_ratio": 100,
+      "source": "https://pdfs.semanticscholar.org/bd2a/69da81529a0f8dd16573dfd38e9d7468637e.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Australia East",
+      "country": "Australia",
+      "impact": 802,
+      "offset_ratio": 100,
+      "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Australia Southeast",
+      "country": "Australia",
+      "impact": 805,
+      "offset_ratio": 100,
+      "source": "http://www.cleanenergyregulator.gov.au/NGER/National%20greenhouse%20and%20energy%20reporting%20data/electricity-sector-emissions-and-generation-data/electricity-sector-emissions-and-generation-data-2016-17"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "South India",
+      "country": "India",
+      "impact": 920,
+      "offset_ratio": 100,
+      "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Central India",
+      "country": "India",
+      "impact": 920,
+      "offset_ratio": 100,
+      "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "West India",
+      "country": "India",
+      "impact": 920,
+      "offset_ratio": 100,
+      "source": "http://www.cea.nic.in/reports/others/thermal/tpece/cdm_co2/user_guide_ver13.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Canada Central",
+      "country": "Canada",
+      "impact": 69,
+      "offset_ratio": 100,
+      "source": "Calculated from IESO"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Canada East",
+      "country": "Canada",
+      "impact": 20,
+      "offset_ratio": 100,
+      "source": "Hydro-Québec"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "UK South",
+      "country": "United Kingdom",
+      "impact": 623,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "UK West",
+      "country": "United Kingdom",
+      "impact": 623,
+      "offset_ratio": 100,
+      "source": "https://www.sciencedirect.com/science/article/pii/S1361920916307933"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "West Central US",
+      "country": "USA",
+      "impact": 297,
+      "offset_ratio": 100,
+      "source": ""
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "West US 2",
+      "country": "USA",
+      "impact": 297,
+      "offset_ratio": 100,
+      "source": "eGRID"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Korea Central",
+      "country": "South Korea",
+      "impact": 517,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Korea South",
+      "country": "South Korea",
+      "impact": 517,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "France Central",
+      "country": "France",
+      "impact": 105,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "France South",
+      "country": "France",
+      "impact": 105,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Australia Central",
+      "country": "Australia",
+      "impact": 900,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "Australia Central 2",
+      "country": "Australia",
+      "impact": 900,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "South Africa North",
+      "country": "South Africa",
+      "impact": 1009,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "azure",
+      "region_name": "South Africa West",
+      "country": "South Africa",
+      "impact": 1009,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "ovh",
+      "region_name": "Gravelines",
+      "country": "France",
+      "impact": 105,
+      "offset_ratio": 0,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "ovh",
+      "region_name": "Beauharnois",
+      "country": "Canada",
+      "impact": 20,
+      "offset_ratio": 0,
+      "source": "Hydro-Québec"
+    },
+    {
+      "provider_name": "scaleway",
+      "region_name": "Paris",
+      "country": "France",
+      "impact": 105,
+      "offset_ratio": 100,
+      "source": "https://www.carbonfootprint.com/docs/2018_8_electricity_factors_august_2018_-_online_sources.pdf"
+    },
+    {
+      "provider_name": "coreweave",
+      "region_name": "US East",
+      "country": "USA",
+      "impact": 282,
+      "offset_ratio": 0,
+      "source": "electricitymap"
+    },
+    {
+      "provider_name": "coreweave",
+      "region_name": "US Central",
+      "country": "USA",
+      "impact": 424,
+      "offset_ratio": 0,
+      "source": "electricitymap"
+    },
+    {
+      "provider_name": "coreweave",
+      "region_name": "US West",
+      "country": "USA",
+      "impact": 474,
+      "offset_ratio": 0,
+      "source": "electricitymap"
+    },
+    {
+      "provider_name": "seeweb",
+      "region_name": "Frosinone 2",
+      "country": "Italy",
+      "impact": 0,
+      "offset_ratio": 0,
+      "source": "100% carbon-free energy"
+    }
+  ],
+  "resources": [
+    {
+      "type": "course",
+      "slug": "understanding-climate-change-crashcourse-guide",
+      "title": "Understanding Climate Change: A CrashCourse Playlist Guide",
+      "content": {
+        "slug": "understanding-climate-change-crashcourse-guide",
+        "title": "Understanding Climate Change: A CrashCourse Playlist Guide",
+        "intro": "Climate change is one of the most urgent challenges of our time. But where do you start? In this blog post, we’ll walk through the CrashCourse Climate & Energy playlist—13 concise, engaging videos that build from the very basics of what climate change is, all the way to the policies, technologies, and actions we need to address it. Bookmark this guide, follow along video by video, and by the end you’ll have a solid foundation in both the science and the solutions.",
+        "sections": [
+          {
+            "heading": "Further Reading & Resources",
+            "items": [
+              "IPCC Summary for Policymakers",
+              "NASA Global Climate Change Dashboard",
+              "Your local government’s climate action plan"
+            ]
+          },
+          {
+            "heading": "Get Involved",
+            "items": [
+              "Join a local environmental group",
+              "Support legislation for clean energy",
+              "Reduce your own carbon footprint"
+            ]
+          }
+        ],
+        "conclusion": "This CrashCourse Climate & Energy series offers a comprehensive yet digestible journey through the science, technology, economics, and politics of climate change. By watching these videos and diving into the supplementary resources above, you’ll be well equipped to understand the challenges we face—and to play your part in crafting solutions. Let’s keep learning, keep sharing, and keep pushing for a sustainable future!",
+        "createdAt": "2025-07-05T12:00:00.000Z",
+        "updatedAt": "2025-07-05T12:00:00.000Z",
+        "contents": [
+          {
+            "order": 1,
+            "title": "Crash Course Climate & Energy Preview",
+            "description": "A quick teaser of what’s to come—definitions, big questions, and why this series matters now.",
+            "takeaways": [
+              "Lay out the scope of the series",
+              "Provide a roadmap for upcoming topics"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/dhFlDkES6Ws?si=sG3itut9DUKgthv0"
+          },
+          {
+            "order": 2,
+            "title": "What is Climate Change? (Climate & Energy #1)",
+            "description": "An introduction to Earth’s climate system—how it works, the difference between weather and climate, and why humans are altering it.",
+            "takeaways": [
+              "Carbon cycle basics",
+              "Greenhouse effect fundamentals",
+              "How small changes can have huge impacts"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/9PFhrpyWV-w?si=MVmZBVRzZOvcMF4C"
+          },
+          {
+            "order": 3,
+            "title": "Why Do We Release So Much Gas? (Climate & Energy #2)",
+            "description": "A look at where greenhouse gases come from—fossil fuels, deforestation, agriculture, and more.",
+            "takeaways": [
+              "Historical CO₂ rise",
+              "Anthropogenic vs. natural emissions",
+              "Biggest culprits in daily life"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/Q26Z4JWVZvk?si=IIwQ_G9D_BoI9AAR"
+          },
+          {
+            "order": 4,
+            "title": "Can We Make Electricity Without Fossil Fuels? (Climate & Energy #3)",
+            "description": "Explores renewable electricity sources—solar, wind, hydro, geothermal, and the challenges of scale.",
+            "takeaways": [
+              "Capacity factors",
+              "Intermittency",
+              "Why a diverse mix of renewables is crucial"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/pT7vRUGeEtA?si=M-KaQ-mBh3fyUd_Q"
+          },
+          {
+            "order": 5,
+            "title": "How Can We Store Renewable Energy? (Climate & Energy #4)",
+            "description": "Delves into energy storage technologies like batteries, pumped hydro, and emerging solutions like flow batteries and supercapacitors.",
+            "takeaways": [
+              "The “duck curve”",
+              "Round‑trip efficiency",
+              "The race for next‑generation storage"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/rDkaZWirNME?si=4Pf74eVmSNZwOGqs"
+          },
+          {
+            "order": 6,
+            "title": "Can We Keep Warm and Stay Cool Without Fossil Fuels? (Climate & Energy #5)",
+            "description": "Heating and cooling account for a huge chunk of energy use—this episode covers heat pumps, passive design, and efficiency upgrades.",
+            "takeaways": [
+              "Coefficient of Performance (COP)",
+              "District heating",
+              "Building retrofits"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/3yH5TuLYRcs?si=YjXBzSbDw5QOjLmX"
+          },
+          {
+            "order": 7,
+            "title": "Can We Gas Up… Without Gas? (Climate & Energy #6)",
+            "description": "Transportation’s energy dilemma—electric vehicles, biofuels, hydrogen, and the infrastructure needed to make the switch.",
+            "takeaways": [
+              "Well‑to‑wheel emissions",
+              "Charging networks",
+              "Lifecycle analysis"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/1-YtC3nwWwU?si=Tb6HgLxJSAwbHCvP"
+          },
+          {
+            "order": 8,
+            "title": "Can We Capture Greenhouse Gases? (Climate & Energy #7)",
+            "description": "Carbon capture and storage (CCS) and direct air capture (DAC)—how they work, costs, and the controversy around “negative emissions.”",
+            "takeaways": [
+              "Absorption vs. adsorption",
+              "Geological sequestration",
+              "Role of nature‑based solutions"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/bjIXPPlg1TQ?si=a5terKRPn_LnMZlu"
+          },
+          {
+            "order": 9,
+            "title": "How Will Climate Change Continue to Affect Us? (Climate & Energy #8)",
+            "description": "Projections of sea‑level rise, extreme weather, agriculture impacts, and human health.",
+            "takeaways": [
+              "Climate models",
+              "Vulnerability assessments",
+              "Concept of “climate resilience”"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/eVUuwHGLIYo?si=-_b9LWFN0dY3lC7q"
+          },
+          {
+            "order": 10,
+            "title": "Are Natural Disasters Actually Natural? (Climate Justice) (Climate & Energy #9)",
+            "description": "The human and societal dimensions of climate impacts—why some communities suffer more, and how equity fits into adaptation and mitigation.",
+            "takeaways": [
+              "Climate justice principles",
+              "Loss and damage",
+              "Ethics of responsibility"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/7ODrQW0vSmA?si=666PfZvHGotv_8Ww"
+          },
+          {
+            "order": 11,
+            "title": "International Climate Agreements (Climate & Energy #10)",
+            "description": "From Kyoto to the Paris Agreement—how countries negotiate targets, finance, and technology transfer.",
+            "takeaways": [
+              "Nationally Determined Contributions (NDCs)",
+              "Global stocktake",
+              "Role of non‑state actors"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/Z5YvjG4lTpQ?si=XreeEX1uG4Zf76y7"
+          },
+          {
+            "order": 12,
+            "title": "The Hidden Price of Climate Change (Climate & Energy #11)",
+            "description": "Economic impacts—costs of disasters, insurance, stranded assets, and carbon pricing mechanisms.",
+            "takeaways": [
+              "Social cost of carbon",
+              "Cap‑and‑trade vs. carbon tax",
+              "Economics of inaction"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/ML70W4O6F4E?si=uqUYbDKuidULafW3"
+          },
+          {
+            "order": 13,
+            "title": "How Can We Respond to Climate Change? (Climate & Energy #12)",
+            "description": "A call to action—individual choices, technological pathways, policy levers, and the importance of collective effort.",
+            "takeaways": [
+              "Mitigation vs. adaptation",
+              "Climate activism",
+              "How you can get involved"
+            ],
+            "youtubeUrl": "https://youtube.com/embed/3p51wKUuwOU?si=tdRBWD1iVzNB27Ej"
+          }
+        ],
+        "type": "course",
+        "duration": "2 hours",
+        "level": "Beginner",
+        "numberOfLesson": "13",
+        "authors": [
+          "CrashCourse"
+        ]
+      }
+    },
+    {
+      "type": "guide",
+      "slug": "socio-cultural-sustainability-university-guide",
+      "title": "Recognising & Sustaining the Socio‑Cultural Pillar: A Guide for University Students",
+      "content": {
+        "slug": "socio-cultural-sustainability-university-guide",
+        "title": "Recognising & Sustaining the Socio‑Cultural Pillar: A Guide for University Students",
+        "description": "An in‑depth walkthrough for university students to understand, recognise, and strengthen the socio‑cultural pillar of sustainability in campus life—with practical examples, reflection prompts, and action steps.",
+        "presentationLink": "https://www.canva.com/design/DAGt2SkrC8w/0y4XMI06a34jv2SVYzGh-w/view",
+        "contents": [],
+        "type": "guide",
+        "createdAt": "2025-07-05T12:00:00.000Z",
+        "updatedAt": "2025-07-25T15:00:00.000Z",
+        "authors": [
+          "Rozil Nguyen"
+        ]
+      }
+    },
+    {
+      "type": "guide",
+      "slug": "zero-waste-swaps-uni-guide",
+      "title": "Zero-Waste Swaps for Uni Life: 3 Levels of Sustainable Habits",
+      "content": {
+        "slug": "zero-waste-swaps-uni-guide",
+        "title": "Zero-Waste Swaps for Uni Life: 3 Levels of Sustainable Habits",
+        "description": "A practical and visual guide for university students to adopt sustainable living through zero-waste swaps. Learn how to save money and reduce your carbon footprint through three tiers of eco-friendly lifestyle changes—from quick wins to long-term upgrades.",
+        "presentationLink": "https://www.canva.com/design/DAGs1-DXhPw/BSP0eggNmdkaYRNYhP8wZA/view",
+        "contents": [],
+        "type": "guide",
+        "createdAt": "2025-07-05T12:00:00.000Z",
+        "updatedAt": "2025-07-25T15:00:00.000Z",
+        "authors": [
+          "Rozil Nguyen"
+        ]
+      }
+    },
+    {
+      "type": "guide",
+      "slug": "myth-buster-sustainability-not-synonym-green",
+      "title": "Myth Buster: Sustainability Is Not a Synonym for “Green”",
+      "content": {
+        "slug": "myth-buster-sustainability-not-synonym-green",
+        "title": "Myth Buster: Sustainability Is Not a Synonym for “Green”",
+        "description": "A visual blog guide for university students that uses the four‑legged sustainability stool metaphor to unpack the environmental, economic, social‑cultural, and political pillars—and shows how to weave them into campus projects and teaching.",
+        "presentationLink": "https://www.canva.com/design/DAGtPdVYvtI/SqvaU8be10urBw1UWrQIrg/view",
+        "contents": [],
+        "type": "guide",
+        "createdAt": "2025-07-27T23:46:40.000Z",
+        "updatedAt": "2025-07-27T23:46:40.000Z",
+        "authors": [
+          "Rozil Nguyen"
+        ]
+      }
+    },
+    {
+      "type": "guide",
+      "slug": "economic-sustainability-university-guide",
+      "title": "Economic Sustainability: A Student Guide (Clean & Actionable)",
+      "content": {
+        "slug": "economic-sustainability-university-guide",
+        "title": "Economic Sustainability: A Student Guide (Clean & Actionable)",
+        "description": "A concise, practical guide for university students to understand economic sustainability: what it is, how to spot it on campus, and simple daily & community actions to strengthen financial resilience, local value circulation, and career-ready skills.",
+        "presentationLink": "https://www.canva.com/design/DAGv6CilIA0/TghStC0Qj88ZH_AM3FxJfA/view",
+        "contents": [],
+        "type": "guide",
+        "createdAt": "2025-07-05T12:00:00.000Z",
+        "updatedAt": "2025-07-25T15:00:00.000Z",
+        "authors": [
+          "Rozil Nguyen"
+        ]
+      }
+    },
+    {
+      "type": "video",
+      "slug": "climate-change-averting-catastrophe",
+      "title": "Climate change - Averting catastrophe",
+      "content": {
+        "title": "Climate change - Averting catastrophe",
+        "description": "In the last 30 years, CO2 emissions have increased by 60 percent worldwide. The most pressing problem facing our civilization is global warming. What solutions could there be? This documentary accompanies activists in their efforts to combat climate change.",
+        "videoLink": "https://www.youtube.com/embed/pEt6-jA2UE4?si=pE-3e6_fgx_-sPtF",
+        "type": "video",
+        "duration": "1:25:56",
+        "uploadDate": "14 Jul 2023",
+        "authors": [
+          "DW Documentary"
+        ]
+      }
+    },
+    {
+      "type": "video",
+      "slug": "we-will-fix-climate-change",
+      "title": "We WILL Fix Climate Change!",
+      "content": {
+        "title": "We WILL Fix Climate Change!",
+        "description": "Our home is burning. Rapid climate change is destabilizing our world. It seems our emissions will not fall quickly enough to avoid runaway warming and we may soon hit tipping points that will lead to the collapse of ecosystems and our civilization. While scientists, activists and much of the younger generation urge action, it appears most politicians are not committed to do anything meaningful while the fossil fuel industry still works actively against change. It seems humanity can’t overcome its greed and obsession with short term profit and personal gain to save itself. And so for many the future looks grim and hopeless. Young people feel particularly anxious and depressed. Instead of looking ahead to a lifetime of opportunity they wonder if they will even have a future or if they should bring kids into this world. It’s an age of doom and hopelessness and giving up seems the only sensible thing to do. But that’s not true. You are not doomed. Humanity is not doomed.",
+        "authors": [
+          "Kurzgesagt – In a Nutshell"
+        ],
+        "type": "video",
+        "duration": "1:25:56",
+        "uploadDate": "14 Jul 2023",
+        "videoLink": "https://www.youtube.com/embed/LxgMdjyw8uw?si=pnJgbzM754XIkyKw"
+      }
+    },
+    {
+      "type": "research",
+      "slug": "climate-impact-of-increasing-atmospheric-carbon-dioxide",
+      "title": "Climate Impact of Increasing Atmospheric Carbon Dioxide",
+      "content": {
+        "slug": "climate-impact-of-increasing-atmospheric-carbon-dioxide",
+        "title": "Climate Impact of Increasing Atmospheric Carbon Dioxide",
+        "abstract": "The global temperature rose by 0.2°C between the middle 1960's and 1980, yielding a warming of 0.4°C in the past century. This temperature increase is consistent with the calculated greenhouse effect due to measured increases of atmospheric carbon dioxide. Variations of volcanic aerosols and possibly solar luminosity appear to be primary causes of observed fluctuations about the mean trend of increasing temperature. It is shown that the anthropogenic carbon dioxide warming should emerge from the noise level of natural climate variability by the end of the century, and there is a high probability of warming in the 1980's. Potential effects on climate in the 21st century include the creation of drought-prone regions in North America and central Asia as part of a shifting of climatic zones, erosion of the West Antarctic ice sheet with a consequent worldwide rise in sea level, and opening of the fabled Northwest Passage.",
+        "researchLink": "https://doi.org/10.1126/science.213.4511.957",
+        "authors": [
+          "J. Hansen et al."
+        ],
+        "type": "research",
+        "year": "1981",
+        "keywords": [
+          "Greenhouse effect",
+          "Radiative forcing",
+          "CO₂ doubling",
+          "Climate modeling",
+          "Temperature projection"
+        ]
+      }
+    },
+    {
+      "type": "research",
+      "slug": "greenhouse‐gas-emission-targets-for-limiting-global-warming-to-2-degree",
+      "title": "Greenhouse‐gas emission targets for limiting global warming to 2 °C.",
+      "content": {
+        "slug": "greenhouse‐gas-emission-targets-for-limiting-global-warming-to-2-degree",
+        "title": "Greenhouse‐gas emission targets for limiting global warming to 2 °C.",
+        "abstract": "More than 100 countries have adopted a global warming limit of 2 °C or below (relative to pre-industrial levels) as a guiding principle for mitigation efforts to reduce climate change risks, impacts and damages1,2. However, the greenhouse gas (GHG) emissions corresponding to a specified maximum warming are poorly known owing to uncertainties in the carbon cycle and the climate response. Here we provide a comprehensive probabilistic analysis aimed at quantifying GHG emission budgets for the 2000–50 period that would limit warming throughout the twenty-first century to below 2 °C, based on a combination of published distributions of climate system properties and observational constraints. We show that, for the chosen class of emission scenarios, both cumulative emissions up to 2050 and emission levels in 2050 are robust indicators of the probability that twenty-first century warming will not exceed 2 °C relative to pre-industrial temperatures. Limiting cumulative CO2 emissions over 2000–50 to 1,000 Gt CO2 yields a 25% probability of warming exceeding 2 °C—and a limit of 1,440 Gt CO2 yields a 50% probability—given a representative estimate of the distribution of climate system properties. As known 2000–06 CO2 emissions3 were ∼234 Gt CO2, less than half the proven economically recoverable oil, gas and coal reserves4,5,6 can still be emitted up to 2050 to achieve such a goal. Recent G8 Communiqués7 envisage halved global GHG emissions by 2050, for which we estimate a 12–45% probability of exceeding 2 °C—assuming 1990 as emission base year and a range of published climate sensitivity distributions. Emissions levels in 2020 are a less robust indicator, but for the scenarios considered, the probability of exceeding 2 °C rises to 53–87% if global GHG emissions are still more than 25% above 2000 levels in 2020.",
+        "researchLink": "https://doi.org/10.1038/nature08017",
+        "authors": [
+          "Meinshausen",
+          "M., Meinshausen",
+          "N., Hare",
+          "W. et al."
+        ],
+        "type": "research",
+        "year": "2009",
+        "keywords": [
+          "Emission budgets",
+          "2 °C target",
+          "Cumulative CO₂",
+          "Probability thresholds",
+          "Integrated assessment models"
+        ]
+      }
+    },
+    {
+      "type": "research",
+      "slug": "tipping-elements-in-the-earth's-climate-system",
+      "title": "Tipping elements in the Earth's climate system",
+      "content": {
+        "slug": "tipping-elements-in-the-earth's-climate-system",
+        "title": "Tipping elements in the Earth's climate system",
+        "abstract": "The term “tipping point” commonly refers to a critical threshold at which a tiny perturbation can qualitatively alter the state or development of a system. Here we introduce the term “tipping element” to describe large-scale components of the Earth system that may pass a tipping point. We critically evaluate potential policy-relevant tipping elements in the climate system under anthropogenic forcing, drawing on the pertinent literature and a recent international workshop to compile a short list, and we assess where their tipping points lie. An expert elicitation is used to help rank their sensitivity to global warming and the uncertainty about the underlying physical mechanisms. Then we explain how, in principle, early warning systems could be established to detect the proximity of some tipping points.",
+        "researchLink": "https://doi.org/10.1073/pnas.0705414105",
+        "authors": [
+          "T.M. Lenton",
+          "H. Held",
+          "E. Kriegler",
+          "J.W. Hall",
+          "W. Lucht",
+          "S. Rahmstorf",
+          "H.J. Schellnhuber"
+        ],
+        "type": "research",
+        "year": "2008",
+        "keywords": [
+          "Tipping points",
+          "Abrupt change",
+          "Earth system feedbacks",
+          "Irreversibility",
+          "Critical thresholds"
+        ]
+      }
+    },
+    {
+      "type": "art",
+      "slug": "silent-drowning",
+      "title": "Silent Drowning",
+      "content": {
+        "title": "Silent Drowning",
+        "artist": "Jessica Mei Phillips",
+        "medium": "Watercolour, gouache, and white gel pen on watercolour paper",
+        "year": "2025",
+        "dimensions": "16cm x 16cm",
+        "description": "An otter struggles to swim through thick, blackened water after an oil spill. Once playful and free, the creature now battles for breath, its fur heavy with toxic oil. This artwork not only advocates for the protection of our oceans, but also serves as a reminder that our actions — from the energy we use to the waste we create — have real and lasting consequences for the environment and its inhabitants.",
+        "image": "/painting/otter.jpeg",
+        "technique": "Layered washes of watercolour were used to build the depth of the polluted water, while gouache added rich opacity to the oil slick. A white gel pen was applied for fine highlights on the otter’s whiskers and the glisten of the water. The combination of mediums creates both softness and stark contrast, mirroring the clash between nature and human impact.",
+        "inspiration": "Inspired by images of oil spill disasters and their toll on marine life, this piece aims to spark empat",
+        "artistBio": "Jessica Mei Phillips is a drawing-focused artist who loves portraiture—capturing quiet expressions and personality through line and mark. She lives with a cat who’s often her studio companion.",
+        "type": "art"
+      }
+    }
+  ],
+  "recommendations": [
+    {
+      "title": "Metro to Campus",
+      "description": "Use the Sydney Metro instead of driving to Macquarie University.",
+      "category": "transportation",
+      "impact": "10.2 kg CO₂ saved",
+      "impact_value": 10.2,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Bike to Class",
+      "description": "Cycle to campus and park near MUSE or 10 Wally's Walk.",
+      "category": "transportation",
+      "impact": "14.5 kg CO₂ saved",
+      "impact_value": 14.5,
+      "difficulty": "Medium",
+      "trees_earned": 2
+    },
+    {
+      "title": "Carpool with Classmates",
+      "description": "Organize rides with friends to reduce single-passenger trips.",
+      "category": "transportation",
+      "impact": "12.7 kg CO₂ saved",
+      "impact_value": 12.7,
+      "difficulty": "Medium",
+      "trees_earned": 2
+    },
+    {
+      "title": "Walk Between Buildings",
+      "description": "Skip the shuttle , walk to your next class for health and the planet.",
+      "category": "transportation",
+      "impact": "4.2 kg CO₂ saved",
+      "impact_value": 4.2,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Tap Opal Off-Peak",
+      "description": "Travel off-peak using your Opal card to reduce congestion and emissions.",
+      "category": "transportation",
+      "impact": "6.3 kg CO₂ saved",
+      "impact_value": 6.3,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Veggie UBar Day",
+      "description": "Choose the plant-based burger at UBar once this week.",
+      "category": "fooddiet",
+      "impact": "5.6 kg CO₂ saved",
+      "impact_value": 5.6,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Reusable Coffee Cup",
+      "description": "Bring your own mug to Courtyard Café to cut waste and get discounts.",
+      "category": "fooddiet",
+      "impact": "1.9 kg CO₂ saved",
+      "impact_value": 1.9,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Meat-Free Monday",
+      "description": "Go vegetarian every Monday for one month.",
+      "category": "fooddiet",
+      "impact": "9.8 kg CO₂ saved",
+      "impact_value": 9.8,
+      "difficulty": "Medium",
+      "trees_earned": 2
+    },
+    {
+      "title": "Zero Waste Meal Plan",
+      "description": "Use all groceries before expiry this week.",
+      "category": "fooddiet",
+      "impact": "4.7 kg CO₂ saved",
+      "impact_value": 4.7,
+      "difficulty": "Medium",
+      "trees_earned": 1
+    },
+    {
+      "title": "Buy Local Challenge",
+      "description": "Get fresh produce from local markets or vendors near campus.",
+      "category": "fooddiet",
+      "impact": "6.1 kg CO₂ saved",
+      "impact_value": 6.1,
+      "difficulty": "Medium",
+      "trees_earned": 1
+    },
+    {
+      "title": "Dorm Device Unplug",
+      "description": "Unplug laptop, chargers, and lamps in your dorm when not in use.",
+      "category": "homeenergy",
+      "impact": "5.4 kg CO₂ saved",
+      "impact_value": 5.4,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Power-Saving Mode",
+      "description": "Enable eco mode on your laptop and phone for a full week.",
+      "category": "homeenergy",
+      "impact": "3.3 kg CO₂ saved",
+      "impact_value": 3.3,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Charge at the Library",
+      "description": "Use the solar-powered library to charge devices instead of your dorm.",
+      "category": "homeenergy",
+      "impact": "2.7 kg CO₂ saved",
+      "impact_value": 2.7,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Lights Out Habit",
+      "description": "Turn off lights in shared dorm areas when leaving.",
+      "category": "homeenergy",
+      "impact": "4.8 kg CO₂ saved",
+      "impact_value": 4.8,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Natural Light Days",
+      "description": "Use natural daylight for study instead of artificial lights.",
+      "category": "homeenergy",
+      "impact": "3.6 kg CO₂ saved",
+      "impact_value": 3.6,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Textbook Swap",
+      "description": "Buy or trade secondhand textbooks from other students.",
+      "category": "shopping",
+      "impact": "7.5 kg CO₂ saved",
+      "impact_value": 7.5,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Reuse Market Visit",
+      "description": "Pick up or donate items at the campus reuse market.",
+      "category": "shopping",
+      "impact": "6.9 kg CO₂ saved",
+      "impact_value": 6.9,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "No-Buy Week",
+      "description": "Avoid all non-essential purchases for one week.",
+      "category": "shopping",
+      "impact": "12.2 kg CO₂ saved",
+      "impact_value": 12.2,
+      "difficulty": "Hard",
+      "trees_earned": 3
+    },
+    {
+      "title": "Library Loan First",
+      "description": "Borrow electronics or materials from the library before buying.",
+      "category": "shopping",
+      "impact": "5.2 kg CO₂ saved",
+      "impact_value": 5.2,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Bag It Better",
+      "description": "Use a reusable bag at Macquarie Centre for every purchase this week.",
+      "category": "shopping",
+      "impact": "2.4 kg CO₂ saved",
+      "impact_value": 2.4,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Download Lectures",
+      "description": "Watch lectures offline instead of streaming them repeatedly.",
+      "category": "digitalusage",
+      "impact": "3.1 kg CO₂ saved",
+      "impact_value": 3.1,
+      "difficulty": "Medium",
+      "trees_earned": 1
+    },
+    {
+      "title": "Tab Management Master",
+      "description": "Keep fewer browser tabs open while studying.",
+      "category": "digitalusage",
+      "impact": "1.7 kg CO₂ saved",
+      "impact_value": 1.7,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Low-Bandwidth Zoom",
+      "description": "Disable HD video and backgrounds in Zoom for all your meetings this week.",
+      "category": "digitalusage",
+      "impact": "2.9 kg CO₂ saved",
+      "impact_value": 2.9,
+      "difficulty": "Medium",
+      "trees_earned": 1
+    },
+    {
+      "title": "Dark Mode Days",
+      "description": "Use dark mode on all your devices for the entire week.",
+      "category": "digitalusage",
+      "impact": "1.6 kg CO₂ saved",
+      "impact_value": 1.6,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    },
+    {
+      "title": "Email Efficiency",
+      "description": "Send fewer, consolidated emails to reduce cloud activity.",
+      "category": "digitalusage",
+      "impact": "2.2 kg CO₂ saved",
+      "impact_value": 2.2,
+      "difficulty": "Easy",
+      "trees_earned": 1
+    }
+  ],
+  "model_versions": [
+    {
+      "version": "epa-vehicle-v1",
+      "method": "ml",
+      "metadata": {
+        "version": "epa-vehicle-v1",
+        "selected_model": "xgboost",
+        "path": "/models/vehicle-v1.onnx",
+        "features": [
+          "year",
+          "engineLitres",
+          "cylinders",
+          "diesel",
+          "hybrid",
+          "awd",
+          "automatic",
+          "suv",
+          "truck",
+          "van"
+        ],
+        "output_unit": "g CO2 per km",
+        "boundary": "Tailpipe CO2 only; excludes upstream fuel, vehicle manufacturing, and non-CO2 greenhouse gases.",
+        "population": "US EPA certification records for model years 2013-2026; Australian on-road performance may differ.",
+        "source": "https://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip",
+        "dataset_sha256": "1d553896a77898f6cf47128281337af268df053c90dc1365891c7c8abff82c82",
+        "model_sha256": "c6224ebcbbbdc40b47724f50876fb716f2a11560d65158f7038a88662cd7dcd4",
+        "model_bytes": 708759,
+        "runtime_path": "/models/vehicle-runtime.json",
+        "runtime_bytes": 388233,
+        "runtime_sha256": "377868ad5a0edce837fdd5651cf3e3d462673b740309352941ed0b6228598815",
+        "rows": 15796,
+        "test_baselines": {
+          "fuel_median": {
+            "mae_g_per_km": 46.65432747190794,
+            "rmse_g_per_km": 58.709128874597326
+          },
+          "linear": {
+            "mae_g_per_km": 21.962240731457292,
+            "rmse_g_per_km": 28.446965237311602
+          },
+          "xgboost": {
+            "mae_g_per_km": 20.11267489516956,
+            "rmse_g_per_km": 26.34077282704268
+          },
+          "catboost": {
+            "mae_g_per_km": 20.2964938905933,
+            "rmse_g_per_km": 26.70073801473886
+          },
+          "neural": {
+            "mae_g_per_km": 22.137081975398313,
+            "rmse_g_per_km": 28.816641369268446
+          }
+        },
+        "split": {
+          "train": 7713,
+          "validation": 1901,
+          "calibration": 2646,
+          "test": 3536,
+          "group": "make + model family; fixed seeds 42/43/44"
+        },
+        "validation": {
+          "fuel_median": {
+            "mae_g_per_km": 47.03299433046934,
+            "rmse_g_per_km": 56.819722265766316,
+            "training_seconds": 0.001
+          },
+          "linear": {
+            "mae_g_per_km": 21.43984215019109,
+            "rmse_g_per_km": 26.217586742568173,
+            "training_seconds": 0.005
+          },
+          "xgboost": {
+            "mae_g_per_km": 16.26509093854789,
+            "rmse_g_per_km": 20.481732864808695,
+            "training_seconds": 0.076
+          },
+          "catboost": {
+            "mae_g_per_km": 16.630223515932098,
+            "rmse_g_per_km": 20.867730630886676,
+            "training_seconds": 0.448
+          },
+          "neural": {
+            "mae_g_per_km": 19.12915847489141,
+            "rmse_g_per_km": 23.87941568095378,
+            "training_seconds": 1.029
+          }
+        },
+        "test": {
+          "mae_g_per_km": 20.11267489516956,
+          "rmse_g_per_km": 26.34077282704268,
+          "bias_g_per_km": 0.39192511200218866,
+          "interval_half_width_g_per_km": 37.43404809613034,
+          "empirical_interval_coverage": 0.8701923076923077,
+          "nominal_interval_coverage": 0.9
+        },
+        "native_export_max_abs_error": 0.000396728515625,
+        "ranges": {
+          "year": [
+            2013,
+            2026
+          ],
+          "engineLitres": [
+            0.9,
+            8.4
+          ],
+          "cylinders": [
+            3,
+            16
+          ]
+        },
+        "limitations": [
+          "Certification-based estimates are not measurements of a user driving their vehicle.",
+          "Calibration groups are separate; intervals assume exchangeability and may not cover Australian or out-of-domain driving.",
+          "No synthetic lifestyle footprint labels are used.",
+          "TabPFN was not included: deployment of that runtime was not established for this browser target."
+        ]
+      }
+    }
+  ],
+  "emission_factor_versions": [
+    {
+      "version": "carboncue-factors-2026-v1",
+      "metadata": {
+        "version": "carboncue-factors-2026-v1",
+        "electricity": {
+          "NSW": {
+            "label": "New South Wales and Australian Capital Territory",
+            "kgPerKwh": 0.6699999999999999,
+            "scope2": 0.6,
+            "scope3": 0.07
+          },
+          "VIC": {
+            "label": "Victoria",
+            "kgPerKwh": 0.85,
+            "scope2": 0.74,
+            "scope3": 0.11
+          },
+          "QLD": {
+            "label": "Queensland",
+            "kgPerKwh": 0.76,
+            "scope2": 0.65,
+            "scope3": 0.11
+          },
+          "SA": {
+            "label": "South Australia",
+            "kgPerKwh": 0.24,
+            "scope2": 0.21,
+            "scope3": 0.03
+          },
+          "WA-SWIS": {
+            "label": "Western Australia - South West Interconnected System (SWIS)",
+            "kgPerKwh": 0.55,
+            "scope2": 0.45,
+            "scope3": 0.1
+          },
+          "WA-NWIS": {
+            "label": "Western Australia - North Western Interconnected System (NWIS)",
+            "kgPerKwh": 0.65,
+            "scope2": 0.56,
+            "scope3": 0.09
+          },
+          "TAS": {
+            "label": "Tasmania",
+            "kgPerKwh": 0.24,
+            "scope2": 0.21,
+            "scope3": 0.03
+          },
+          "NT": {
+            "label": "Northern territory - Darwin Katherine Interconnected System (DKIS)",
+            "kgPerKwh": 0.68,
+            "scope2": 0.55,
+            "scope3": 0.13
+          },
+          "AU": {
+            "label": "National",
+            "kgPerKwh": 0.69,
+            "scope2": 0.59,
+            "scope3": 0.1
+          },
+          "ACT": {
+            "label": "Australian Capital Territory (location-based)",
+            "kgPerKwh": 0.6699999999999999,
+            "scope2": 0.6,
+            "scope3": 0.07
+          }
+        },
+        "fuel": {
+          "petrol": {
+            "kgPerLitre": 2.3126040000000003,
+            "upstreamKgPerLitre": 0.58824
+          },
+          "diesel": {
+            "kgPerLitre": 2.717826,
+            "upstreamKgPerLitre": 0.66778
+          }
+        },
+        "naturalGasKgPerMj": 0.05153,
+        "landfillKgPerKg": 1.5,
+        "foods": {
+          "Apples": {
+            "kgPerKg": 0.428401,
+            "year": 2018
+          },
+          "Bananas": {
+            "kgPerKg": 0.861896,
+            "year": 2018
+          },
+          "Barley": {
+            "kgPerKg": 1.179172,
+            "year": 2018
+          },
+          "Beef (beef herd)": {
+            "kgPerKg": 99.477401,
+            "year": 2018
+          },
+          "Beef (dairy herd)": {
+            "kgPerKg": 33.301396,
+            "year": 2018
+          },
+          "Beet Sugar": {
+            "kgPerKg": 1.812076,
+            "year": 2018
+          },
+          "Berries & Grapes": {
+            "kgPerKg": 1.531885,
+            "year": 2018
+          },
+          "Brassicas": {
+            "kgPerKg": 0.514556,
+            "year": 2018
+          },
+          "Cane Sugar": {
+            "kgPerKg": 3.198924,
+            "year": 2018
+          },
+          "Cassava": {
+            "kgPerKg": 1.315675,
+            "year": 2018
+          },
+          "Cheese": {
+            "kgPerKg": 23.877581,
+            "year": 2018
+          },
+          "Citrus Fruit": {
+            "kgPerKg": 0.387625,
+            "year": 2018
+          },
+          "Coffee": {
+            "kgPerKg": 28.527906,
+            "year": 2018
+          },
+          "Dark Chocolate": {
+            "kgPerKg": 46.646744,
+            "year": 2018
+          },
+          "Eggs": {
+            "kgPerKg": 4.669471,
+            "year": 2018
+          },
+          "Fish (farmed)": {
+            "kgPerKg": 13.632445,
+            "year": 2018
+          },
+          "Groundnuts": {
+            "kgPerKg": 3.230014,
+            "year": 2018
+          },
+          "Lamb & Mutton": {
+            "kgPerKg": 39.72227,
+            "year": 2018
+          },
+          "Maize": {
+            "kgPerKg": 1.701511,
+            "year": 2018
+          },
+          "Milk": {
+            "kgPerKg": 3.15172,
+            "year": 2018
+          },
+          "Nuts": {
+            "kgPerKg": 0.433135,
+            "year": 2018
+          },
+          "Oatmeal": {
+            "kgPerKg": 2.48045,
+            "year": 2018
+          },
+          "Olive Oil": {
+            "kgPerKg": 5.424876,
+            "year": 2018
+          },
+          "Onions & Leeks": {
+            "kgPerKg": 0.496763,
+            "year": 2018
+          },
+          "Other Fruit": {
+            "kgPerKg": 1.052752,
+            "year": 2018
+          },
+          "Other Pulses": {
+            "kgPerKg": 1.78638,
+            "year": 2018
+          },
+          "Other Vegetables": {
+            "kgPerKg": 0.532173,
+            "year": 2018
+          },
+          "Palm Oil": {
+            "kgPerKg": 7.316771,
+            "year": 2018
+          },
+          "Peas": {
+            "kgPerKg": 0.975081,
+            "year": 2018
+          },
+          "Pig Meat": {
+            "kgPerKg": 12.305681,
+            "year": 2018
+          },
+          "Potatoes": {
+            "kgPerKg": 0.460134,
+            "year": 2018
+          },
+          "Poultry Meat": {
+            "kgPerKg": 9.865824,
+            "year": 2018
+          },
+          "Rapeseed Oil": {
+            "kgPerKg": 3.767673,
+            "year": 2018
+          },
+          "Rice": {
+            "kgPerKg": 4.451646,
+            "year": 2018
+          },
+          "Root Vegetables": {
+            "kgPerKg": 0.42628,
+            "year": 2018
+          },
+          "Shrimps (farmed)": {
+            "kgPerKg": 26.865863,
+            "year": 2018
+          },
+          "Soy milk": {
+            "kgPerKg": 0.975179,
+            "year": 2018
+          },
+          "Soybean Oil": {
+            "kgPerKg": 6.324471,
+            "year": 2018
+          },
+          "Sunflower Oil": {
+            "kgPerKg": 3.599478,
+            "year": 2018
+          },
+          "Tofu": {
+            "kgPerKg": 3.161744,
+            "year": 2018
+          },
+          "Tomatoes": {
+            "kgPerKg": 2.088707,
+            "year": 2018
+          },
+          "Wheat & Rye": {
+            "kgPerKg": 1.573823,
+            "year": 2018
+          },
+          "Wine": {
+            "kgPerKg": 1.788763,
+            "year": 2018
+          }
+        },
+        "sources": [
+          {
+            "name": "DCCEEW National Greenhouse Accounts Factors 2026",
+            "url": "https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors-2026",
+            "tables": [
+              "1",
+              "5",
+              "9",
+              "16"
+            ],
+            "sha256": "9424c064016ea4abdcf33cd5e3153493d1cda87ff8cdf03df705e32939ea384c",
+            "licence": "CC BY 4.0, Commonwealth of Australia; see workbook terms"
+          },
+          {
+            "name": "Poore and Nemecek (2018), processed by Our World in Data",
+            "url": "https://ourworldindata.org/grapher/food-emissions-supply-chain",
+            "sha256": "6c3dba3f6147fb4602ff24e5d4e975a99f607faea71440ca637f56a2fcaf836c",
+            "licence": "CC BY, original data attribution retained"
+          }
+        ]
+      }
+    }
+  ]
+}

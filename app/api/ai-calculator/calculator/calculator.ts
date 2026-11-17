@@ -1,47 +1,9 @@
-/**
- * Reads configuration from data.json (GPU info and cloud providers).
- *
- * Main function:
- *   calculateCO2(values)
- *     Parameters:
- *       {
- *         gpu: string,           // GPU name
- *         hours: number,         // Usage hours
- *         provider: string | null,      // Cloud provider name (e.g., "gcp", "aws", ...) or null if using customImpact
- *         region: string | null,        // Provider region or null if using customImpact
- *         customImpact: number | null,  // (Optional) Custom emission factor (kg/kWh), if null uses provider/region value
- *         customOffset: number | null   // (Optional) Custom offset ratio (%), if null uses provider/region value
- *       }
- *     Returns:
- *       {
- *         energy: number,         // Power consumption (kWh)
- *         impact: number,         // Emission factor (kg/kWh)
- *         co2: number,            // CO2 emission (kg)
- *         offset: number,         // CO2 offset (kg)
- *         offsetPercents: number  // Offset ratio (%)
- *       }
- *     Throws Error if required fields are missing or invalid.
- *
- * Example usage:
- *   import calculateCO2 from './calculator';
- *   const result = calculateCO2({
- *     gpu: "AGX Xavier",
- *     provider: "gcp",
- *     region: "asia-east1",
- *     hours: 100,
- *     customImpact: null,
- *     customOffset: null
- *   });
- */
-
-const twoDigits = (n: number): number => Number(Number(n).toFixed(2));
-const toDigits = (n: number, d: number): number => Number(Number(n).toFixed(d));
-
 export interface CalculateCO2Input {
   gpu: string;
   hours: number;
   provider: string | null;
   region: string | null;
+  // UI and reference data use grams CO2e per kWh.
   customImpact: number | null;
   customOffset: number | null;
 }
@@ -54,53 +16,39 @@ export interface CalculateCO2Result {
   offsetPercents: number;
 }
 
+type Region = { impact?: number; offsetRatio?: string | number };
+type CalculatorData = {
+  gpu: { watt: number } | null;
+  provider: { regions: Map<string, Region> | Record<string, Region> } | null;
+};
+
 export default async function calculateCO2(
   values: CalculateCO2Input,
-  data: any
+  data: CalculatorData
 ): Promise<CalculateCO2Result> {
-  const { hours, region, customImpact, customOffset } = values;
-
-  const gpu = data.gpu;
-  const provider = data.provider;
-
-  if (!provider) {
-    throw new Error("Provider not found.");
+  if (!data.gpu) throw new Error("GPU not found.");
+  if (!Number.isFinite(values.hours) || values.hours <= 0 || values.hours > 100000) {
+    throw new Error("GPU hours must be greater than zero and at most 100000.");
   }
-  if (!gpu) {
-    throw new Error("GPU not found.");
+  const regions = data.provider?.regions;
+  const region = values.region
+    ? regions instanceof Map ? regions.get(values.region) : regions?.[values.region]
+    : undefined;
+  if (values.provider && (!data.provider || !region)) {
+    throw new Error("Provider or region not found.");
   }
-  const energy = twoDigits((gpu.watt * hours) / 1000); // kWh
-  const impact =
-    customImpact !== null && customImpact !== undefined
-      ? customImpact / 1000
-      : undefined;
-  if (impact === null || impact === undefined || isNaN(impact)) {
-    throw new Error("Impact value is missing or invalid.");
+  const gramsPerKwh = values.customImpact ?? region?.impact;
+  const offsetPercent = values.customOffset ?? Number(region?.offsetRatio ?? 0);
+  if (typeof gramsPerKwh !== "number" || !Number.isFinite(gramsPerKwh) || gramsPerKwh < 0) {
+    throw new Error("Carbon intensity must be a non-negative number in g CO2e/kWh.");
   }
-  if (
-    customOffset === null ||
-    customOffset === undefined ||
-    isNaN(customOffset)
-  ) {
-    throw new Error("Offset value is missing or invalid.");
+  if (!Number.isFinite(offsetPercent) || offsetPercent < 0 || offsetPercent > 100) {
+    throw new Error("Offset ratio must be between 0 and 100 percent.");
   }
-  const co2 = twoDigits(energy * impact);
-  const offset = twoDigits((co2 * customOffset) / 100);
-  const offsetPercents = twoDigits(customOffset);
-
-  return { energy, impact, co2, offset, offsetPercents };
+  const round = (n: number) => Number(n.toFixed(6));
+  const energy = data.gpu.watt * values.hours / 1000;
+  const impact = gramsPerKwh / 1000;
+  const co2 = energy * impact;
+  return { energy: round(energy), impact: round(impact), co2: round(co2),
+    offset: round(co2 * offsetPercent / 100), offsetPercents: offsetPercent };
 }
-
-// =================================================
-// fetch gpt example
-// const response = await fetch('/api/sum', {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify({ a: 5, b: 7 })
-// });
-
-// const data = await response.json();
-// console.log(data.result); // Output: 12
-// ------------------------------------------------

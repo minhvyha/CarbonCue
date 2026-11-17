@@ -1,86 +1,21 @@
-// app/api/seed/route.ts
-import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongoose";
-import Providers from "@/model/Providers";
-import {IProvider} from "@/model/Providers";
-/**
- * NOTE:
- * - Place this file under your Next.js `app` folder (e.g. app/api/seed/route.ts).
- * - Call this endpoint once (e.g. open /api/seed in your browser or curl it).
- * - Remove or protect the route after seeding to avoid accidental re-seeds.
- */
-
-interface RegionListItem {
-  regionName: string;
-  country: string;
-  state?: string;
-  city?: string;
-  source?: string;
-  comment?: string;
-  providerName?: string;
-  offsetRatio?: string;
-  impact?: number;
-}
-
-
-interface ProviderRequest {
-  providerName: string;
-}
-
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
+import { apiError } from '@/lib/api';
 export async function GET() {
   try {
-    await connectToDatabase();
-
-    const providers = await Providers.find({}, {
-      name: 1,
-      providerName: 1,
-      _id: 1,
-    }); // find all providers
-    return NextResponse.json(
-      {
-        providers
-      },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    console.error("Seed error:", error);
-    return NextResponse.json({ error: error.message ?? String(error) }, { status: 500 });
-  }
+    const supabase = await createClient();
+    const { data, error } = await supabase.from('providers').select('*').order('provider_name');
+    if (error) throw error;
+    return NextResponse.json({ providers: data.map(r => ({ name: r.name, providerName: r.provider_name })) });
+  } catch (error) { return apiError(error); }
 }
-
-
-export async function POST(request: Request ) {
+export async function POST(request: Request) {
   try {
-    await connectToDatabase();
-
-    const requestBody = await request.json();
-    if (!requestBody || typeof requestBody !== "object") {
-      return NextResponse.json(
-        { error: "Invalid or missing JSON body." },
-        { status: 400 }
-      );
-    }
-    const regions: IProvider | null = await Providers.findOne({ name: requestBody.providerName });
-    // console.log("Regions fetched:", regions?.regions);
-    let regionList: Array<RegionListItem> = [];
-    if (regions && regions.regions) {
-      regionList = Array.from(regions.regions.values()).map(region => ({
-        regionName: region.regionName ?? "",
-        country: region.country ?? "",
-        state: region.state,
-        city: region.city,
-        source: region.source,
-        comment: region.comment,
-        providerName: region.providerName,
-        offsetRatio: region.offsetRatio,
-        impact: region.impact
-      }));
-    }
-
-    // Example seed data
-    return NextResponse.json({ regions: regionList || [] }, { status: 200 });
-  } catch (error: any) {
-    console.error("Seed error:", error);
-    return NextResponse.json({ error: error.message ?? String(error) }, { status: 500 });
-  }
+    const { providerName } = z.object({ providerName: z.string().min(1) }).parse(await request.json());
+    const supabase = await createClient();
+    const { data, error } = await supabase.from('provider_regions').select('*').eq('provider_name', providerName).order('region_name');
+    if (error) throw error;
+    return NextResponse.json({ regions: data.map(r => ({ regionName: r.region_name, country: r.country, impact: r.impact, offsetRatio: r.offset_ratio, source: r.source })) });
+  } catch (error) { return apiError(error); }
 }

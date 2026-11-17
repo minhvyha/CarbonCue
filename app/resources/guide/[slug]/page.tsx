@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { headers } from 'next/headers';
+import { getResource } from "@/lib/supabase/resources";
 
 interface IBlock {
   type: 'heading' | 'paragraph' | 'video' | 'list' | 'quote' | 'divider' | 'iframe';
@@ -37,18 +37,9 @@ function mapGuideToBlocks(guide: RawGuide): IBlock[] {
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  // Retrieve request host dynamically
-  const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = host?.includes('localhost') ? 'http' : 'https';
-  const apiUrl = new URL(`/api/resources/guide/${encodeURIComponent(slug)}`, `${protocol}://${host}`);
-
-  const res = await fetch(apiUrl.toString(), { cache: 'no-store' });
-  if (!res.ok) {
-    notFound();
-  }
-
-  const guide: RawGuide = await res.json();
+  const resource = await getResource('guide', slug);
+  if (!resource) notFound();
+  const guide = resource as unknown as RawGuide;
   const blocks = mapGuideToBlocks(guide);
 
   return (

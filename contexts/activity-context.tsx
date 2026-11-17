@@ -35,7 +35,8 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const refreshActivityLogs = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await fetch("/api/activity-tracker/categories", {
+      const date = new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      const res = await fetch(`/api/activity-tracker/categories?date=${date}`, {
         method: "GET",
         credentials: "include",
       });

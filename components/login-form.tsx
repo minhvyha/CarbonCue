@@ -10,7 +10,6 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { triggerNavigationStart } from "@/lib/navigation";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
@@ -123,15 +122,6 @@ export function LoginForm() {
               </Button>
             </div>
           </div>
-          <div className="flex items-center space-x-2 py-2">
-            <Checkbox id="remember" />
-            <Label
-              htmlFor="remember"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Remember me
-            </Label>
-          </div>
           <Button
             type="submit"
             className="bg-carbon-red hover:bg-carbon-deep-red"
@@ -148,24 +138,6 @@ export function LoginForm() {
           </Button>
         </div>
       </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-500" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-      <Button
-        variant="outline"
-        type="button"
-        className="border border-gray-300 hover:bg-carbon-charcoal"
-        disabled={isLoading}
-      >
-        Google
-      </Button>
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Don't have an account?{" "}

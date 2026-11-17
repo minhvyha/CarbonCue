@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { headers } from 'next/headers';
+import { getResource } from "@/lib/supabase/resources";
 
 type BlockType =
   | "heading"
@@ -23,7 +23,7 @@ interface RawSection {
 }
 
 interface RawContentItem {
-  order: { $numberInt: string };
+  order: number | { $numberInt: string };
   title: string;
   description: string;
   takeaways: string[];
@@ -41,7 +41,7 @@ interface RawGuide {
 }
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export const dynamic = "force-dynamic";
@@ -55,8 +55,8 @@ function mapGuideToBlocks(guide: RawGuide): IBlock[] {
 
 
   // Main content sections
-  guide.contents
-    .sort((a, b) => Number(a.order.$numberInt) - Number(b.order.$numberInt))
+  [...(guide.contents || [])]
+    .sort((a, b) => Number(typeof a.order === "number" ? a.order : a.order.$numberInt) - Number(typeof b.order === "number" ? b.order : b.order.$numberInt))
     .forEach((item) => {
       blocks.push({ type: "heading", label: item.title });
       blocks.push({ type: "paragraph", text: item.description });
@@ -72,7 +72,7 @@ function mapGuideToBlocks(guide: RawGuide): IBlock[] {
     });
 
   // Additional resources
-  guide.sections.forEach((sec) => {
+  (guide.sections || []).forEach((sec) => {
     blocks.push({ type: "heading", label: sec.heading });
     blocks.push({ type: "list", items: sec.items });
   });
@@ -84,18 +84,9 @@ function mapGuideToBlocks(guide: RawGuide): IBlock[] {
 
 export default async function GuidePage({ params }: PageProps) {
   const { slug } = await params;
-    const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = host?.includes('localhost') ? 'http' : 'https';
-
-  const apiUrl = new URL(`/api/resources/${encodeURIComponent(slug)}`, `${protocol}://${host}`);
-  console.log("Fetching guide from:", apiUrl.toString());
-
-  const res = await fetch(apiUrl.toString(), {
-    cache: "no-store",
-  });
-  if (!res.ok) notFound();
-  const guide: RawGuide = await res.json();
+  const resource = await getResource('course', slug);
+  if (!resource) notFound();
+  const guide = resource as unknown as RawGuide;
   const blocks = mapGuideToBlocks(guide);
 
   return (

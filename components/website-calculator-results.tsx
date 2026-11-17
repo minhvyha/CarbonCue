@@ -20,7 +20,7 @@ export function WebsiteCalculatorResults({
 }) {
   // Placeholder state - would be populated from API response
 
-  if (!data) return null;
+  if (!data?.emissionDetails) return null;
   console.log("WebsiteCalculatorResults data:", data);
   // Inside WebsiteCalculatorResults(), just before the `return(...)`:
   let totalCO2g = 0;
@@ -28,12 +28,12 @@ export function WebsiteCalculatorResults({
 
      totalCO2g =
       data.emissionDetails.statistics.co2.renewable.grams *
-      parseInt(monthlyVisitors, 10);
+      Math.max(0, Number(monthlyVisitors) || 0);
   }
   else{
       totalCO2g =
         data.emissionDetails.statistics.co2.grid.grams *
-        parseInt(monthlyVisitors, 10);
+        Math.max(0, Number(monthlyVisitors) || 0);
   }
 
   // Define per-unit CO₂ rates (all in grams):
@@ -111,6 +111,7 @@ export function WebsiteCalculatorResults({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {data.partial && <p role="status" className="mb-4 text-sm text-muted-foreground">This estimate covers the assets collected within the analysis limit. The full page may be larger.</p>}
           <Tabs defaultValue="summary">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="summary">Summary</TabsTrigger>
@@ -131,7 +132,9 @@ export function WebsiteCalculatorResults({
                   label="Carbon per Page View"
                   value={
                     parseFloat(
-                      data.emissionDetails.statistics.co2.grid.grams.toFixed(3)
+                      (data.emissionDetails.green
+                        ? data.emissionDetails.statistics.co2.renewable.grams
+                        : data.emissionDetails.statistics.co2.grid.grams).toFixed(3)
                     ) + "g"
                   }
                   description="CO₂ equivalent per page view"
@@ -155,11 +158,11 @@ export function WebsiteCalculatorResults({
                   }
                 />
                 <EmissionMetric
-                  label="Cleaner than"
+                  label="Page size score"
                   value={
                     parseFloat(data.emissionDetails.cleanerThan) * 100 + "%"
                   }
-                  description="of websites tested"
+                  description="Relative to a 5 MB reference page"
                   rating={
                     data.emissionDetails.cleanerThan > 0.75
                       ? "Great"
@@ -421,11 +424,11 @@ export function WebsiteCalculatorResults({
                             {data.emissionDetails.green
                               ? formatWeight(
                                   data.emissionDetails.statistics.co2.renewable
-                                    .grams * parseInt(monthlyVisitors)
+                                    .grams * (Math.max(0, Number(monthlyVisitors) || 0))
                                 )
                               : formatWeight(
                                   data.emissionDetails.statistics.co2.grid
-                                    .grams * parseInt(monthlyVisitors)
+                                    .grams * (Math.max(0, Number(monthlyVisitors) || 0))
                                 )}{" "}
                             CO₂
                           </span>
@@ -440,13 +443,13 @@ export function WebsiteCalculatorResults({
                               ? formatWeight(
                                   data.emissionDetails.statistics.co2.renewable
                                     .grams *
-                                    parseInt(monthlyVisitors) *
+                                    (Math.max(0, Number(monthlyVisitors) || 0)) *
                                     12
                                 )
                               : formatWeight(
                                   data.emissionDetails.statistics.co2.grid
                                     .grams *
-                                    parseInt(monthlyVisitors) *
+                                    (Math.max(0, Number(monthlyVisitors) || 0)) *
                                     12
                                 )}{" "}
                             CO₂

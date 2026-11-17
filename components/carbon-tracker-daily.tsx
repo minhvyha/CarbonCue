@@ -73,7 +73,7 @@ export default function CarbonTrackerDaily() {
       ) : (
         <>
           <CardHeader>
-            <CardTitle>{user?.name}'s Carbon Footprint</CardTitle>
+            <CardTitle>{user ? `${user.name}'s` : 'Your'} Carbon Footprint</CardTitle>
             <CardDescription>
               Track your daily emissions and see how you compare
             </CardDescription>

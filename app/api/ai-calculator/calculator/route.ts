@@ -1,106 +1,21 @@
-/**
- * API: Calculate CO2 Emission for GPU Usage
- * -----------------------------------------
- * Endpoint:    POST /ai-calculator/calculator
- * Purpose:     Calculate energy consumption, CO2 emission, and offset based on GPU usage and cloud provider/location or custom emission factors.
- * Method:      POST
- * Request Body (JSON):
- *   - Case 1: Use provider/region emission factors
- *       {
- *         "gpu": "AGX Xavier",
- *         "provider": "gcp",
- *         "region": "asia-east1",
- *         "hours": 100,
- *         "customImpact": null,
- *         "customOffset": null
- *       }
- *   - Case 2: Use custom emission factors
- *       {
- *         "gpu": "AGX Xavier",
- *         "provider": null,
- *         "region": null,
- *         "hours": 100,
- *         "customImpact": 0.5,
- *         "customOffset": 50
- *       }
- *   - Only one of the two cases above is valid per request.
- * Response:
- *   - 200 OK:
- *       {
- *         "energy": number,         // Power consumption (kWh)
- *         "impact": number,         // Emission factor (kg/kWh)
- *         "co2": number,            // CO2 emission (kg)
- *         "offset": number,         // CO2 offset (kg)
- *         "offsetPercents": number  // Offset ratio (%)
- *       }
- *   - 400 Bad Request:
- *       {
- *         "error": "Error message"
- *       }
- * Example curl:
- *   curl -X POST http://localhost:3000/api/ai-calculator/calculator \
- *     -H "Content-Type: application/json" \
- *     -d '{"gpu":"AGX Xavier","provider":"gcp","region":"asia-east1","hours":100,"customImpact":null,"customOffset":null}'
- */
-
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import calculateCO2 from './calculator';
-import { connectToDatabase } from '@/lib/mongoose';
-import Providers from "@/model/Providers";
-import Gpus from "@/model/Gpus";
-
-
-
-interface CalculatorRequest {
-    gpu: string;
-    provider: string | null;
-    region: string | null;
-    hours: number;
-    customImpact: number | null;
-    customOffset: number | null;
-}
-
-interface CalculatorResponse {
-    energy: number;
-    impact: number;
-    co2: number;
-    offset: number;
-    offsetPercents: number;
-}
-
-interface ErrorResponse {
-    error: string;
-}
-
-export async function POST(
-    request: Request
-): Promise<ReturnType<typeof NextResponse.json<CalculatorResponse | ErrorResponse>>> {
+import { createClient } from '@/lib/supabase/server';
+import { apiError, ApiError } from '@/lib/api';
+const schema = z.object({ gpu: z.string().min(1), provider: z.string().nullable().default(null), region: z.string().nullable().default(null), hours: z.number().finite().positive().max(100000), customImpact: z.number().finite().min(0).nullable().default(null), customOffset: z.number().finite().min(0).max(100).nullable().default(null) });
+export async function POST(request: Request) {
+  try {
+    const values = schema.parse(await request.json());
+    const supabase = await createClient();
+    const gpuResult = await supabase.from('gpus').select('watt').eq('name', values.gpu).maybeSingle();
+    if (gpuResult.error) throw gpuResult.error;
+    const regionResult = values.provider && values.region ? await supabase.from('provider_regions').select('*').eq('provider_name', values.provider).eq('region_name', values.region).maybeSingle() : { data: null, error: null };
+    if (regionResult.error) throw regionResult.error;
+    let result;
     try {
-        const values: CalculatorRequest = await request.json();
-        await connectToDatabase();
-        
-        if (values == null || typeof values !== 'object') {
-            return NextResponse.json({ error: 'Invalid or missing JSON body.' }, { status: 400 });
-        }
-
-        const gpu = await Gpus.findOne({ name: values.gpu });
-        const provider = await Providers.findOne({ name: values.provider });
-
-        const data = {
-            gpu: gpu,
-            provider: provider,
-        }
-        console.log(data)
-        let result: CalculatorResponse;
-        try {
-            result = await calculateCO2(values, data);
-            console.log("Calculation result:", result);
-        } catch (err: any) {
-            return NextResponse.json({ error: err.message }, { status: 400 });
-        }
-
-        return NextResponse.json(result);
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
-    }
+      result = await calculateCO2(values, { gpu: gpuResult.data, provider: regionResult.data ? { regions: new Map([[regionResult.data.region_name, { impact: regionResult.data.impact, offsetRatio: regionResult.data.offset_ratio }]]) } : null });
+    } catch (error) { throw new ApiError(error instanceof Error ? error.message : 'Invalid calculation'); }
+    return NextResponse.json(result);
+  } catch (error) { return apiError(error); }
 }

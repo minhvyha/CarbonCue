@@ -1,487 +1,92 @@
-"use client";
+'use client';
+import { useState } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/toast-provider';
+import { useActivity } from '@/contexts/activity-context';
+import { useAuth } from '@/contexts/auth-context';
+import { predictInBrowser } from '@/lib/carbon/browser-predictor';
+import { activitySchema, type ActivityInput, type Prediction } from '@/lib/carbon/schema';
+import { factors } from '@/lib/carbon/calculate';
+import { manifest } from '@/lib/carbon/predict';
 
-import type React from "react";
-
-import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/toast-provider";
-import { useActivity } from "@/contexts/activity-context";
-
-const optionsRecycling = [
-  { label: "Paper", value: "Paper" },
-  { label: "Plastic", value: "Plastic" },
-  { label: "Glass", value: "Glass" },
-  { label: "Metal", value: "Metal" },
-];
-
+const style='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
+const baseInput={ activityType:'transportation',mode:'car',distanceKm:10,fuel:'petrol',year:2020,engineLitres:2,cylinders:4,awd:false,automatic:true,vehicleClass:'car',occupancy:1,kwhPer100Km:18 };
+const defaults: Record<string,Record<string,any>>={transportation:baseInput,home_energy:{activityType:'home_energy',electricityKwh:10,gasMj:0,householdShare:1},food_diet:{activityType:'food_diet',food:'Poultry Meat',quantityKg:.2},shopping:{activityType:'shopping',kind:'landfill',quantity:1,productKgCo2e:0,productSource:''},digital_usage:{activityType:'digital_usage',hours:2,watts:50}};
+function today() { return new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
 export function CarbonTrackerForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [activityType, setActivityType] = useState("");
-  const [formData, setFormData] = useState<Record<string, any>>({});
-  const { refreshActivityLogs } = useActivity();
-  const { toast } = useToast();
-
-  const handleChange = (field: string, value: any) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const renderActivityTypeOptions = () => {
-    switch (activityType) {
-      case "transportation":
-        return (
-          <>
-            <div className="grid gap-2">
-              <Label htmlFor="vehicle_monthly_distance_km">Details</Label>
-            </div>
-            <Input
-              id="vehicle_monthly_distance_km"
-              type="number"
-              placeholder="Distance (km)"
-              onChange={(e) =>
-                handleChange(
-                  "vehicle_monthly_distance_km",
-                  parseFloat(e.target.value)
-                )
-              }
-            />
-            <Select
-              onValueChange={(value) => handleChange("vehicle_type", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select vehicle type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="petrol">Petrol</SelectItem>
-                <SelectItem value="diesel">Diesel</SelectItem>
-                <SelectItem value="electric">Electric</SelectItem>
-                <SelectItem value="None">None</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select onValueChange={(value) => handleChange("transport", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select transport type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="private">Private</SelectItem>
-                <SelectItem value="public">Public</SelectItem>
-                <SelectItem value="walk/bicycle">Walk/Bicycle</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              onValueChange={(value) =>
-                handleChange("frequency_of_traveling_by_air", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select frequency of traveling by air" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="never">Never</SelectItem>
-                <SelectItem value="rarely">Rarely</SelectItem>
-                <SelectItem value="frequently">Frequently</SelectItem>
-                <SelectItem value="very frequently">Very Frequently</SelectItem>
-              </SelectContent>
-            </Select>
-          </>
-        );
-      case "home_energy":
-        return (
-          <>
-            <div className="grid gap-2">
-              <Label htmlFor="heating_energy_source">Details</Label>
-            </div>
-            <Select
-              onValueChange={(value) =>
-                handleChange("heating_energy_source", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select heating energy source" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="electricity">Electricity</SelectItem>
-                <SelectItem value="natural gas">Natural Gas</SelectItem>
-                <SelectItem value="wood">Wood</SelectItem>
-                <SelectItem value="coal">Coal</SelectItem>
-                <SelectItem value="None">None</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              onValueChange={(value) =>
-                handleChange("energy_efficiency", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select energy efficiency" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="No">No</SelectItem>
-                <SelectItem value="Sometimes">Sometimes</SelectItem>
-                <SelectItem value="Yes">Yes</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              id="how_long_tv_pc_daily_hour"
-              type="number"
-              placeholder="TV/PC hours per day"
-              onChange={(e) =>
-                handleChange(
-                  "how_long_tv_pc_daily_hour",
-                  parseInt(e.target.value)
-                )
-              }
-            />
-          </>
-        );
-      case "food_diet":
-        return (
-          <>
-            <div className="grid gap-2">
-              <Label htmlFor="diet">Details</Label>
-            </div>
-            <Select onValueChange={(value) => handleChange("diet", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select diet" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="vegan">Vegan</SelectItem>
-                <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                <SelectItem value="pescetarian">Pescetarian</SelectItem>
-                <SelectItem value="omnivore">Omnivore</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              id="monthly_grocery_bill"
-              type="number"
-              placeholder="Monthly grocery bill ($)"
-              onChange={(e) =>
-                handleChange("monthly_grocery_bill", parseInt(e.target.value))
-              }
-            />
-          </>
-        );
-      case "shopping":
-        return (
-          <>
-            <div className="grid gap-2">
-              <Label htmlFor="how_many_new_clothes_monthly">Details</Label>
-            </div>
-            <Input
-              id="how_many_new_clothes_monthly"
-              type="number"
-              placeholder="New clothes per month"
-              onChange={(e) =>
-                handleChange(
-                  "how_many_new_clothes_monthly",
-                  parseInt(e.target.value)
-                )
-              }
-            />
-            <Select
-              onValueChange={(value) => handleChange("waste_bag_size", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select waste bag size" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="small">Small</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="large">Large</SelectItem>
-                <SelectItem value="extra large">Extra Large</SelectItem>
-                <SelectItem value="None">None</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              id="waste_bag_weekly_count"
-              type="number"
-              placeholder="Waste bag weekly count"
-              onChange={(e) =>
-                handleChange("waste_bag_weekly_count", parseInt(e.target.value))
-              }
-            />
-            <div className="grid gap-2">
-              <Label htmlFor="recycling">Recycling:</Label>
-            </div>
-            {optionsRecycling.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={option.value}
-                  checked={formData.recycling?.includes(option.value) || false}
-                  onCheckedChange={(checked: boolean) => {
-                    const prev = formData.recycling || [];
-                    const updated = checked
-                      ? [...prev, option.value]
-                      : prev.filter((item: string) => item !== option.value);
-                    handleChange("recycling", updated);
-                  }}
-                />
-                <Label htmlFor={option.value}>{option.label}</Label>
-              </div>
-            ))}
-          </>
-        );
-      case "digital_usage":
-        return (
-          <>
-            <div className="grid gap-2">
-              <Label htmlFor="how_long_internet_daily_hour">Details</Label>
-            </div>
-            <Input
-              id="how_long_internet_daily_hour"
-              type="number"
-              placeholder="Internet hours per day"
-              onChange={(e) =>
-                handleChange(
-                  "how_long_internet_daily_hour",
-                  parseInt(e.target.value)
-                )
-              }
-            />
-          </>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    if (activityType === "transportation") {
-      if (formData.vehicle_monthly_distance_km < 0) {
-        toast({
-          title: "Distance cannot be negative",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.vehicle_type === "None") {
-        toast({
-          title: "Vehicle type is required",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.transport_type === "None") {
-        toast({
-          title: "Transport type is required",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.frequency_of_traveling_by_air === "None") {
-        toast({
-          title: "Frequency of traveling by air is required",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (activityType === "home_energy") {
-      if (formData.heating_energy_source === "None") {
-        toast({
-          title: "Heating energy source is required",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.energy_efficiency === "None") {
-        toast({
-          title: "Energy efficiency is required",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.how_long_tv_pc_daily_hour < 0) {
-        toast({
-          title: "TV/PC hours per day cannot be negative",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (activityType === "food_diet") {
-      if (formData.diet === "None") {
-        toast({
-          title: "Diet is required",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.monthly_grocery_bill < 0) {
-        toast({
-          title: "Monthly grocery bill cannot be negative",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (activityType === "shopping") {
-      if (formData.how_many_new_clothes_monthly < 0) {
-        toast({
-          title: "New clothes per month cannot be negative",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (formData.waste_bag_weekly_count < 0) {
-        toast({
-          title: "Waste bag weekly count cannot be negative",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      if (!formData.recycling || formData.recycling.length === 0) {
-        toast({
-          title: "Please select at least one recycling option",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (activityType === "digital_usage") {
-      if (formData.how_long_internet_daily_hour < 0) {
-        toast({
-          title: "Internet hours per day cannot be negative",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    console.log(formData);
-
-    let processedInput = { ...formData };
-    if (
-      activityType === "shopping" &&
-      Array.isArray(processedInput.recycling)
-    ) {
-      processedInput.recycling = JSON.stringify(processedInput.recycling);
-    }
-    // Called API to add activity
-    const response = await fetch("/api/activity-tracker", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        activityType: activityType,
-        input: processedInput,
-        notes: formData.notes,
-        date: formData.date,
-      }),
-    });
-    if (response.ok) {
-      toast({
-        title: "Activity added successfully",
-        variant: "default",
-      });
-      refreshActivityLogs();
-      // Reset form after successful submission
-      setActivityType("");
-      setFormData({});
-    } else {
-      toast({
-        title: "Failed to add activity",
-        variant: "destructive",
-      });
-    }
-    setIsLoading(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-2">
-        <Label htmlFor="activity-type">Activity Type</Label>
-        <select
-          id="activity-type"
-          value={activityType}
-          onChange={(e) => {
-            setActivityType(e.target.value);
-            setFormData({});
-          }}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <option value="">Select activity type</option>
-          <option value="transportation">Transportation</option>
-          <option value="home_energy">Home Energy</option>
-          <option value="food_diet">Food & Diet</option>
-          <option value="shopping">Shopping</option>
-          <option value="digital_usage">Digital Usage</option>
-        </select>
-
-        {renderActivityTypeOptions()}
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="activity-details">Notes</Label>
-        <Input
-          id="activity-details"
-          placeholder="Optional notes"
-          value={formData.notes || ""}
-          onChange={(e) => handleChange("notes", e.target.value)}
-        />
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="activity-date">Date</Label>
-        <Input
-          id="activity-date"
-          type="date"
-          value={formData.date || new Date().toISOString().split("T")[0]}
-          onChange={(e) => handleChange("date", e.target.value)}
-        />
-      </div>
-
-      <Button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-carbon-red hover:bg-carbon-deep-red"
-      >
-        {isLoading ? (
-          <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            <span>Adding...</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            <span>Add Activity</span>
-          </div>
-        )}
-      </Button>
-    </form>
-  );
+  const [input,setInput]=useState<Record<string,any>>({...baseInput});
+  const [date,setDate]=useState(today);
+  const [region,setRegion]=useState('NSW');
+  const [notes,setNotes]=useState('');
+  const [result,setResult]=useState<Prediction|null>(null);
+  const [busy,setBusy]=useState(false);
+  const [saved,setSaved]=useState(false);
+  const [error,setError]=useState('');
+  const {user}=useAuth();const {refreshActivityLogs}=useActivity();const {toast}=useToast();
+  function change(key:string,value:any){setInput(old=>({...old,[key]:value}));setResult(null);setSaved(false);setError('');}
+  function number(key:string,label:string,min=0,max=10000,step='any'){
+    return <div className="grid gap-2"><Label htmlFor={key}>{label}</Label><Input id={key} type="number" value={input[key] ?? ''} min={min} max={max} step={step} required={key!=='litresPer100Km'} onChange={e=>change(key,e.target.value===''?undefined:Number(e.target.value))}/></div>;
+  }
+  function select(key:string,label:string,options:Record<string,string>){return <div className="grid gap-2"><Label htmlFor={key}>{label}</Label><select id={key} className={style} value={input[key]} onChange={e=>change(key,e.target.value)}>{Object.entries(options).map(([v,l])=><option value={v} key={v}>{l}</option>)}</select></div>;}
+  function activity(){return activitySchema.parse({input,activityDate:date,region,notes,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone});}
+  async function estimate(event:React.FormEvent){
+    event.preventDefault();setBusy(true);setSaved(false);setError('');
+    try{setResult(await predictInBrowser(activity()));}
+    catch(error){setResult(null);setError(error instanceof Error?error.message:'Could not calculate.');}
+    finally{setBusy(false);}
+  }
+  async function save(){
+    setBusy(true);setError('');
+    try{
+      const response=await fetch('/api/activity-tracker',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(activity())});
+      const data=await response.json();if(!response.ok)throw new Error(data.error||'Could not save.');
+      setResult(data.prediction);setSaved(true);await refreshActivityLogs();toast({title:'Activity saved',description:'Your daily and monthly totals have been updated.'});
+    }catch(error){setError(error instanceof Error?error.message:'Could not save.');}
+    finally{setBusy(false);}
+  }
+  return <form onSubmit={estimate} className="space-y-4">
+    <p className="text-sm text-muted-foreground">Enter quantities for the selected day. Estimates run on your device. Sign in to save them.</p>
+    <div className="grid gap-2"><Label htmlFor="activity-type">Activity Type</Label><select id="activity-type" disabled={busy} className={style} value={input.activityType} onChange={e=>{setInput({...defaults[e.target.value]});setResult(null);setSaved(false);setError('');}}>{Object.entries({transportation:'Transportation',home_energy:'Home energy',food_diet:'Food',shopping:'Shopping & waste',digital_usage:'Digital device'}).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></div>
+    <fieldset disabled={busy} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {input.activityType==='transportation'&&<>
+        {select('mode','Travel mode',{car:'Petrol / diesel / hybrid car',electric_car:'Electric car',walk_bicycle:'Walk / bicycle'})}
+        {number('distanceKm','Distance for this day (km)',0,20000)}
+        {input.mode!=='walk_bicycle'&&number('occupancy','People sharing the trip',1,20,'1')}
+        {input.mode==='electric_car'&&number('kwhPer100Km','Electricity consumption (kWh / 100 km)',.1,100)}
+        {input.mode==='car'&&<>
+          {select('fuel','Fuel / powertrain',{petrol:'Petrol',diesel:'Diesel',hybrid:'Petrol hybrid'})}
+          {number('litresPer100Km','Measured fuel consumption, if known (L / 100 km)',.1,80)}
+          {input.litresPer100Km===undefined&&<>
+            <p className="text-xs text-muted-foreground md:col-span-2">Without measured consumption, a local model estimates tailpipe CO₂ from these vehicle specifications.</p>
+            {number('year','Model year',2013,2026,'1')}{number('engineLitres','Engine size (litres)',.6,8.4)}{number('cylinders','Cylinders',2,16,'1')}
+            {select('vehicleClass','Vehicle class',{car:'Passenger car',suv:'SUV',truck:'Pickup',van:'Van'})}
+            <label className="flex items-center gap-2"><input type="checkbox" checked={input.awd} onChange={e=>change('awd',e.target.checked)}/>All-wheel / four-wheel drive</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={input.automatic} onChange={e=>change('automatic',e.target.checked)}/>Automatic transmission</label>
+          </>}
+        </>}
+      </>}
+      {input.activityType==='home_energy'&&<>{number('electricityKwh','Electricity for this day (kWh)')}{number('gasMj','Natural gas for this day (MJ)',0,100000)}{number('householdShare','Your share of household use (0 to 1)',.01,1)}</>}
+      {input.activityType==='food_diet'&&<>{select('food','Food product',Object.fromEntries(Object.keys(factors.foods).sort().map(v=>[v,v])))}{number('quantityKg','Food consumed / purchased (kg)',0,100)}</>}
+      {input.activityType==='shopping'&&<>{select('kind','Activity',{landfill:'Municipal waste sent to landfill',product:'Product with a published footprint'})}{number('quantity',input.kind==='landfill'?'Waste mass (kg)':'Number of products',0,10000)}{input.kind==='product'&&<>{number('productKgCo2e','Published footprint per product (kg CO₂e)',.001,100000)}<div className="grid gap-2"><Label htmlFor="productSource">Footprint source</Label><Input id="productSource" value={input.productSource} required onChange={e=>change('productSource',e.target.value)} placeholder="Product report or source URL"/></div></>}</>}
+      {input.activityType==='digital_usage'&&<>{number('hours','Hours used this day',0,24)}{number('watts','Device power (watts)',0,10000)}<p className="text-xs text-muted-foreground">50 W is an editable example. Use a measured value or your device specification.</p></>}
+      <div className="grid gap-2"><Label htmlFor="region">Electricity region</Label><select id="region" value={region} className={style} onChange={e=>{setRegion(e.target.value);setResult(null);}}>{Object.entries(factors.electricity).map(([v,r])=><option key={v} value={v}>{r.label}</option>)}</select></div>
+      <div className="grid gap-2"><Label htmlFor="activity-date">Activity date</Label><Input id="activity-date" type="date" value={date} onChange={e=>{setDate(e.target.value);setResult(null);}} required/></div>
+      <div className="grid gap-2"><Label htmlFor="activity-notes">Notes (optional)</Label><Input id="activity-notes" value={notes} maxLength={2000} onChange={e=>setNotes(e.target.value)}/></div>
+      <Button type="submit" className="w-full bg-carbon-red hover:bg-carbon-deep-red">{busy?'Calculating...':'Estimate emissions'}</Button>
+    </fieldset>
+    {error&&<p role="alert" className="text-sm text-destructive">{error}</p>}
+    {result&&<div aria-live="polite" className="space-y-3 rounded-lg border p-4">
+      <p className="text-sm font-medium">{result.method==='ml'?'Local ML estimate':'Factor calculation'}</p>
+      <p className="text-2xl font-bold">{result.kgCo2e.toFixed(3)} kg CO₂e</p>
+      <p className="text-sm">{result.summary}</p>
+      {result.intervalKg&&<p className="text-sm">Reference interval: {result.intervalKg[0].toFixed(3)} to {result.intervalKg[1].toFixed(3)} kg</p>}
+      <p className="text-xs text-muted-foreground">{result.boundary}</p>
+      {result.warnings.map(w=><p key={w} className="text-xs text-muted-foreground">{w}</p>)}
+      <p className="text-xs text-muted-foreground">{result.modelVersion||result.factorVersion}. <Link href="/methodology" className="underline">Sources and model evaluation</Link></p>
+      {user?<Button type="button" className="w-full" disabled={busy||saved} onClick={save}>{saved?'Saved':busy?'Saving...':'Save activity'}</Button>:<Link href="/login" className="underline text-sm">Sign in to save this estimate</Link>}
+    </div>}
+  </form>;
 }

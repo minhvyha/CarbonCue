@@ -1,45 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import ActivityLog from '@/model/ActivityLog';
-import { connectToDatabase } from '@/lib/mongoose';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
-import { getCurrentUser } from '@/lib/getCurrentUser';
-
-
-
-export async function GET(request: NextRequest) {
-    try {
-        // 1. Authenticate user from token
-        const user = await getCurrentUser();
-        if (!user) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-        // 2. Connect to MongoDB
-        const conn = await connectToDatabase();
-        if (!conn) {
-            return NextResponse.json({ error: "Failed to connect to MongoDB" }, { status: 500 });
-        }
-        console.log('Mongo readyState:', conn.connection.readyState);
-
-        // 3. Get the start and end of the day in UTC
-        const now = new Date();
-        const utcYear = now.getUTCFullYear();
-        const utcMonth = now.getUTCMonth();
-        const utcDate = now.getUTCDate();
-
-        const startOfDay = new Date(Date.UTC(utcYear, utcMonth, utcDate, 0, 0, 0));
-        const endOfDay = new Date(Date.UTC(utcYear, utcMonth, utcDate, 23, 59, 59, 999));
-
-        // 4. Get all 5 activity types for the user
-        const total_emissions_based_categories = await ActivityLog.aggregate([
-            { $match: { userId: user._id.toString(), timestamp: { $gte: startOfDay, $lte: endOfDay } }},
-            { $group: { _id: "$activityType", totalEmissions: { $sum: "$prediction" } } },
-            { $project: { _id: 0, activityType: "$_id", totalEmissions: { $round: ["$totalEmissions", 2] } } },
-            { $sort: { totalEmissions: 1 } },
-        ]);
-        return NextResponse.json({ total_emissions_based_categories });
-    } catch (error) {
-        console.error('Error:', error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-    }
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { requireUser } from '@/lib/getCurrentUser';
+import { createClient } from '@/lib/supabase/server';
+import { activityDateToday } from '@/lib/carbon/calculate';
+import { apiError } from '@/lib/api';
+export async function GET(request: Request) {
+  try {
+    await requireUser();
+    const date=z.string().regex(/^\d{4}-\d{2}-\d{2}$/).parse(new URL(request.url).searchParams.get('date') || activityDateToday());
+    const supabase=await createClient();
+    const {data,error}=await supabase.from('activity_logs').select('activity_type,prediction').eq('activity_date',date);
+    if(error)throw error;
+    const totals=new Map<string,number>();
+    data.forEach(r=>totals.set(r.activity_type,(totals.get(r.activity_type)||0)+r.prediction));
+    return NextResponse.json({total_emissions_based_categories:[...totals].map(([activityType,totalEmissions])=>({activityType,totalEmissions:Number(totalEmissions.toFixed(6))}))});
+  } catch(error){return apiError(error);}
 }

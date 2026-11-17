@@ -1,0 +1,271 @@
+{
+  "version": "carboncue-factors-2026-v1",
+  "electricity": {
+    "NSW": {
+      "label": "New South Wales and Australian Capital Territory",
+      "kgPerKwh": 0.6699999999999999,
+      "scope2": 0.6,
+      "scope3": 0.07
+    },
+    "VIC": {
+      "label": "Victoria",
+      "kgPerKwh": 0.85,
+      "scope2": 0.74,
+      "scope3": 0.11
+    },
+    "QLD": {
+      "label": "Queensland",
+      "kgPerKwh": 0.76,
+      "scope2": 0.65,
+      "scope3": 0.11
+    },
+    "SA": {
+      "label": "South Australia",
+      "kgPerKwh": 0.24,
+      "scope2": 0.21,
+      "scope3": 0.03
+    },
+    "WA-SWIS": {
+      "label": "Western Australia - South West Interconnected System (SWIS)",
+      "kgPerKwh": 0.55,
+      "scope2": 0.45,
+      "scope3": 0.1
+    },
+    "WA-NWIS": {
+      "label": "Western Australia - North Western Interconnected System (NWIS)",
+      "kgPerKwh": 0.65,
+      "scope2": 0.56,
+      "scope3": 0.09
+    },
+    "TAS": {
+      "label": "Tasmania",
+      "kgPerKwh": 0.24,
+      "scope2": 0.21,
+      "scope3": 0.03
+    },
+    "NT": {
+      "label": "Northern territory - Darwin Katherine Interconnected System (DKIS)",
+      "kgPerKwh": 0.68,
+      "scope2": 0.55,
+      "scope3": 0.13
+    },
+    "AU": {
+      "label": "National",
+      "kgPerKwh": 0.69,
+      "scope2": 0.59,
+      "scope3": 0.1
+    },
+    "ACT": {
+      "label": "Australian Capital Territory (location-based)",
+      "kgPerKwh": 0.6699999999999999,
+      "scope2": 0.6,
+      "scope3": 0.07
+    }
+  },
+  "fuel": {
+    "petrol": {
+      "kgPerLitre": 2.3126040000000003,
+      "upstreamKgPerLitre": 0.58824
+    },
+    "diesel": {
+      "kgPerLitre": 2.717826,
+      "upstreamKgPerLitre": 0.66778
+    }
+  },
+  "naturalGasKgPerMj": 0.05153,
+  "landfillKgPerKg": 1.5,
+  "foods": {
+    "Apples": {
+      "kgPerKg": 0.428401,
+      "year": 2018
+    },
+    "Bananas": {
+      "kgPerKg": 0.861896,
+      "year": 2018
+    },
+    "Barley": {
+      "kgPerKg": 1.179172,
+      "year": 2018
+    },
+    "Beef (beef herd)": {
+      "kgPerKg": 99.477401,
+      "year": 2018
+    },
+    "Beef (dairy herd)": {
+      "kgPerKg": 33.301396,
+      "year": 2018
+    },
+    "Beet Sugar": {
+      "kgPerKg": 1.812076,
+      "year": 2018
+    },
+    "Berries & Grapes": {
+      "kgPerKg": 1.531885,
+      "year": 2018
+    },
+    "Brassicas": {
+      "kgPerKg": 0.514556,
+      "year": 2018
+    },
+    "Cane Sugar": {
+      "kgPerKg": 3.198924,
+      "year": 2018
+    },
+    "Cassava": {
+      "kgPerKg": 1.315675,
+      "year": 2018
+    },
+    "Cheese": {
+      "kgPerKg": 23.877581,
+      "year": 2018
+    },
+    "Citrus Fruit": {
+      "kgPerKg": 0.387625,
+      "year": 2018
+    },
+    "Coffee": {
+      "kgPerKg": 28.527906,
+      "year": 2018
+    },
+    "Dark Chocolate": {
+      "kgPerKg": 46.646744,
+      "year": 2018
+    },
+    "Eggs": {
+      "kgPerKg": 4.669471,
+      "year": 2018
+    },
+    "Fish (farmed)": {
+      "kgPerKg": 13.632445,
+      "year": 2018
+    },
+    "Groundnuts": {
+      "kgPerKg": 3.230014,
+      "year": 2018
+    },
+    "Lamb & Mutton": {
+      "kgPerKg": 39.72227,
+      "year": 2018
+    },
+    "Maize": {
+      "kgPerKg": 1.701511,
+      "year": 2018
+    },
+    "Milk": {
+      "kgPerKg": 3.15172,
+      "year": 2018
+    },
+    "Nuts": {
+      "kgPerKg": 0.433135,
+      "year": 2018
+    },
+    "Oatmeal": {
+      "kgPerKg": 2.48045,
+      "year": 2018
+    },
+    "Olive Oil": {
+      "kgPerKg": 5.424876,
+      "year": 2018
+    },
+    "Onions & Leeks": {
+      "kgPerKg": 0.496763,
+      "year": 2018
+    },
+    "Other Fruit": {
+      "kgPerKg": 1.052752,
+      "year": 2018
+    },
+    "Other Pulses": {
+      "kgPerKg": 1.78638,
+      "year": 2018
+    },
+    "Other Vegetables": {
+      "kgPerKg": 0.532173,
+      "year": 2018
+    },
+    "Palm Oil": {
+      "kgPerKg": 7.316771,
+      "year": 2018
+    },
+    "Peas": {
+      "kgPerKg": 0.975081,
+      "year": 2018
+    },
+    "Pig Meat": {
+      "kgPerKg": 12.305681,
+      "year": 2018
+    },
+    "Potatoes": {
+      "kgPerKg": 0.460134,
+      "year": 2018
+    },
+    "Poultry Meat": {
+      "kgPerKg": 9.865824,
+      "year": 2018
+    },
+    "Rapeseed Oil": {
+      "kgPerKg": 3.767673,
+      "year": 2018
+    },
+    "Rice": {
+      "kgPerKg": 4.451646,
+      "year": 2018
+    },
+    "Root Vegetables": {
+      "kgPerKg": 0.42628,
+      "year": 2018
+    },
+    "Shrimps (farmed)": {
+      "kgPerKg": 26.865863,
+      "year": 2018
+    },
+    "Soy milk": {
+      "kgPerKg": 0.975179,
+      "year": 2018
+    },
+    "Soybean Oil": {
+      "kgPerKg": 6.324471,
+      "year": 2018
+    },
+    "Sunflower Oil": {
+      "kgPerKg": 3.599478,
+      "year": 2018
+    },
+    "Tofu": {
+      "kgPerKg": 3.161744,
+      "year": 2018
+    },
+    "Tomatoes": {
+      "kgPerKg": 2.088707,
+      "year": 2018
+    },
+    "Wheat & Rye": {
+      "kgPerKg": 1.573823,
+      "year": 2018
+    },
+    "Wine": {
+      "kgPerKg": 1.788763,
+      "year": 2018
+    }
+  },
+  "sources": [
+    {
+      "name": "DCCEEW National Greenhouse Accounts Factors 2026",
+      "url": "https://www.dcceew.gov.au/climate-change/publications/national-greenhouse-accounts-factors-2026",
+      "tables": [
+        "1",
+        "5",
+        "9",
+        "16"
+      ],
+      "sha256": "9424c064016ea4abdcf33cd5e3153493d1cda87ff8cdf03df705e32939ea384c",
+      "licence": "CC BY 4.0, Commonwealth of Australia; see workbook terms"
+    },
+    {
+      "name": "Poore and Nemecek (2018), processed by Our World in Data",
+      "url": "https://ourworldindata.org/grapher/food-emissions-supply-chain",
+      "sha256": "6c3dba3f6147fb4602ff24e5d4e975a99f607faea71440ca637f56a2fcaf836c",
+      "licence": "CC BY, original data attribution retained"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+import manifest from '@/public/models/vehicle-manifest.json';
+import factors from '@/data/emission-factors.json';
+export default function MethodologyPage(){return <article className="container max-w-3xl py-12 space-y-6">
+  <h1 className="text-3xl font-bold">How CarbonCue estimates emissions</h1>
+  <p>Each log covers quantities for one selected day. Totals add the covered activities. They are not a complete personal lifecycle footprint, and the covered sources differ by category.</p>
+  <h2 className="text-2xl font-semibold">Vehicle model</h2>
+  <p>The {manifest.selected_model} model estimates tailpipe CO₂ for petrol, diesel, and petrol hybrid cars from vehicle specifications. Its source is the <a className="underline" href="https://www.fueleconomy.gov/feg/ws/index.shtml">US EPA / Department of Energy fuel economy dataset</a>. {manifest.rows.toLocaleString()} eligible certification records were used. Entire make/model families were kept in separate training, validation, calibration, and test groups.</p>
+  <p>The model was selected using validation data. On {manifest.split.test.toLocaleString()} untouched test records, mean absolute error was {manifest.test.mae_g_per_km.toFixed(1)} g CO₂/km and root mean squared error was {manifest.test.rmse_g_per_km.toFixed(1)} g CO₂/km. The nominal 90% reference interval covered {(manifest.test.empirical_interval_coverage*100).toFixed(1)}% of held-out targets. Coverage can differ for your vehicle and driving conditions.</p>
+  <p>{manifest.boundary} {manifest.population} Providing measured fuel consumption switches to a sourced fuel calculation including upstream fuel emissions, so its scope is wider than the model estimate.</p>
+  <p>Predictions run in a browser worker using a compact numeric export. Exported predictions are checked against the trained model and ONNX fixtures. Model weights are cached after loading. Saving requires an internet connection and is recalculated by the app before storage. Model: {manifest.version}.</p>
+  <h2 className="text-2xl font-semibold">Other categories</h2>
+  <ul className="list-disc pl-6 space-y-2"><li>Electricity uses Australian 2026 location-based scope 2 and scope 3 factors by region. These are averages, not a live grid signal.</li><li>Gas covers combustion only. Walking and cycling cover operational energy only.</li><li>Food uses global average lifecycle factors from Poore and Nemecek (2018), processed by Our World in Data.</li><li>Landfill uses the Australian municipal waste factor. Product footprints require a value and source supplied by you.</li><li>Digital activity covers the device electricity you enter. It excludes networks, data centres, and hardware production.</li></ul>
+  <p>Those categories use documented calculations. They do not claim an AI accuracy score or invent confidence intervals.</p>
+  <h2 className="text-2xl font-semibold">Sources</h2>
+  <ul className="list-disc pl-6 space-y-2">{factors.sources.map(s=><li key={s.url}><a href={s.url} className="underline" target="_blank" rel="noopener noreferrer">{s.name}</a>. {s.licence}.</li>)}</ul>
+  <p>Factor release: {factors.version}. AI workload calculator region factors are a historical reference dataset; verify and edit the carbon intensity for your workload.</p>
+</article>;}

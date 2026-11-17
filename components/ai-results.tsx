@@ -156,7 +156,7 @@ export function AiResults({ data }: { data: any }) {
 
           <div className="mt-8">
             <h3 className="text-lg font-medium mb-2">Fun Facts About Your Carbon Footprint</h3>
-            <p className="text-sm text-muted-foreground mb-6">These fun facts are calculated from your AI's total carbon emissions over one month of visits.</p>
+            <p className="text-sm text-muted-foreground mb-6">These comparisons use the estimated emissions for the workload you entered.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {funFacts.map(({ icon, title, value, unit, description, bg }) => (
                 <FunFactCard key={title} icon={icon} title={title} value={`${value} ${unit}`} description={description} bgColor={bg} />
@@ -174,7 +174,7 @@ export function AiResults({ data }: { data: any }) {
 
                   {/* NEW: offset sentence + energy-equivalent highlight */}
                   <p className="text-sm text-green-700 dark:text-green-300 leading-relaxed mt-3">
-                    Additionally, <strong>{formatNumber(offsetKg)} kg</strong> ({formatNumber(offsetPerc)}%) of this CO₂ has been offset. This corresponds to approximately <strong>{formatNumber(energyOffsetKWh)} kWh</strong> of energy offset from the selected providers — about <strong>{formatNumber(energyOffsetPerc)}</strong>% of the total energy used, calculated using the provider emission factor you supplied.
+                    With your supplied offset assumption, <strong>{formatNumber(offsetKg)} kg</strong> ({formatNumber(offsetPerc)}%) would be covered by offsets. This is equivalent to the emissions from <strong>{formatNumber(energyOffsetKWh)} kWh</strong> using your chosen emissions factor. Actual offset purchases are not tracked by this calculator.
                   </p>
                 </div>
               </div>

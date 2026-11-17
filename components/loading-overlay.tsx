@@ -18,6 +18,7 @@ export function LoadingOverlay({ isVisible }: LoadingOverlayProps) {
 
   return (
     <div
+      aria-hidden={!isVisible}
       className={cn(
         "fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-300",
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",

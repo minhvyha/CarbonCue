@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { lookup } from "dns/promises";
-import https from "https";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { URL } from "url";
@@ -9,10 +8,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { url: string } }
+  { params }: { params: Promise<{ url: string }> }
 ) {
-  const targetUrl = decodeURIComponent(params.url);
-  const hostname = new URL(targetUrl).hostname;
+  const { url } = await params;
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+    if (!["http:", "https:"].includes(parsedUrl.protocol)) throw new Error();
+  } catch {
+    return NextResponse.json({ error: "Enter a valid HTTP or HTTPS website URL." }, { status: 400 });
+  }
+  const targetUrl = parsedUrl.href;
+  const hostname = parsedUrl.hostname;
 
   // 1) DOMAIN CHECK
   try {
@@ -35,9 +42,11 @@ export async function GET(
   };
 
   let html = "";
+  let serverHeader = "Unknown";
   try {
-    const res = await axios.get(targetUrl);
+    const res = await axios.get(targetUrl, { timeout: 10000, responseType: "text", maxContentLength: 10 * 1024 * 1024 });
     html = res.data;
+    serverHeader = res.headers.server || "Unknown";
     assets.html += Buffer.byteLength(html);
   } catch (err: any) {
     return NextResponse.json(
@@ -57,7 +66,7 @@ export async function GET(
   const collectUrl = (raw: string) => {
     try {
       const full = new URL(raw.trim(), baseUrl).href;
-      resourceUrls.add(full);
+      if (["http:", "https:"].includes(new URL(full).protocol)) resourceUrls.add(full);
     } catch {}
   };
 
@@ -114,11 +123,15 @@ export async function GET(
     return 'other';
   };
 
-  const queue = Array.from(resourceUrls);
-  while (queue.length) {
+  const queue = Array.from(resourceUrls).slice(0, 40);
+  const deadline = Date.now() + 15000;
+  let processed = 0;
+  let failedAssets = 0;
+  while (queue.length && processed < 40 && Date.now() < deadline) {
     const url = queue.shift()!;
+    processed++;
     try {
-      const res = await axios.get(url, { responseType: 'arraybuffer', timeout: 10000 });
+      const res = await axios.get(url, { responseType: 'arraybuffer', timeout: Math.min(3000, deadline - Date.now()), maxContentLength: 10 * 1024 * 1024 });
       const size = res.data.length;
       const type = classify(res.headers['content-type']);
       assets[type] = (assets[type] || 0) + size;
@@ -137,7 +150,7 @@ export async function GET(
           if (!resourceUrls.has(full)) queue.push(full), resourceUrls.add(full);
         }
       }
-    } catch {}
+    } catch { failedAssets++; }
   }
 
   const totalBytes = Object.values(assets).reduce((a, b) => a + b, 0);
@@ -153,26 +166,11 @@ export async function GET(
     );
   }
 
-  let serverHeader = 'Unknown';
-  try {
-    await new Promise<void>((resolve, reject) => {
-      const req = https.get(targetUrl, res => {
-        serverHeader = (res.headers['server'] as string) || 'Unknown';
-        res.resume(); resolve();
-      });
-      req.on('error', () => reject(new Error()));
-    });
-  } catch {
-    return NextResponse.json(
-      { error: 'Fetching server header failed', code: "SERVER_HEADER_FAILED" },
-      { status: 502 }
-    );
-  }
-
   return NextResponse.json({
     url: targetUrl,
     serverInfo: { ip, server: serverHeader },
     totalBytes,
     breakdown: assets,
+    partial: queue.length > 0 || resourceUrls.size > processed || failedAssets > 0,
   });
 }

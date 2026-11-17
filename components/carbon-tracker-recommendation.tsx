@@ -216,18 +216,11 @@ const CarbonTrackerRecommendation = ({
         console.log("🎯 Calling onStatsUpdate with:", result.userStats);
         onStatsUpdate(result.userStats);
       }
+      toast({ title: "Recommendation completed", description: "Your progress has been saved." });
     } catch (error) {
       console.error("Error completing recommendation:", error);
-      // Handle error - maybe show a toast notification
+      toast({ title: "Could not complete recommendation", description: "Please try again.", variant: "destructive" });
     } finally {
-      toast({
-        title: `${
-          userRecommendations.find((r) => r._id === id)?.title
-        } completed successfully`,
-        description: "You've completed this recommendation",
-        variant: "default",
-      });
-
       setLoadingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(id);

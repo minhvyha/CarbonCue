@@ -1,116 +1,40 @@
-export const dynamic = "force-dynamic";
-
-import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongoose";
-import ArtPieces from "@/model/ArtPieces";
-import mongoose from "mongoose";
-
-export async function GET(
-  _req: Request,
-  { params }: { params: { name: string } } // route param name is [name]
-) {
-  try {
-    // 1) connect to MongoDB
-    const conn = await connectToDatabase();
-    console.log("Mongo readyState:", conn.connection.readyState); // 1 = connected
-
-    // 2) get and decode the name
-    const { name } = params;
-
-    // 3) find the art piece and return it
-    const artpiece = await ArtPieces.findOneAndUpdate(
-      { title: name },
-      { $inc: { views: 1 } },
-      {
-        new: true, // return the updated document
-        lean: true, // return plain JS object (faster)
-        writeConcern: { w: 1 }, // ensure the server acknowledges the write
-      }
-    );
-
-    if (!artpiece) {
-      return NextResponse.json(
-        { error: "Art piece not found" },
-        { status: 404 }
-      );
-    }
-
-    // 4) return the updated art piece
-    return NextResponse.json(artpiece);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
+import { getResource } from '@/lib/supabase/resources';
+import { getCurrentUser, requireUser } from '@/lib/getCurrentUser';
+import { apiError, ApiError } from '@/lib/api';
+type Context = { params: Promise<{ name: string }> };
+async function artwork(name: string) {
+  const resource = await getResource('art', name, true);
+  if (!resource) throw new ApiError('Artwork not found', 404);
+  return resource;
 }
-
-export async function POST(
-  req: Request,
-  { params }: { params: { name: string } } // route param name is [name]
-) {
+async function likes(resourceId: string) {
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+  const [stats, own] = await Promise.all([
+    supabase.from('artwork_stats').select('likes_count').eq('resource_id', resourceId).maybeSingle(),
+    user ? supabase.from('artwork_likes').select('resource_id').eq('resource_id', resourceId) : Promise.resolve({ data: [], error: null }),
+  ]);
+  if (stats.error) throw stats.error;
+  if (own.error) throw own.error;
+  return { likesCount: stats.data?.likes_count || 0, likes: user && own.data?.length ? [user._id] : [] };
+}
+export async function GET(_request: Request, { params }: Context) {
+  try { const resource = await artwork((await params).name); return NextResponse.json({ ...resource, ...await likes(resource.id) }); }
+  catch (error) { return apiError(error); }
+}
+export async function POST(request: Request, { params }: Context) {
   try {
-    const conn = await connectToDatabase();
-    console.log("Mongo readyState:", conn.connection.readyState);
-
-    const { name } = params;
-
-    const body = await req.json().catch(() => null);
-    if (!body) {
-      return NextResponse.json(
-        { error: "Request body required" },
-        { status: 400 }
-      );
-    }
-
-    const { userId, action } = body;
-    if (!userId) {
-      return NextResponse.json(
-        { error: "userId is required in body" },
-        { status: 400 }
-      );
-    }
-
-    // convert to ObjectId if it's a valid one (optional)
-    const likeValue = mongoose.Types.ObjectId.isValid(userId)
-      ? new mongoose.Types.ObjectId(userId)
-      : userId; // fallback to string if you store strings
-
-
-    let updated;
-    if (action === "remove") {
-      updated = await ArtPieces.findOneAndUpdate(
-        { title: name },
-        { $pull: { likes: likeValue } },
-        { new: true, lean: true, writeConcern: { w: 1 } }
-      );
-    } else {
-      // default -> add
-      updated = await ArtPieces.findOneAndUpdate(
-        { title: name },
-        { $addToSet: { likes: likeValue } },
-        { new: true, lean: true, writeConcern: { w: 1 } }
-      );
-    }
-
-    // console.log(updated)
-
-    if (!updated) {
-      return NextResponse.json(
-        { error: "Art piece not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      likes: updated.likes,
-      likesCount: Array.isArray(updated.likes) ? updated.likes.length : 0,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+    await requireUser();
+    const { action } = z.object({ action: z.enum(['add', 'remove']).default('add') }).parse(await request.json());
+    const resource = await artwork((await params).name);
+    const supabase = await createClient();
+    const { error } = action === 'remove'
+      ? await supabase.from('artwork_likes').delete().eq('resource_id', resource.id)
+      : await supabase.from('artwork_likes').insert({ resource_id: resource.id });
+    if (error && error.code !== '23505') throw error;
+    return NextResponse.json({ success: true, ...await likes(resource.id) });
+  } catch (error) { return apiError(error); }
 }

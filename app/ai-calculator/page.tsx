@@ -58,6 +58,7 @@ export default function AICalculatorPage() {
           fetch("/api/ai-calculator/gpus"),
           fetch("/api/ai-calculator/providers"),
         ]);
+        if (!gpuRes.ok || !providerRes.ok) throw new Error("Could not load the calculator options.");
 
         const gpuData = (await gpuRes.json()) ?? {};
         const providerData = (await providerRes.json()) ?? {};
@@ -118,7 +119,7 @@ export default function AICalculatorPage() {
       const first = regionsData[0];
       if (first) {
         setSelectedRegion(first.regionName);
-        setOffset(Number(first.offsetRatio) || 100);
+        setOffset(Number(first.offsetRatio ?? 0));
         setImpact(first.impact ?? 0);
       } else {
         setSelectedRegion("");
@@ -203,6 +204,7 @@ export default function AICalculatorPage() {
               </CardHeader>
 
               <CardContent>
+                <p className="mb-4 text-sm text-muted-foreground">Provider carbon factors are historical reference data. Check the regional value and adjust it for your workload.</p>
                 <form onSubmit={handleCalculate} className="grid gap-6">
                   <div className="grid gap-3">
                     <Label htmlFor="gpu-type">GPU Type</Label>
@@ -232,7 +234,8 @@ export default function AICalculatorPage() {
                       placeholder="e.g., 100"
                       value={hours}
                       onChange={(e) => setHours(Number(e.target.value))}
-                      min={1}
+                      min={0.01}
+                      step="any"
                       max={100000}
                     />
                   </div>
@@ -266,7 +269,7 @@ export default function AICalculatorPage() {
                         const val = e.target.value;
                         setSelectedRegion(val);
                         const found = regions.find((r) => r.regionName === val);
-                        setOffset(Number(found?.offsetRatio ?? 100));
+                        setOffset(Number(found?.offsetRatio ?? 0));
                         setImpact(found?.impact ?? 0);
                       }}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none"
@@ -284,7 +287,7 @@ export default function AICalculatorPage() {
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="offset-ratio">Offset Ratio</Label>
+                    <Label htmlFor="offset-ratio">Offset Ratio (%)</Label>
                     <Input
                       id="offset-ratio"
                       type="number"
@@ -292,12 +295,12 @@ export default function AICalculatorPage() {
                       value={offset}
                       onChange={(e) => setOffset(Number(e.target.value))}
                       min={0}
-                      max={1000}
+                      max={100}
                     />
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="impact">Impact</Label>
+                    <Label htmlFor="impact">Carbon Intensity (g CO₂e/kWh)</Label>
                     <Input
                       id="impact"
                       type="number"
@@ -306,6 +309,7 @@ export default function AICalculatorPage() {
                       onChange={(e) => setImpact(Number(e.target.value))}
                       min={0}
                       max={100000}
+                      step="any"
                     />
                   </div>
 
